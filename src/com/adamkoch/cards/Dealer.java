@@ -21,14 +21,14 @@ public class Dealer {
         this.cards = cards;
     }
 
-    public void dealTo(Player player1, Player player2) {
+    public void dealTo(Player[] players) {
 
         for (Iterator<Card> iterator = cards.iterator(); iterator.hasNext(); ) {
             Card card = iterator.next();
-            player1.addCardToHand(card);
+            players[0].addCardToHand(card);
             if (iterator.hasNext()) {
                 Card card2 = iterator.next();
-                player2.addCardToHand(card2);
+                players[1].addCardToHand(card2);
             }
         }
 

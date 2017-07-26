@@ -28,7 +28,7 @@ public class GameOfWar implements Game {
             deck.shuffle();
 
             Dealer dealer = new Dealer(deck.cards());
-            dealer.dealTo(players[0], players[1]);
+            dealer.dealTo(players);
 
             System.out.println("start: player 1 hand size = " + players[0].getHandSize());
             System.out.println("start: player 2 hand size = " + players[1].getHandSize());
