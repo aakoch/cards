@@ -1,14 +1,11 @@
 package com.adamkoch.cards;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import static com.adamkoch.cards.Outcome.TIE;
 
 /**
- * <a href=""></a>
- *
  * <p>Created by aakoch on 2017-07-13.</p>
  *
  * @author aakoch
@@ -16,25 +13,24 @@ import static com.adamkoch.cards.Outcome.TIE;
  */
 public class GameOfWar implements Game {
 
-    Player[] players;
+    List<Player> players;
 
     @Override
     public void play(Deck deck) {
         try {
-            players = new Player[2];
-            players[0] = new Player("1");
-            players[1] = new Player("2");
+            players = initializePlayers(2);
 
             deck.shuffle();
 
             Dealer dealer = new Dealer(deck.cards());
             dealer.dealTo(players);
 
-            System.out.println("start: player 1 hand size = " + players[0].getHandSize());
-            System.out.println("start: player 2 hand size = " + players[1].getHandSize());
+            for (Player player : players) {
+                System.out.println("start: player " + player.getName() + " hand size = " + player.getHandSize());
+            }
 
-            while (players[0].hasAnotherCard() && players[1].hasAnotherCard()) {
-                play(players[0], players[1], new ArrayList<>());
+            while (allPlayersStillHaveCards(players)) {
+                play2(players, new ArrayList<Card>());
 
 //            if (!player1.hasAnotherCard()) {
 //                player1.shuffleDiscardPileIntoHand();
@@ -47,34 +43,46 @@ public class GameOfWar implements Game {
 //                player2.shuffleDiscardPileIntoHand();
 //                player2Hand = player2.getHand();
 //            }
-                final int player1HandSize = players[0].getHandSize();
-                final int player2HandSize = players[1].getHandSize();
+                final int player1HandSize = players.get(0).getHandSize();
+                final int player2HandSize = players.get(1).getHandSize();
                 System.out.println("end: player 1 hand size = " + player1HandSize);
                 System.out.println("end: player 2 hand size = " + player2HandSize);
-                final int player1DiscardPileSize = players[0].getDiscardPile()
-                                                             .size();
+                final int player1DiscardPileSize = players.get(0).getDiscardPile().size();
                 System.out.println("end: player 1 discard pile size = " + player1DiscardPileSize);
-                final int player2DiscardPileSize = players[1].getDiscardPile()
-                                                             .size();
+                final int player2DiscardPileSize = players.get(1).getDiscardPile().size();
                 System.out.println("end: player 2 discard pile size = " + player2DiscardPileSize);
                 System.out.println(
                         "total = " + (player1HandSize + player2HandSize + player1DiscardPileSize + player2DiscardPileSize));
             }
         } catch (RuntimeException e) {
-            final int player1HandSize = players[0].getHandSize();
-            final int player2HandSize = players[1].getHandSize();
+            final int player1HandSize = players.get(0).getHandSize();
+            final int player2HandSize = players.get(1).getHandSize();
             System.out.println("end: player 1 hand size = " + player1HandSize);
             System.out.println("end: player 2 hand size = " + player2HandSize);
-            final int player1DiscardPileSize = players[0].getDiscardPile()
-                                                         .size();
+            final int player1DiscardPileSize = players.get(0).getDiscardPile().size();
             System.out.println("end: player 1 discard pile size = " + player1DiscardPileSize);
-            final int player2DiscardPileSize = players[1].getDiscardPile()
-                                                         .size();
+            final int player2DiscardPileSize = players.get(1).getDiscardPile().size();
             System.out.println("end: player 2 discard pile size = " + player2DiscardPileSize);
             System.out.println(
                     "total = " + (player1HandSize + player2HandSize + player1DiscardPileSize + player2DiscardPileSize));
             throw e;
         }
+    }
+
+    private void play2(List<Player> players, ArrayList<Card> extraCards) {
+        play(players.get(0), players.get(1), extraCards);
+    }
+
+    private boolean allPlayersStillHaveCards(List<Player> players) {
+        return players.stream().allMatch(player -> player.hasAnotherCard());
+    }
+
+    private List<Player> initializePlayers(int numberOfInstances) {
+        List<Player> players = new ArrayList<>(numberOfInstances);
+        for (int i = 0; i < numberOfInstances; i++) {
+            players.add(new Player(String.valueOf(i + 1)));
+        }
+        return players;
     }
 
     private void play(Player player1, Player player2, List<Card> extraCards) {
@@ -85,23 +93,16 @@ public class GameOfWar implements Game {
 
         if (outcome == TIE) {
             resolveTie(player1Card, player2Card, player1, player2, extraCards);
-        } else if (outcome.getCard()
-                          .equals(player1Card)) {
+        } else if (outcome.getCard().equals(player1Card)) {
             System.out.println(player1Card + " <- " + player2Card);
-            player1.getDiscardPile()
-                   .add(player1Card);
-            player1.getDiscardPile()
-                   .add(player2Card);
-            player1.getDiscardPile()
-                   .addAll(extraCards);
+            player1.getDiscardPile().add(player1Card);
+            player1.getDiscardPile().add(player2Card);
+            player1.getDiscardPile().addAll(extraCards);
         } else {
             System.out.println(player1Card + " -> " + player2Card);
-            player2.getDiscardPile()
-                   .add(player1Card);
-            player2.getDiscardPile()
-                   .add(player2Card);
-            player2.getDiscardPile()
-                   .addAll(extraCards);
+            player2.getDiscardPile().add(player1Card);
+            player2.getDiscardPile().add(player2Card);
+            player2.getDiscardPile().addAll(extraCards);
         }
         if (!extraCards.isEmpty()) {
             System.out.println(extraCards);

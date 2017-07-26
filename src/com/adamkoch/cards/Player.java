@@ -75,4 +75,8 @@ public class Player {
     public int getHandSize() {
         return hand.size();
     }
+
+    public String getName() {
+        return name;
+    }
 }
