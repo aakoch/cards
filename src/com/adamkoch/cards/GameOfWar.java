@@ -1,6 +1,7 @@
 package com.adamkoch.cards;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.adamkoch.cards.Outcome.TIE;
@@ -30,7 +31,7 @@ public class GameOfWar implements Game {
             }
 
             while (allPlayersStillHaveCards(players)) {
-                play2(players, new ArrayList<Card>());
+                play(players, new ArrayList<>());
 
 //            if (!player1.hasAnotherCard()) {
 //                player1.shuffleDiscardPileIntoHand();
@@ -43,35 +44,30 @@ public class GameOfWar implements Game {
 //                player2.shuffleDiscardPileIntoHand();
 //                player2Hand = player2.getHand();
 //            }
-                final int player1HandSize = players.get(0).getHandSize();
-                final int player2HandSize = players.get(1).getHandSize();
-                System.out.println("end: player 1 hand size = " + player1HandSize);
-                System.out.println("end: player 2 hand size = " + player2HandSize);
-                final int player1DiscardPileSize = players.get(0).getDiscardPile().size();
-                System.out.println("end: player 1 discard pile size = " + player1DiscardPileSize);
-                final int player2DiscardPileSize = players.get(1).getDiscardPile().size();
-                System.out.println("end: player 2 discard pile size = " + player2DiscardPileSize);
-                System.out.println(
-                        "total = " + (player1HandSize + player2HandSize + player1DiscardPileSize + player2DiscardPileSize));
+                printStats();
             }
         } catch (RuntimeException e) {
-            final int player1HandSize = players.get(0).getHandSize();
-            final int player2HandSize = players.get(1).getHandSize();
-            System.out.println("end: player 1 hand size = " + player1HandSize);
-            System.out.println("end: player 2 hand size = " + player2HandSize);
-            final int player1DiscardPileSize = players.get(0).getDiscardPile().size();
-            System.out.println("end: player 1 discard pile size = " + player1DiscardPileSize);
-            final int player2DiscardPileSize = players.get(1).getDiscardPile().size();
-            System.out.println("end: player 2 discard pile size = " + player2DiscardPileSize);
-            System.out.println(
-                    "total = " + (player1HandSize + player2HandSize + player1DiscardPileSize + player2DiscardPileSize));
+            printStats();
             throw e;
         }
     }
 
-    private void play2(List<Player> players, ArrayList<Card> extraCards) {
-        play(players.get(0), players.get(1), extraCards);
+    private void printStats() {
+        final int player1HandSize = players.get(0).getHandSize();
+        final int player2HandSize = players.get(1).getHandSize();
+        System.out.println("end: player 1 hand size = " + player1HandSize);
+        System.out.println("end: player 2 hand size = " + player2HandSize);
+        final int player1DiscardPileSize = players.get(0).getDiscardPile().size();
+        System.out.println("end: player 1 discard pile size = " + player1DiscardPileSize);
+        final int player2DiscardPileSize = players.get(1).getDiscardPile().size();
+        System.out.println("end: player 2 discard pile size = " + player2DiscardPileSize);
+        System.out.println(
+                "total = " + (player1HandSize + player2HandSize + player1DiscardPileSize + player2DiscardPileSize));
     }
+
+//    private void play(List<Player> players, ArrayList<Card> extraCards) {
+//        play(players.get(0), players.get(1), extraCards);
+//    }
 
     private boolean allPlayersStillHaveCards(List<Player> players) {
         return players.stream().allMatch(player -> player.hasAnotherCard());
@@ -85,24 +81,26 @@ public class GameOfWar implements Game {
         return players;
     }
 
-    private void play(Player player1, Player player2, List<Card> extraCards) {
-        Card player1Card = player1.getNextCard();
-        Card player2Card = player2.getNextCard();
+    private void play(List<Player> players, List<Card> extraCards) {
+        Card player1Card = players.get(0).getNextCard();
+        Card player2Card = players.get(1).getNextCard();
 
         Outcome outcome = determineWinner(player1Card, player2Card);
 
         if (outcome == TIE) {
-            resolveTie(player1Card, player2Card, player1, player2, extraCards);
+            resolveTie(player1Card, player2Card, players.get(0), players.get(1), extraCards);
         } else if (outcome.getCard().equals(player1Card)) {
             System.out.println(player1Card + " <- " + player2Card);
-            player1.getDiscardPile().add(player1Card);
-            player1.getDiscardPile().add(player2Card);
-            player1.getDiscardPile().addAll(extraCards);
+            Player winner = players.get(0);
+            winner.getDiscardPile().add(player1Card);
+            winner.getDiscardPile().add(player2Card);
+            winner.getDiscardPile().addAll(extraCards);
         } else {
             System.out.println(player1Card + " -> " + player2Card);
-            player2.getDiscardPile().add(player1Card);
-            player2.getDiscardPile().add(player2Card);
-            player2.getDiscardPile().addAll(extraCards);
+            Player winner = players.get(1);
+            winner.getDiscardPile().add(player1Card);
+            winner.getDiscardPile().add(player2Card);
+            winner.getDiscardPile().addAll(extraCards);
         }
         if (!extraCards.isEmpty()) {
             System.out.println(extraCards);
@@ -110,17 +108,17 @@ public class GameOfWar implements Game {
         }
     }
 
-    private void resolveTie(Card player1Card, Card player2Card, Player player1, Player player2, List<Card> hiddenCards) {
+    private void resolveTie(Card player1Card, Card player2Card, Player player1, Player player2, List<Card> playedCards) {
         System.out.println(player1Card + " == " + player2Card);
 
-        hiddenCards.add(player1Card);
-        hiddenCards.add(player2Card);
-        hiddenCards.add(player1.getNextCard());
-        hiddenCards.add(player1.getNextCard());
-        hiddenCards.add(player2.getNextCard());
-        hiddenCards.add(player2.getNextCard());
+        playedCards.add(player1Card);
+        playedCards.add(player2Card);
+        playedCards.add(player1.getNextCard());
+        playedCards.add(player1.getNextCard());
+        playedCards.add(player2.getNextCard());
+        playedCards.add(player2.getNextCard());
 
-        play(player1, player2, hiddenCards);
+        play(Arrays.asList(player1, player2), playedCards);
     }
 
     private Outcome determineWinner(Card card1, Card card2) {
