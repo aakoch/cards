@@ -18,7 +18,7 @@ public class Main {
     }
 
     private static void shoveIt() {
-        Game game = new ShoveIt(3);
+        Game game = new ShoveIt(5);
         Deck deck = DeckFactory.standard();
         game.play(deck);
     }

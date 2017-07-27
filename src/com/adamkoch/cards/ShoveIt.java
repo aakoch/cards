@@ -55,10 +55,9 @@ public class ShoveIt implements Game {
 
         Queue<Player> playersInTurn = determineOrderOfPlayers(players, dealer);
         Player player;
-        Decision previousDecision = null;
+        int numberOfStays = 0;
         while ((player = playersInTurn.poll()) != null) {
-            final Decision decision = stayOrSwitch(player, previousDecision);
-            previousDecision = decision;
+            final Decision decision = stayOrSwitch(player, numberOfStays);
             if (decision == Decision.SWITCH) {
                 if (player.isDealer()) {
                     final Card card = deck.next();
@@ -85,7 +84,7 @@ public class ShoveIt implements Game {
                 }
             }
             else {
-
+                numberOfStays++;
                 System.out.println(player.getName() + " decides to keep their " + player.getCard() +
                         decision.getReasonOrDefault(""));
             }
@@ -176,13 +175,14 @@ public class ShoveIt implements Game {
     }
 
 
-    private Decision stayOrSwitch(Player player, Decision previousDecision) {
+    private Decision stayOrSwitch(Player player, int numberOfPreviousStays) {
         final Card card = player.getCard();
         if (player.wasSwapped() && player.previousCard().getRank() < card.getRank()) {
             return Decision.STAY.withReason(" because swapped card was lower");
         }
-        else if ((previousDecision == null && card.getRank() > 7) || card
-                .getRank() > 9)
+        else if (card.getRank()  == 13)
+            return Decision.STAY.withReason(" because they have a king!");
+        else if (card.getRank() > (9 - numberOfPreviousStays))
             return Decision.STAY.withReason(null);
         else
             return Decision.SWITCH;
