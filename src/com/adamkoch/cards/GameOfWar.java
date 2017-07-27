@@ -23,11 +23,11 @@ public class GameOfWar implements Game {
 
             deck.shuffle();
 
-            Dealer dealer = new Dealer(deck.cards());
-            dealer.dealTo(players);
+            Dealer dealer = new Dealer(deck);
+            dealer.dealTo(players, deck.cards().size() / 2);
 
             for (Player player : players) {
-                System.out.println("start: player " + player.getName() + " hand size = " + player.getHandSize());
+                System.out.println("start: " + player.getName() + " hand size = " + player.getHandSize());
             }
 
             while (allPlayersStillHaveCards(players)) {

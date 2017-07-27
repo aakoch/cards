@@ -29,4 +29,8 @@ public class Deck {
     public List<Card> cards() {
         return cards;
     }
+
+    public Card next() {
+        return cards.remove(0);
+    }
 }

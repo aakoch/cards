@@ -5,18 +5,28 @@ package com.adamkoch.cards;
 public class Main {
 
     public static void main(String[] args) {
-        Game war = new GameOfWar();
-	    Deck deck = newDeckWithoutJokers();
-        war.play(deck);
+
+
+        try {
+            war();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        shoveIt();
     }
 
-    private static Deck newDeckWithoutJokers() {
-        return removeJokers(new StandardDeck());
+    private static void shoveIt() {
+        Game game = new ShoveIt(3);
+        Deck deck = DeckFactory.standard();
+        game.play(deck);
     }
 
-    private static Deck removeJokers(StandardDeck standardDeck) {
-//        standardDeck.remove(JOKER);
-//        standardDeck.remove(JOKER);
-        return standardDeck;
+    private static void war() {
+        Game game = new GameOfWar();
+        Deck deck = DeckFactory.standard();
+        game.play(deck);
     }
+
 }

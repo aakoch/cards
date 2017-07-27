@@ -1,5 +1,7 @@
 package com.adamkoch.cards;
 
+import com.sun.tools.javac.code.Types;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -19,6 +21,9 @@ public class Player {
     private List<Card> discardPile;
     private Iterator<Card> handIterator;
     private String name;
+    private boolean theDealer;
+    private boolean swapped;
+    private Card previousCard;
 
     public Player(String name) {
         this.name = name;
@@ -78,5 +83,60 @@ public class Player {
 
     public String getName() {
         return name;
+    }
+
+    public Dealer setAsDealer(Deck deck) {
+        final Dealer dealer = new Dealer(deck);
+        dealer.setPlayer(this);
+        theDealer = true;
+        return dealer;
+    }
+
+    public boolean isDealer() {
+        return theDealer;
+    }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "hand=" + hand +
+                ", name='" + name + '\'' +
+                ", dealer='" + theDealer + '\'' +
+                ", swapped='" + swapped + '\'' +
+                ", previousCard='" + previousCard + '\'' +
+                '}';
+    }
+
+    public Card getCard() {
+        return hand.isEmpty() ? null : hand.get(0);
+    }
+
+    public void setCard(Card card) {
+        previousCard = getCard();
+        hand.clear();
+        hand.add(card);
+        swapped = true;
+    }
+
+    public boolean wasSwapped() {
+        return swapped;
+    }
+
+    public Card previousCard() {
+        return previousCard;
+    }
+
+    public void clearHand() {
+        hand.clear();
+        reset();
+    }
+
+    public void notDealer() {
+        theDealer = false;
+    }
+
+    public void reset() {
+        previousCard = null;
+        swapped = false;
     }
 }
