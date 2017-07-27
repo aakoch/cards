@@ -18,6 +18,9 @@ public class Card {
     }
 
     public int getRank() {
+        if (rank == 1) {
+            return 14;
+        }
         return rank;
     }
 
@@ -27,7 +30,10 @@ public class Card {
     }
 
     private String formatRank() {
-        if (rank > 10) {
+        if (rank == 1) {
+            return " A";
+        }
+        else if (rank > 10) {
             if (rank == 11) {
                 return " J";
             }

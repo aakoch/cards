@@ -19,7 +19,7 @@ public class GameOfWar implements Game {
     @Override
     public void play(Deck deck) {
         try {
-            players = initializePlayers(2);
+            players = PlayerFactory.initializePlayers(2);
 
             deck.shuffle();
 
@@ -71,14 +71,6 @@ public class GameOfWar implements Game {
 
     private boolean allPlayersStillHaveCards(List<Player> players) {
         return players.stream().allMatch(player -> player.hasAnotherCard());
-    }
-
-    private List<Player> initializePlayers(int numberOfInstances) {
-        List<Player> players = new ArrayList<>(numberOfInstances);
-        for (int i = 0; i < numberOfInstances; i++) {
-            players.add(new Player(String.valueOf(i + 1)));
-        }
-        return players;
     }
 
     private void play(List<Player> players, List<Card> extraCards) {
