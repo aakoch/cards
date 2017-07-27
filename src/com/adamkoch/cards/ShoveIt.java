@@ -25,12 +25,11 @@ public class ShoveIt implements Game {
     public void play(Deck deck) {
         Player currentDealer = randomPlayer();
 
-        final Deck standardDeck = DeckFactory.standard();
-        standardDeck.shuffle();
+        deck.shuffle();
 
-        while (standardDeck.cards().size() > players.size() + 1) {
-            playRound(deck, currentDealer, standardDeck);
-            trace("deck size = " + standardDeck.cards().size());
+        while (deck.cards().size() > players.size() + 1) {
+            playRound(deck, currentDealer);
+            trace("deck size = " + deck.cards().size());
             System.out.println();
             int index = players.indexOf(currentDealer) + 1;
             if (index == players.size())
@@ -45,8 +44,8 @@ public class ShoveIt implements Game {
         System.out.println(msg);
     }
 
-    private void playRound(Deck deck, Player randomPlayer, Deck standardDeck) {
-        Dealer dealer = randomPlayer.setAsDealer(standardDeck);
+    private void playRound(Deck deck, Player randomPlayer) {
+        Dealer dealer = randomPlayer.setAsDealer(deck);
         dealer.dealTo(players, 1);
 
         for (Player player : players) {
