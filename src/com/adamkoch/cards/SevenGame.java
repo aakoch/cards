@@ -48,6 +48,7 @@ public class SevenGame implements Game {
         }
 
         listHands();
+        System.out.println(sevenBoard);
     }
 
     private boolean everyoneHasCards(Queue<Player> playerQueue) {

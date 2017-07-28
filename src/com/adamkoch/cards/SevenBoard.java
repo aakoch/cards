@@ -1,14 +1,9 @@
 package com.adamkoch.cards;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * <a href=""></a>
- *
  * <p>Created by aakoch on 2017-07-27.</p>
  *
  * @author aakoch
@@ -100,4 +95,17 @@ public class SevenBoard {
         return cards;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (SevenStack stack : stacks) {
+            sb.append(stack.getSuit());
+            sb.append(stack.getBottomCard().getRank());
+            sb.append("--");
+            sb.append(stack.getTopCard().getRank());
+            sb.append("\n");
+        }
+
+        return sb.toString();
+    }
 }
