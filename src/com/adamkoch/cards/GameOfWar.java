@@ -17,7 +17,7 @@ public class GameOfWar implements Game {
     List<Player> players;
 
     @Override
-    public void play(Deck deck) {
+    public Stats play(Deck deck) {
         try {
             players = PlayerFactory.initializePlayers(2);
 
@@ -50,6 +50,7 @@ public class GameOfWar implements Game {
             printStats();
             throw e;
         }
+        return null;
     }
 
     private void printStats() {

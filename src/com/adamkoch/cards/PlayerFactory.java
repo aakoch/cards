@@ -11,7 +11,8 @@ import java.util.*;
  * @since 1.0.0
  */
 public class PlayerFactory {
-    private static List<String> names = Arrays.asList("Steve", "Shorty", "Taz", "Ace", "Mumbles", "Cool wHip");
+    private static List<String> names = Arrays.asList("Steve", "Shorty", "Bob", "Watermelon", "Taz", "Ace", "Mumbles",
+            "Cool wHip");
     public static List<Player> initializePlayers(int numberOfInstances) {
         List<String> names2 = new ArrayList<>(names);
         Collections.shuffle(names2);
@@ -20,6 +21,18 @@ public class PlayerFactory {
             final int index = (new Random()).nextInt(names2.size());
             final String name = names2.remove(index);
             players.add(new Player(name));
+        }
+        return players;
+    }
+
+    public static List<ShoveItPlayer> initializeShoveItPlayers(int numberOfInstances) {
+        List<String> names2 = new ArrayList<>(names);
+        Collections.shuffle(names2);
+        List<ShoveItPlayer> players = new ArrayList<>(numberOfInstances);
+        for (int i = 0; i < numberOfInstances; i++) {
+            final int index = (new Random()).nextInt(names2.size());
+            final String name = names2.remove(index);
+            players.add(new ShoveItPlayer(name));
         }
         return players;
     }

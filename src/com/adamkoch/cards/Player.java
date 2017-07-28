@@ -16,14 +16,14 @@ import java.util.List;
  * @since 1.0.0
  */
 public class Player {
-    private List<Card> hand;
+    protected List<Card> hand;
     private int index = 0;
     private List<Card> discardPile;
     private Iterator<Card> handIterator;
     private String name;
     private boolean theDealer;
-    private boolean swapped;
-    private Card previousCard;
+    protected boolean swapped;
+    protected Card previousCard;
 
     public Player(String name) {
         this.name = name;

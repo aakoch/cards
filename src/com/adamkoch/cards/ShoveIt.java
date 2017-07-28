@@ -2,6 +2,7 @@ package com.adamkoch.cards;
 
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.stream.Collectors;
 
 /**
  * <a href=""></a>
@@ -14,30 +15,56 @@ import java.util.concurrent.ArrayBlockingQueue;
 public class ShoveIt implements Game {
 
     private static final boolean TRACE = false;
-    private List<Player> players;
+    private List<ShoveItPlayer> players;
 
     public ShoveIt(int numberOfPlayers) {
-        this.players = PlayerFactory.initializePlayers(numberOfPlayers);
-
+        this.players = PlayerFactory.initializeShoveItPlayers(numberOfPlayers);
     }
 
     @Override
-    public void play(Deck deck) {
+    public Stats play(Deck deck) {
+        Stats stats = new Stats();
         Player currentDealer = randomPlayer();
 
         deck.shuffle();
 
-        while (deck.cards().size() > players.size() + 1) {
-            playRound(deck, currentDealer);
-            trace("deck size = " + deck.cards().size());
-            System.out.println();
-            int index = players.indexOf(currentDealer) + 1;
-            if (index == players.size()) {
-                index = 0;
+        int rounds = 0;
+        while (players.size() > 1 && deck.cards().size() > players.size() + 1) {
+            rounds++;
+            Outcome outcome = playRound(deck, currentDealer);
+            List<ShoveItPlayer> playersOut = new ArrayList<>();
+            for (Player player : outcome.getLosers()) {
+                final ShoveItPlayer shoveItPlayer = (ShoveItPlayer) player;
+                shoveItPlayer.pay();
+//                System.out.println("shoveItPlayer.coins() = " + shoveItPlayer.coins());
+                if (shoveItPlayer.coins() < 0) {
+                    playersOut.add(shoveItPlayer);
+                    System.out.println(shoveItPlayer.getName() + " is out");
+                }
             }
-            currentDealer.notDealer();
-            currentDealer = players.get(index);
+            players.removeAll(playersOut);
+
+            trace("deck size = " + deck.cards().size());
+            trace("Number of players still left = " + players.size());
+            System.out.println();
+            if (players.size() > 1)
+            currentDealer = setNextDealer(currentDealer);
         }
+        System.out.println("rounds = " + rounds);
+        stats.setNumberOfPlayersLeft(players.size());
+        if (players.size() == 1)
+            stats.setOverallWinner(players.get(0));
+        return stats;
+    }
+
+    private Player setNextDealer(Player currentDealer) {
+        int index = players.indexOf(currentDealer) + 1;
+        if (index == players.size()) {
+            index = 0;
+        }
+        currentDealer.notDealer();
+        currentDealer = players.get(index);
+        return currentDealer;
     }
 
     private void trace(String msg) {
@@ -46,7 +73,7 @@ public class ShoveIt implements Game {
         }
     }
 
-    private void playRound(Deck deck, Player randomPlayer) {
+    private Outcome playRound(Deck deck, Player randomPlayer) {
         Dealer dealer = randomPlayer.setAsDealer(deck);
         dealer.dealTo(players, 1);
 
@@ -54,8 +81,8 @@ public class ShoveIt implements Game {
             trace("start: player = " + player);
         }
 
-        Queue<Player> playersInTurn = determineOrderOfPlayers(players, dealer);
-        Player player;
+        Queue<ShoveItPlayer> playersInTurn = determineOrderOfPlayers(players, dealer);
+        ShoveItPlayer player;
         int numberOfStays = 0;
         while ((player = playersInTurn.poll()) != null) {
             final Decision decision = stayOrSwitch(player, numberOfStays);
@@ -68,7 +95,7 @@ public class ShoveIt implements Game {
                 }
                 else {
                     Card player1Card = player.getCard();
-                    final Player player2 = playersInTurn.peek();
+                    final ShoveItPlayer player2 = playersInTurn.peek();
                     Card player2Card = player2.getCard();
                     if (player2Card.getRank() == 13) {
                         System.out.println(
@@ -77,8 +104,8 @@ public class ShoveIt implements Game {
                     else {
                         System.out.println(player.getName() + " decides to switch " + decision.getReasonOrDefault(
                                 player1Card.toString()) + " and gets " + player2Card + " from " + player2.getName());
-                        player.setCard(player2Card);
-                        player2.setCard(player1Card);
+                        player.swapCard(player2Card);
+                        player2.swapCard(player1Card);
                     }
                 }
             }
@@ -99,20 +126,27 @@ public class ShoveIt implements Game {
 
         Outcome losingOutcome = determineLoser(players);
         if (losingOutcome == Outcome.TIE) {
-            System.out.println("Tie between " + losingOutcome.getLosers());
+            System.out.println("Tie between " + losingOutcome.getLosers().stream()
+                                                             .map(_player -> "Player " + _player.getName() + " with "
+                                                                     + _player.getCard())
+                                                             .collect(Collectors.joining(" and ")));
         }
         else {
             System.out.println(
-                    "Loser is " + losingOutcome.getLoser().getName() + " with " + losingOutcome.getLoser().getCard());
+                    "Loser is " + losingOutcome.getLosers().get(0).getName() + " with " + losingOutcome.getLosers()
+                                                                                                       .get(0)
+                                                                                                       .getCard
+                            ());
         }
 
         for (Player player2 : players) {
             trace("end: player = " + player2);
             player2.clearHand();
         }
+        return losingOutcome;
     }
 
-    private Outcome determineLoser(List<Player> players) {
+    private Outcome determineLoser(List<? extends Player> players) {
         Player lowestPlayer = null;
         Set<Player> lowestPlayers = new HashSet<>();
 
@@ -163,42 +197,32 @@ public class ShoveIt implements Game {
         }
     }
 
-    private Queue<Player> determineOrderOfPlayers(List<Player> players, Dealer dealer) {
+    private Queue<ShoveItPlayer> determineOrderOfPlayers(List<? extends Player> players, Dealer dealer) {
         int index = dealer.getIndexOfPlayerToLeftOfDealer(players);
 
-        final ArrayBlockingQueue<Player> ordered = new ArrayBlockingQueue<>(players.size());
+        final ArrayBlockingQueue<ShoveItPlayer> ordered = new ArrayBlockingQueue<>(players.size());
         for (int i = index; i < players.size(); i++) {
-            ordered.add(players.get(i));
+            final ShoveItPlayer player = (ShoveItPlayer) players.get(i);
+            ordered.add(player);
         }
         for (int i = 0; i < index; i++) {
-            ordered.add(players.get(i));
+            final ShoveItPlayer player = (ShoveItPlayer) players.get(i);
+            ordered.add(player);
         }
 
         return ordered;
     }
 
 
-    private Decision stayOrSwitch(Player player, int numberOfPreviousStays) {
-        final Card card = player.getCard();
-        if (player.wasSwapped() && player.previousCard().getRank() < card.getRank()) {
-            return Decision.STAY.withReason(" because swapped card was lower");
-        }
-        else if (card.getRank() == 13) {
-            return Decision.STAY.withReason(" because they have a king!");
-        }
-        else if (card.getRank() > (9 - numberOfPreviousStays)) {
-            return Decision.STAY.withReason(null);
-        }
-        else {
-            return Decision.SWITCH;
-        }
+    private Decision stayOrSwitch(ShoveItPlayer player, int numberOfPreviousStays) {
+        return player.stayOrSwitch(numberOfPreviousStays);
     }
 
     private Player randomPlayer() {
         return players.get((new Random()).nextInt(players.size()));
     }
 
-    private enum Decision {
+    public enum Decision {
         STAY, SWITCH;
 
         private String reason;

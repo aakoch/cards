@@ -9,5 +9,5 @@ package com.adamkoch.cards;
  * @since 1.0.0
  */
 public interface Game {
-    void play(Deck deck);
+    Stats play(Deck deck);
 }

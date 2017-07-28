@@ -27,6 +27,8 @@ public class Outcome {
     public Outcome(Player highestPlayer) {
         this.card = null;
         this.winner = highestPlayer;
+        losers = new ArrayList<>();
+        losers.add(highestPlayer);
     }
 
     public Card getCard() {
@@ -42,21 +44,18 @@ public class Outcome {
         return winner;
     }
 
-    public String getLosers() {
-
-        return losers.stream()
-                .map(player -> "Player " + player.getName() + " with " + player.getCard())
-                .collect(Collectors.joining(" and "));
-
+    public List<Player> getLosers() {
+        return losers;
     }
 
-    public Player getLoser() {
-        return winner;
-    }
-
-    public void setLoser(Player loser) {
-        this.winner = loser;
-    }
+//    public Player getLoser() {
+//        return losers.get(0);
+//    }
+//
+//    public void setLoser(Player loser) {
+//        losers.clear();
+//        losers.add(loser);
+//    }
 
     public void setLosers(Set<Player> lowestPlayers) {
         this.losers = new ArrayList<>(lowestPlayers);

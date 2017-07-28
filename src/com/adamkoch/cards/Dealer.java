@@ -20,7 +20,7 @@ public class Dealer {
         this(deck.cards());
     }
 
-    public void dealTo(List<Player> players, int numberOfCards) {
+    public void dealTo(List<? extends Player> players, int numberOfCards) {
         if (players.size() * numberOfCards > cards.size()) {
             throw new IllegalArgumentException("Not enough cards to deal " + numberOfCards + " cards to each of the "
                     + players.size() + " players");
@@ -33,7 +33,7 @@ public class Dealer {
         }
     }
 
-    public int getIndexOfPlayerToLeftOfDealer(List<Player> players) {
+    public int getIndexOfPlayerToLeftOfDealer(List<? extends Player> players) {
         int startIndex = players.indexOf(player) + 1;
         if (startIndex == players.size()) {
             startIndex = 0;
