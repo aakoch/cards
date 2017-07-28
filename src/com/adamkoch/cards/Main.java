@@ -14,11 +14,14 @@ public class Main {
 //            e.printStackTrace();
 //        }
 
+        for (int i = 0; i < 100; i++) {
 
         shoveIt();
+        }
     }
 
     private static void shoveIt() {
+        System.out.println("-----+++++====== Start ======+++++-----");
         int numberOfPlayers = 6;
         Stats stats = null;
         int numberOfGames = 0;
@@ -29,7 +32,12 @@ public class Main {
             numberOfGames++;
             numberOfPlayers = stats.getNumberOfPlayersLeft();
         }
-        System.out.println("overall winner is " + stats.getOverallWinner().getName());
+        final ShoveItPlayer overallWinner = stats.getOverallWinner();
+        if (overallWinner == null) {
+            System.out.println("It's a tie");
+        }
+        else
+        System.out.println("overall winner is " + overallWinner.getName());
         System.out.println(numberOfGames + " games were played");
     }
 

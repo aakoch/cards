@@ -42,7 +42,7 @@ public class ShoveItPlayer extends Player {
             return ShoveIt.Decision.STAY.withReason(" because swapped card was lower");
         }
         else if (card.getRank() == 13) {
-            return ShoveIt.Decision.STAY.withReason(" because they have a king!");
+            return ShoveIt.Decision.STAY.withReason("");
         }
         else {
             final int betterThanScore = betterThanRank + numberOfPreviousStays - numberOfTimesGotWorseCard;

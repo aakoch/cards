@@ -5,7 +5,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.stream.Collectors;
 
 /**
- * <a href=""></a>
+ * Shove It game. A game is once through a deck of cards or until there is a winner.
  *
  * <p>Created by aakoch on 2017-07-26.</p>
  *
@@ -47,8 +47,13 @@ public class ShoveIt implements Game {
             trace("deck size = " + deck.cards().size());
             trace("Number of players still left = " + players.size());
             System.out.println();
-            if (players.size() > 1)
-            currentDealer = setNextDealer(currentDealer);
+            if (players.size() > 1) {
+                currentDealer = setNextDealer(currentDealer);
+
+                if (playersOut.contains(currentDealer)) {
+                    System.out.println("stop the bus!");
+                }
+            }
         }
         System.out.println("rounds = " + rounds);
         stats.setNumberOfPlayersLeft(players.size());
@@ -59,7 +64,11 @@ public class ShoveIt implements Game {
 
     private Player setNextDealer(Player currentDealer) {
         int index = players.indexOf(currentDealer) + 1;
-        if (index == players.size()) {
+        if (index == -1) {
+            // dealer is out -- who should deal next??
+            index = 0;
+        }
+        else if (index == players.size()) {
             index = 0;
         }
         currentDealer.notDealer();
@@ -75,6 +84,7 @@ public class ShoveIt implements Game {
 
     private Outcome playRound(Deck deck, Player randomPlayer) {
         Dealer dealer = randomPlayer.setAsDealer(deck);
+        System.out.println(randomPlayer.getName() + " deals");
         dealer.dealTo(players, 1);
 
         for (Player player : players) {
@@ -85,12 +95,13 @@ public class ShoveIt implements Game {
         ShoveItPlayer player;
         int numberOfStays = 0;
         while ((player = playersInTurn.poll()) != null) {
+
             final Decision decision = stayOrSwitch(player, numberOfStays);
             if (decision == Decision.SWITCH) {
                 if (player.isDealer()) {
                     final Card card = deck.next();
                     System.out.println(
-                            player.getName() + ", the dealer, discards " + player.getCard() + " and draws a " + card + " from the deck");
+                            player.getName() + " draws " + card + " from the deck");
                     player.setCard(card);
                 }
                 else {
@@ -99,11 +110,12 @@ public class ShoveIt implements Game {
                     Card player2Card = player2.getCard();
                     if (player2Card.getRank() == 13) {
                         System.out.println(
-                                player.getName() + " wants to switch their " + player1Card + " with " + player2.getName() + " but they have a king!");
+                                player.getName() + " can't switch because " + player2.getName
+                                        () + " has a king!");
                     }
                     else {
-                        System.out.println(player.getName() + " decides to switch " + decision.getReasonOrDefault(
-                                player1Card.toString()) + " and gets " + player2Card + " from " + player2.getName());
+                        System.out.println(player.getName() + " trades " + decision.getReasonOrDefault(
+                                player1Card.toString()) + " and gets " + player2Card);
                         player.swapCard(player2Card);
                         player2.swapCard(player1Card);
                     }
@@ -112,7 +124,7 @@ public class ShoveIt implements Game {
             else {
                 numberOfStays++;
                 System.out.println(
-                        player.getName() + " decides to keep their " + player.getCard() + decision.getReasonOrDefault(
+                        player.getName() + " keeps " + player.getCard() + decision.getReasonOrDefault(
                                 ""));
             }
         }
@@ -129,14 +141,15 @@ public class ShoveIt implements Game {
             System.out.println("Tie between " + losingOutcome.getLosers().stream()
                                                              .map(_player -> "Player " + _player.getName() + " with "
                                                                      + _player.getCard())
-                                                             .collect(Collectors.joining(" and ")));
+                                                             .collect(Collectors.joining(" and ")) + " and " +
+                    "both/all? pay");
         }
         else {
             System.out.println(
-                    "Loser is " + losingOutcome.getLosers().get(0).getName() + " with " + losingOutcome.getLosers()
+                    losingOutcome.getLosers().get(0).getName() + " is low with " + losingOutcome.getLosers()
                                                                                                        .get(0)
                                                                                                        .getCard
-                            ());
+                            () + " and pays and has " + ((ShoveItPlayer) losingOutcome.getLosers().get(0)).coins());
         }
 
         for (Player player2 : players) {
