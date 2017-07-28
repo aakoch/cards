@@ -8,8 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * <a href=""></a>
- *
  * <p>Created by aakoch on 2017-07-13.</p>
  *
  * @author aakoch
@@ -22,8 +20,6 @@ public class Player {
     private Iterator<Card> handIterator;
     private String name;
     private boolean theDealer;
-    protected boolean swapped;
-    protected Card previousCard;
 
     public Player(String name) {
         this.name = name;
@@ -31,8 +27,8 @@ public class Player {
         discardPile = new ArrayList<>();
     }
 
-    public Iterator<Card> getHand() {
-        return hand.iterator();
+    public Hand getHand() {
+        return new Hand(hand);
     }
 
     public void addCardToHand(Card card) {
@@ -98,13 +94,7 @@ public class Player {
 
     @Override
     public String toString() {
-        return "Player{" +
-                "hand=" + hand +
-                ", name='" + name + '\'' +
-                ", dealer='" + theDealer + '\'' +
-                ", swapped='" + swapped + '\'' +
-                ", previousCard='" + previousCard + '\'' +
-                '}';
+        return name + ": " + hand;
     }
 
     public Card getCard() {
@@ -112,31 +102,25 @@ public class Player {
     }
 
     public void setCard(Card card) {
-        previousCard = getCard();
         hand.clear();
         hand.add(card);
-        swapped = true;
-    }
-
-    public boolean wasSwapped() {
-        return swapped;
-    }
-
-    public Card previousCard() {
-        return previousCard;
     }
 
     public void clearHand() {
         hand.clear();
-        reset();
     }
 
     public void notDealer() {
         theDealer = false;
     }
 
-    public void reset() {
-        previousCard = null;
-        swapped = false;
+    public Card play7OfHearts() {
+        final Card card = new Card(Suit.HEARTS, 7);
+        hand.remove(card);
+        return card;
+    }
+
+    public void removeFromHand(Card card) {
+        hand.remove(card);
     }
 }

@@ -10,7 +10,7 @@ package com.adamkoch.cards;
  */
 public class Stats {
     private int numberOfPlayersLeft;
-    private ShoveItPlayer overallWinner;
+    private Player overallWinner;
 
     public int getNumberOfPlayersLeft() {
         return numberOfPlayersLeft;
@@ -20,11 +20,11 @@ public class Stats {
         this.numberOfPlayersLeft = numberOfPlayersLeft;
     }
 
-    public void setOverallWinner(ShoveItPlayer overallWinner) {
+    public void setOverallWinner(Player overallWinner) {
         this.overallWinner = overallWinner;
     }
 
-    public ShoveItPlayer getOverallWinner() {
+    public Player getOverallWinner() {
         return overallWinner;
     }
 

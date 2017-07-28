@@ -1,5 +1,6 @@
 package com.adamkoch.cards;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -18,6 +19,12 @@ public class Dealer {
 
     public Dealer(Deck deck) {
         this(deck.cards());
+    }
+
+    public Dealer(Player player, Deck deck) {
+        this(deck);
+        this.player = player;
+        player.setAsDealer(deck);
     }
 
     public void dealTo(List<? extends Player> players, int numberOfCards) {
@@ -49,20 +56,21 @@ public class Dealer {
         return players.get(getIndexOfPlayerToLeftOfDealer(players));
     }
 
-    private class Rotation<T> {
-        private final T[] objects;
-        private int counter;
+    public void dealUntilGoneTo(List<Player> players) {
+        int startIndex = getIndexOfPlayerToLeftOfDealer(players);
+        Rotation<Player> r = new Rotation<>(players.toArray(new Player[0]), startIndex);
 
-        Rotation(T[] objects, int startIndex) {
-            this.objects = objects;
-            counter = startIndex;
+        Iterator<Card> cardIterator = cards.iterator();
+        while (cardIterator.hasNext()) {
+            Card card = cardIterator.next();
+            cardIterator.remove();
+            Player player = r.next();
+            player.addCardToHand(card);
         }
+    }
 
-        T next() {
-            if (counter == objects.length) {
-                counter = 0;
-            }
-            return objects[counter++];
-        }
+    @Override
+    public String toString() {
+        return player.toString();
     }
 }

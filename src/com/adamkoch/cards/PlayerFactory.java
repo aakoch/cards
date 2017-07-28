@@ -24,16 +24,4 @@ public class PlayerFactory {
         }
         return players;
     }
-
-    public static List<ShoveItPlayer> initializeShoveItPlayers(int numberOfInstances) {
-        List<String> names2 = new ArrayList<>(names);
-        Collections.shuffle(names2);
-        List<ShoveItPlayer> players = new ArrayList<>(numberOfInstances);
-        for (int i = 0; i < numberOfInstances; i++) {
-            final int index = (new Random()).nextInt(names2.size());
-            final String name = names2.remove(index);
-            players.add(new ShoveItPlayer(name));
-        }
-        return players;
-    }
 }
