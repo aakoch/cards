@@ -1,0 +1,48 @@
+Configuration:
+  status: warn
+  name: YAMLConfigTest
+  properties:
+    property:
+      name: filename
+      value: target/test-yaml.log
+  thresholdFilter:
+    level: debug
+  appenders:
+    Console:
+      name: STDOUT
+      PatternLayout:
+        Pattern: "%d %p %C [%t] %m%n"
+#    File:
+#      name: File
+#      fileName: ${filename}
+#      bufferedIO: false
+#      PatternLayout:
+#        Pattern: "%d %p %C{1.} [%t] %m%n"
+#    List:
+#      name: List
+#      Filters:
+#        ThresholdFilter:
+#          level: error
+
+  Loggers:
+    logger:
+      -
+        name: com.adamkoch.cards.SevenGame
+        level: debug
+        additivity: false
+#        ThreadContextMapFilter:
+#          KeyValuePair:
+#            key: test
+#            value: 123
+        AppenderRef:
+          ref: STDOUT
+      -
+        name: com.adamkoch.cards
+        level: info
+        additivity: false
+        AppenderRef:
+          ref: STDOUT
+    Root:
+      level: warn
+      AppenderRef:
+        ref: STDOUT

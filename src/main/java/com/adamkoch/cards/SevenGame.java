@@ -1,5 +1,9 @@
 package com.adamkoch.cards;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -10,6 +14,8 @@ import java.util.concurrent.ArrayBlockingQueue;
  * @since 1.0.0
  */
 public class SevenGame implements Game {
+
+    private static final Logger LOGGER = LogManager.getLogger(SevenBoard.class);
 
     private Players players;
 
@@ -33,14 +39,14 @@ public class SevenGame implements Game {
         final Queue<Player> playerQueue = determineOrderOfPlayers(this.players);
 
         for (Player player : playerQueue) {
-            System.out.println("player = " + player);
+            LOGGER.debug("player = " + player);
         }
 
         SevenBoard sevenBoard = new SevenBoard();
         Rotation<Player> r = new Rotation<>(playerQueue.toArray(new Player[0]), 0);
         while (everyoneHasCards(playerQueue)) {
             Player player = r.next();
-            sevenBoard.play(player);
+            playTurn(player, sevenBoard);
             //System.out.println("player = " + player);
 
         }
@@ -59,6 +65,27 @@ public class SevenGame implements Game {
 
         return winner;
 
+    }
+
+    public void playTurn(Player player, SevenBoard board) {
+
+        if (board.isEmpty()) {
+            Card card = player.play7OfHearts();
+            LOGGER.info(player.getName() + " playing " + card);
+            board.startStack(card.getSuit());
+        }
+        else {
+            List<Card> possiblePlays = board.getPossiblePlays();
+            Card cardToPlay = player.determineCardToPlay(possiblePlays);
+            if (cardToPlay == null) {
+                LOGGER.warn(player.getName() + " can't play");
+            }
+            else {
+                LOGGER.info(player.getName() + " playing " + cardToPlay);
+                player.removeFromHand(cardToPlay);
+                board.playCard(cardToPlay);
+            }
+        }
     }
 
     private boolean everyoneHasCards(Queue<Player> playerQueue) {

@@ -15,7 +15,7 @@ public class Main {
         Map<Player, Integer> map = new ConcurrentHashMap<>();
         Players players = new Players(PlayerFactory.initializePlayers(4));
 
-        final int totalNumberOfGames = 100000;
+        final int totalNumberOfGames = 1;
         for (int i = 0; i < totalNumberOfGames; i++) {
 
             SevenGame game = new SevenGame(players);
