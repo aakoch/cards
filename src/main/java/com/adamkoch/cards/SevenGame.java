@@ -52,7 +52,7 @@ public class SevenGame implements Game {
         }
 
         listHands();
-        System.out.println(sevenBoard);
+        LOGGER.info(sevenBoard);
 
         Player winner = null;
         for (Player player : players.list()) {
@@ -121,7 +121,7 @@ public class SevenGame implements Game {
 
     private void listHands() {
         for (Player player : players.list()) {
-            System.out.println(player);
+            LOGGER.debug(player);
         }
     }
 

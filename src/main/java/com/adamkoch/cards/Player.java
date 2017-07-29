@@ -1,6 +1,8 @@
 package com.adamkoch.cards;
 
 import com.sun.tools.javac.code.Types;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
@@ -11,6 +13,7 @@ import java.util.*;
  * @since 1.0.0
  */
 public abstract class Player {
+    private static final Logger LOGGER = LogManager.getLogger(Player.class);
     protected List<Card> hand;
     private int index = 0;
     private List<Card> discardPile;
@@ -50,10 +53,9 @@ public abstract class Player {
             final int size = getDiscardPile().size();
             if (size == 0) {
                 hand.clear();
-                System.out.println();
                 throw new RuntimeException("player " + name + " lost");
             }
-            System.out.println("player " + name + " ran out but has " + size + " cards in his " +
+            LOGGER.info("player " + name + " ran out but has " + size + " cards in his " +
                     "discard pile");
             shuffleDiscardPileIntoHand();
             handIterator = hand.iterator();
