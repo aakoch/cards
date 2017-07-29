@@ -2,10 +2,7 @@ package com.adamkoch.cards;
 
 import com.sun.tools.javac.code.Types;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * <p>Created by aakoch on 2017-07-13.</p>
@@ -13,7 +10,7 @@ import java.util.List;
  * @author aakoch
  * @since 1.0.0
  */
-public class Player {
+public abstract class Player {
     protected List<Card> hand;
     private int index = 0;
     private List<Card> discardPile;
@@ -123,4 +120,38 @@ public class Player {
     public void removeFromHand(Card card) {
         hand.remove(card);
     }
+
+    public Card determineCardToPlay(List<? extends Card> possiblePlays) {
+
+            List<Card> intersection = intersect(possiblePlays, getHand().cards());
+            return determineCardToPlay(intersection, getHand().cards());
+    }
+
+
+
+    private List<Card> intersect(List<? extends Card> playableCards, List<? extends Card> playerHand) {
+        List<Card> cards = new ArrayList<>();
+
+        for (Card card : playableCards) {
+            if (playerHand.contains(card)) {
+                cards.add(card);
+            }
+        }
+
+        return cards;
+    }
+
+    private Card determineCardToPlay(List<? extends Card> cardsThatCanPlay, List<Card> hand) {
+        if (cardsThatCanPlay.isEmpty()) {
+            return null;
+        }
+        else {
+            final List<Card> rankedCards = rank(cardsThatCanPlay, hand);
+            return rankedCards.get(0);
+        }
+    }
+
+    protected abstract List<Card> rank(List<? extends Card> cardsThatCanPlay, List<Card> hand);
+
+
 }

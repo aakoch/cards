@@ -8,5 +8,5 @@ package com.adamkoch.cards;
  */
 public interface Game {
 
-    void play();
+    Player play();
 }

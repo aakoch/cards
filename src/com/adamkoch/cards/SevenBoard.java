@@ -22,8 +22,7 @@ public class SevenBoard {
         }
         else {
             List<Card> possiblePlays = getPossiblePlays();
-            List<Card> intersection = intersect(possiblePlays, player.getHand().cards());
-            Card cardToPlay = determineCardToPlay(intersection, player.getHand().cards());
+            Card cardToPlay = player.determineCardToPlay(possiblePlays);
             if (cardToPlay == null) {
                 System.out.println(player.getName() + " can't play");
             }
@@ -35,48 +34,13 @@ public class SevenBoard {
         }
     }
 
+
     private void playCard(Card card) {
         SevenStack stack = stacks.parallelStream().filter(_stack -> card.getSuit() == _stack.getSuit
                 ()).findFirst().orElse(new SevenStack(card.getSuit()));
         stack.addCard(card);
     }
 
-    private Card determineCardToPlay(List<Card> cardsThatCanPlay, List<Card> hand) {
-        return cardsThatCanPlay.isEmpty() ? null : rank(cardsThatCanPlay, hand).get(0);
-    }
-
-    private List<Card> rank(List<Card> cards, List<Card> hand) {
-        if (cards.size() > 1) {
-            System.out.println("before: cards = " + cards);
-            cards.sort(new Comparator<Card>() {
-                @Override
-                public int compare(Card card1, Card card2) {
-                    int numberOfCardsAfter1 = Math.abs(7 - card1.getRank());
-                    int numberOfCardsAfter2 = Math.abs(7 - card2.getRank());
-                    return numberOfCardsAfter2 - numberOfCardsAfter1;
-                }
-
-                @Override
-                public boolean equals(Object obj) {
-                    return this.equals(obj);
-                }
-            });
-            System.out.println("after: cards = " + cards);
-        }
-        return cards;
-    }
-
-    private List<Card> intersect(List<Card> playableCards, List<Card> playerHand) {
-        List<Card> cards = new ArrayList<>();
-
-        for (Card card : playableCards) {
-            if (playerHand.contains(card)) {
-                cards.add(card);
-            }
-        }
-
-        return cards;
-    }
 
     private List<Card> getPossiblePlays() {
         List<Card> cards = new ArrayList<>();
@@ -84,8 +48,12 @@ public class SevenBoard {
             if (stack.isStarted()) {
                 Card topCard = stack.getTopCard();
                 Card bottomCard = stack.getBottomCard();
-                cards.add(new Card(stack.getSuit(), topCard.getRank() + 1));
-                cards.add(new Card(stack.getSuit(), bottomCard.getRank() - 1));
+                if (topCard.getRank() < 13) {
+                    cards.add(new Card(stack.getSuit(), topCard.getRank() + 1));
+                }
+                if (bottomCard.getRank() > 1) {
+                    cards.add(new Card(stack.getSuit(), bottomCard.getRank() - 1));
+                }
             }
             else {
                 cards.add(new Card(stack.getSuit(), 7));
@@ -100,9 +68,10 @@ public class SevenBoard {
         StringBuilder sb = new StringBuilder();
         for (SevenStack stack : stacks) {
             sb.append(stack.getSuit());
-            sb.append(stack.getBottomCard().getRank());
+            sb.append(":");
+            sb.append(stack.getBottomCard().formatRank());
             sb.append("--");
-            sb.append(stack.getTopCard().getRank());
+            sb.append(stack.getTopCard().formatRank());
             sb.append("\n");
         }
 

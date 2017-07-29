@@ -9,6 +9,7 @@ package com.adamkoch.cards;
  * @since 1.0.0
  */
 public class Card {
+    private static final boolean ACE_IS_HIGH = false;
     private final Suit suit;
     private final int rank;
 
@@ -18,7 +19,7 @@ public class Card {
     }
 
     public int getRank() {
-        if (rank == 1) {
+        if (ACE_IS_HIGH && rank == 1) {
             return 14;
         }
         return rank;
@@ -26,27 +27,32 @@ public class Card {
 
     @Override
     public String toString() {
-        return formatRank() + suit;
+        return formatRank() + suit.toString();
+//        return CharacterConverter.getUnicode(this);
     }
 
-    private String formatRank() {
-        if (rank == 1) {
-            return " A";
+    public String formatRank() {
+        String str;
+        switch (rank) {
+            case 1:
+                str = "A";
+                break;
+            case 10:
+                str = "T";
+                break;
+            case 11:
+                str = "J";
+                break;
+            case 12:
+                str = "Q";
+                break;
+            case 13:
+                str = "K";
+                break;
+            default:
+                str = String.valueOf(rank);
         }
-        else if (rank > 10) {
-            if (rank == 11) {
-                return " J";
-            }
-            else if (rank == 12) {
-                return " Q";
-            }
-            else {
-                return " K";
-            }
-        }
-        else {
-            return String.format("%2d", rank);
-        }
+        return str;
     }
 
     @Override

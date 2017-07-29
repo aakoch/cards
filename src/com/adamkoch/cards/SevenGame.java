@@ -1,9 +1,7 @@
 package com.adamkoch.cards;
 
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.function.Supplier;
 
 /**
  * <p>Created by aakoch on 2017-07-27.</p>
@@ -21,7 +19,7 @@ public class SevenGame implements Game {
     }
 
     @Override
-    public void play() {
+    public Player play() {
 
         Player randomPlayer = players.pickRandomPlayer();
         final Deck deck = getStartDeck();
@@ -35,7 +33,7 @@ public class SevenGame implements Game {
         final Queue<Player> playerQueue = determineOrderOfPlayers(this.players);
 
         for (Player player : playerQueue) {
-        //    System.out.println("player = " + player);
+            System.out.println("player = " + player);
         }
 
         SevenBoard sevenBoard = new SevenBoard();
@@ -49,6 +47,18 @@ public class SevenGame implements Game {
 
         listHands();
         System.out.println(sevenBoard);
+
+        Player winner = null;
+        for (Player player : players.list()) {
+            if (player.getHandSize() == 0) {
+                winner = player;
+                break;
+            }
+
+        }
+
+        return winner;
+
     }
 
     private boolean everyoneHasCards(Queue<Player> playerQueue) {

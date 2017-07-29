@@ -9,7 +9,7 @@ package com.adamkoch.cards;
  * @since 1.0.0
  */
 public enum Suit {
-    HEARTS("\u2665"), DIAMONDS("\u2666"), SPADES("\u2660"), CLUBS("\u2663");
+    SPADES("\u2660"), HEARTS("\u2665"), DIAMONDS("\u2666"), CLUBS("\u2663");
 
     private final String character;
 
