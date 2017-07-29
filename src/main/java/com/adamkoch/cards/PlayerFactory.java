@@ -3,7 +3,6 @@ package com.adamkoch.cards;
 import java.util.*;
 
 /**
- * <a href=""></a>
  *
  * <p>Created by aakoch on 2017-07-26.</p>
  *
@@ -28,14 +27,16 @@ public class PlayerFactory {
 
     public static List<Player> initializePlayers(int numberOfInstances) {
         List<Player> players = new ArrayList<>(numberOfInstances);
-        players.add(makeHighest());
+        players.add(makeDistanceAndCount());
 
         // First: 17.26%, Random: 16.75%, Random: 16.67%, Random: 16.61%, Random: 16.36%, Random: 16.35%
         // Random: 17.57%, Reverse: 16.75%, Random: 16.59%, Random: 16.55%, Random: 16.34%, Random: 16.20%
         // Farthest from 7: 18.37%, Random: 17.20%, Random: 16.56%, Random: 16.07%, Random: 16.03%, Random: 15.77%
         // Random: 16.81%, Random: 16.80%, Lowest: 16.73%, Random: 16.68%, Random: 16.67%, Random: 16.31%
         // Random: 17.28%, Random: 16.86%, Random: 16.73%, Random: 16.46%, Highest: 16.35%, Random: 16.32%
-
+        // Count: 21.23%, Random: 16.61%, Random: 16.00%, Random: 15.49%, Random: 15.37%, Random: 15.30%
+        // Count and Distance: 25.33%, Random: 15.26%, Random: 15.02%, Random: 14.94%, Random: 14.76%, Random: 14.69%
+        // Distance and Count: 21.15%, Random: 15.98%, Random: 15.86%, Random: 15.77%, Random: 15.69%, Random: 15.55%
 
         for (int i = 0; i < 5; i++) {
             players.add(makeRandom());
@@ -48,22 +49,22 @@ public class PlayerFactory {
     }
 
     private static Player makeLowest() {
-        Player dad = new ComparatorPlayer("Lowest", new LowestRankComparator());
-        return dad;
+        Player player = new ComparatorPlayer("Lowest", new LowestRankComparator());
+        return player;
     }
 
     private static Player makeHighest() {
-        Player dad = new ComparatorPlayer("Highest", new HighestRankComparator());
-        return dad;
+        Player player = new ComparatorPlayer("Highest", new HighestRankComparator());
+        return player;
     }
 
     private static Player makeDistance() {
-        Player mom = new ComparatorPlayer("Farthest from 7", new DistanceFrom7Comparator());
-        return mom;
+        Player player = new ComparatorPlayer("Farthest from 7", new DistanceFrom7Comparator());
+        return player;
     }
 
     private static Player makeReverse() {
-        Player alyssa = new Player("Reverse") {
+        Player player = new Player("Reverse") {
             @Override
             protected List<Card> rank(List<? extends Card> cardsThatCanPlay, List<Card> hand) {
                 // random
@@ -72,29 +73,151 @@ public class PlayerFactory {
                 return (List<Card>) cardsThatCanPlay;
             }
         };
-        return alyssa;
+        return player;
     }
 
     private static Player makeFirst() {
-        Player joel = new Player("First") {
+        Player player = new Player("First") {
             @Override
             protected List<Card> rank(List<? extends Card> cardsThatCanPlay, List<Card> hand) {
                 // first card
                 return (List<Card>) cardsThatCanPlay;
             }
         };
-        return joel;
+        return player;
     }
 
     private static Player makeRandom() {
-        Player joel = new Player("Random") {
+        Player player = new Player("Random") {
             @Override
             protected List<Card> rank(List<? extends Card> cardsThatCanPlay, List<Card> hand) {
                 Collections.shuffle(cardsThatCanPlay);
                 return (List<Card>) cardsThatCanPlay;
             }
         };
-        return joel;
+        return player;
+    }
+
+    private static Player makeCount() {
+        Player player = new Player("Count") {
+            @Override
+            protected List<Card> rank(List<? extends Card> cardsThatCanPlay, List<Card> hand) {
+                Map<Card, Integer> map = new HashMap<>();
+                for (Card card : cardsThatCanPlay) {
+                    int numberOfCardsBehind = findNumberOfCardsBehind(card, hand);
+                    map.put(card, numberOfCardsBehind);
+                }
+
+                Collections.sort(cardsThatCanPlay, new Comparator<Card>() {
+                    @Override
+                    public int compare(Card o1, Card o2) {
+                        int card1Count = map.get(o1);
+                        int card2Count = map.get(o2);
+                        return card2Count - card1Count;
+                    }
+                });
+
+                return (List<Card>) cardsThatCanPlay;
+            }
+        };
+        return player;
+    }
+
+
+    private static int findNumberOfCardsBehind(Card card, List<Card> cards) {
+        int count = 0;
+
+        for (Card cardFromHand : cards) {
+            if (after(card, cardFromHand)) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private static Player makeCountAndDistance() {
+        Player player = new Player("Count and Distance") {
+            @Override
+            protected List<Card> rank(List<? extends Card> cardsThatCanPlay, List<Card> hand) {
+                Map<Card, Integer> map = new HashMap<>();
+                for (Card card : cardsThatCanPlay) {
+                    int numberOfCardsBehind = findNumberOfCardsBehind(card, hand);
+                    map.put(card, numberOfCardsBehind);
+                }
+
+                Collections.sort(cardsThatCanPlay, new Comparator<Card>() {
+                    @Override
+                    public int compare(Card card1, Card card2) {
+                        int card1Count = map.get(card1);
+                        int card2Count = map.get(card2);
+                        final int count = card2Count - card1Count;
+                        if (count == 0) {
+                            int numberOfCardsAfter1 = Math.abs(7 - card1.getRank());
+                            int numberOfCardsAfter2 = Math.abs(7 - card2.getRank());
+                            return numberOfCardsAfter2 - numberOfCardsAfter1;
+                        }
+                        return count;
+                    }
+                });
+
+                return (List<Card>) cardsThatCanPlay;
+            }
+        };
+        return player;
+    }
+
+
+    private static Player makeDistanceAndCount() {
+        Player player = new Player("Distance and Count") {
+            @Override
+            protected List<Card> rank(List<? extends Card> cardsThatCanPlay, List<Card> hand) {
+                Map<Card, Integer> map = new HashMap<>();
+                for (Card card : cardsThatCanPlay) {
+                    int numberOfCardsBehind = findNumberOfCardsBehind(card, hand);
+                    map.put(card, numberOfCardsBehind);
+                }
+
+                Collections.sort(cardsThatCanPlay, new Comparator<Card>() {
+                    @Override
+                    public int compare(Card card1, Card card2) {
+                        int numberOfCardsAfter1 = Math.abs(7 - card1.getRank());
+                        int numberOfCardsAfter2 = Math.abs(7 - card2.getRank());
+                        final int numberOfCards = numberOfCardsAfter2 - numberOfCardsAfter1;
+                        if (numberOfCards == 0) {
+
+                            int card1Count = map.get(card1);
+                            int card2Count = map.get(card2);
+                            return card2Count - card1Count;
+                        }
+                        return numberOfCards;
+                    }
+                });
+
+                return (List<Card>) cardsThatCanPlay;
+            }
+        };
+        return player;
+    }
+
+    public static boolean after(Card card, Card cardFromHand) {
+        boolean after = false;
+        if (card.getSuit() == cardFromHand.getSuit()) {
+            final int cardRank = card.getRank();
+            if (cardRank == 7) {
+                after = true;
+            }
+            else {
+                final int cardFromHandRank = cardFromHand.getRank();
+                if (cardRank > 7 && cardFromHandRank - cardRank > 0) {
+                    after = true;
+                }
+                else if (cardRank < 7 && cardRank - cardFromHandRank > 0) {
+                    after = true;
+                }
+            }
+        }
+        return after;
     }
 
 }
