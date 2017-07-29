@@ -63,11 +63,7 @@ public class Card {
         }
 
         Card card = (Card) o;
-
-        if (suit != card.suit) {
-            return false;
-        }
-        return rank == card.rank;
+        return suit == card.suit && rank == card.rank;
     }
 
     @Override

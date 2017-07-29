@@ -2,6 +2,7 @@ package com.adamkoch.cards;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -12,6 +13,8 @@ import java.util.List;
  */
 public class ComparatorPlayer extends Player {
     private final Comparator<Card> comparator;
+    private List<Card> discardPile;
+    private Iterator<Card> handIterator;
 
     public ComparatorPlayer(String name, Comparator<Card> comparator) {
         super(name);

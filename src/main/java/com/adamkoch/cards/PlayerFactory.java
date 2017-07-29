@@ -66,6 +66,9 @@ public class PlayerFactory {
 
     private static Player makeReverse() {
         Player player = new Player("Reverse") {
+            private Iterator<Card> handIterator;
+            private List<Card> discardPile;
+
             @Override
             protected List<Card> rank(List<? extends Card> cardsThatCanPlay, List<Card> hand) {
                 Collections.reverse(cardsThatCanPlay);
@@ -77,6 +80,9 @@ public class PlayerFactory {
 
     private static Player makeFirst() {
         Player player = new Player("First") {
+            private Iterator<Card> handIterator;
+            private List<Card> discardPile;
+
             @Override
             protected List<Card> rank(List<? extends Card> cardsThatCanPlay, List<Card> hand) {
                 // first card
@@ -88,6 +94,9 @@ public class PlayerFactory {
 
     private static Player makeRandom() {
         Player player = new Player("Random") {
+            private Iterator<Card> handIterator;
+            private List<Card> discardPile;
+
             @Override
             protected List<Card> rank(List<? extends Card> cardsThatCanPlay, List<Card> hand) {
                 Collections.shuffle(cardsThatCanPlay);
@@ -99,6 +108,9 @@ public class PlayerFactory {
 
     private static Player makeCount() {
         Player player = new Player("Count") {
+            private Iterator<Card> handIterator;
+            private List<Card> discardPile;
+
             @Override
             protected List<Card> rank(List<? extends Card> cardsThatCanPlay, List<Card> hand) {
                 Map<Card, Integer> map = cardsThatCanPlay.parallelStream().collect(
@@ -126,6 +138,9 @@ public class PlayerFactory {
 
     private static Player makeCountAndDistance() {
         Player player = new Player("Count and Distance") {
+            private Iterator<Card> handIterator;
+            private List<Card> discardPile;
+
             @Override
             protected List<Card> rank(List<? extends Card> cardsThatCanPlay, List<Card> hand) {
                 Map<Card, Integer> map = cardsThatCanPlay.parallelStream().collect(
@@ -138,8 +153,8 @@ public class PlayerFactory {
                         int card2Count = map.get(card2);
                         final int count = card2Count - card1Count;
                         if (count == 0) {
-                            int numberOfCardsAfter1 = Math.abs(7 - card1.getRank().innerRank);
-                            int numberOfCardsAfter2 = Math.abs(7 - card2.getRank().innerRank);
+                            int numberOfCardsAfter1 = Math.abs(7 - card1.getRank().getNumericRank(false));
+                            int numberOfCardsAfter2 = Math.abs(7 - card2.getRank().getNumericRank(false));
                             return numberOfCardsAfter2 - numberOfCardsAfter1;
                         }
                         return count;
@@ -155,6 +170,9 @@ public class PlayerFactory {
 
     private static Player makeDistanceAndCount() {
         Player player = new Player("Distance and Count") {
+            private Iterator<Card> handIterator;
+            private List<Card> discardPile;
+
             @Override
             protected List<Card> rank(List<? extends Card> cardsThatCanPlay, List<Card> hand) {
                 Map<Card, Integer> map = cardsThatCanPlay.parallelStream().collect(
@@ -163,8 +181,8 @@ public class PlayerFactory {
                 Collections.sort(cardsThatCanPlay, new Comparator<Card>() {
                     @Override
                     public int compare(Card card1, Card card2) {
-                        int numberOfCardsAfter1 = Math.abs(7 - card1.getRank().innerRank);
-                        int numberOfCardsAfter2 = Math.abs(7 - card2.getRank().innerRank);
+                        int numberOfCardsAfter1 = Math.abs(7 - card1.getRank().getNumericRank(false));
+                        int numberOfCardsAfter2 = Math.abs(7 - card2.getRank().getNumericRank(false));
                         final int numberOfCards = numberOfCardsAfter2 - numberOfCardsAfter1;
                         if (numberOfCards == 0) {
 
@@ -185,12 +203,12 @@ public class PlayerFactory {
     public static boolean after(Card card, Card cardFromHand) {
         boolean after = false;
         if (card.getSuit() == cardFromHand.getSuit()) {
-            final int cardRank = card.getRank().innerRank;
+            final int cardRank = card.getRank().getNumericRank(false);
             if (cardRank == 7) {
                 after = true;
             }
             else {
-                final int cardFromHandRank = cardFromHand.getRank().innerRank;
+                final int cardFromHandRank = cardFromHand.getRank().getNumericRank(false);
                 if (cardRank > 7 && cardFromHandRank - cardRank > 0) {
                     after = true;
                 }

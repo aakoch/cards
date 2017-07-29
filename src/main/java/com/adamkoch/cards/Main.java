@@ -1,5 +1,7 @@
 package com.adamkoch.cards;
 
+import com.adamkoch.cards.seven.SevenGame;
+import com.adamkoch.cards.utils.CharacterConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

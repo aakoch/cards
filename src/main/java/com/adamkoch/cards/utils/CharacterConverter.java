@@ -1,4 +1,7 @@
-package com.adamkoch.cards;
+package com.adamkoch.cards.utils;
+
+import com.adamkoch.cards.Card;
+import com.adamkoch.cards.Suit;
 
 /**
  * <p>Created by aakoch on 2017-07-28.</p>
