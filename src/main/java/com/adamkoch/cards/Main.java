@@ -2,9 +2,12 @@ package com.adamkoch.cards;
 
 //import static com.adamkoch.cards.SpecialsCards.JOKER;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -14,7 +17,8 @@ public class Main {
         Map<Player, Integer> map = new ConcurrentHashMap<>();
         Players players = new Players(PlayerFactory.initializePlayers(4));
 
-        for (int i = 0; i < 100; i++) {
+        final int totalNumberOfGames = 10000;
+        for (int i = 0; i < totalNumberOfGames; i++) {
 
             SevenGame game = new SevenGame(players);
             final Player winner = game.play();
@@ -27,7 +31,17 @@ public class Main {
 
         }
 
-        System.out.println("map = " + map);
+        String commaSeparatedNumbers = map.entrySet().stream()
+                                          .sorted(Comparator.comparing((Map.Entry<Player, Integer> entry) -> entry.getValue())
+                                                            .reversed())
+                                              .map(entry -> {
+                                                  final double v = 100.0 * (double) entry.getValue() / (double)
+                                                          totalNumberOfGames;
+                                                  return entry.getKey().getName() + ": " + String.format("%.2f%%",
+                                                          v);
+                                              })
+                                          .collect(Collectors.joining(", "));
+        System.out.println("map = " + commaSeparatedNumbers);
     }
 
     private static void resetPlayers(Players players) {

@@ -15,20 +15,20 @@ import static org.junit.Assert.assertEquals;
  * @author aakoch
  * @since 1.0.0
  */
-public class LowestRankComparatorTest {
+public class HighestRankComparatorTest {
 
     @Test
     public void test() {
-        LowestRankComparator lowestRankComparator = new LowestRankComparator();
+        HighestRankComparator highestRankComparator = new HighestRankComparator();
         final Card hearts8 = new Card(Suit.HEARTS, 8);
         final Card hearts6 = new Card(Suit.HEARTS, 6);
         final Card hearts9 = new Card(Suit.HEARTS, 9);
         List<Card> list = Arrays.asList(hearts8, hearts6, hearts9);
-        Collections.sort(list, lowestRankComparator);
+        Collections.sort(list, highestRankComparator);
 //        System.out.println("list = " + list);
-        assertEquals(hearts6, list.get(0));
+        assertEquals(hearts9, list.get(0));
         assertEquals(hearts8, list.get(1));
-        assertEquals(hearts9, list.get(2));
+        assertEquals(hearts6, list.get(2));
     }
 
 }

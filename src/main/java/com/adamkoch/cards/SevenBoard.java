@@ -69,9 +69,14 @@ public class SevenBoard {
         for (SevenStack stack : stacks) {
             sb.append(stack.getSuit());
             sb.append(":");
-            sb.append(stack.getBottomCard().formatRank());
-            sb.append("--");
-            sb.append(stack.getTopCard().formatRank());
+            if (stack.isStarted()) {
+                sb.append(stack.getBottomCard().formatRank());
+                sb.append("--");
+                sb.append(stack.getTopCard().formatRank());
+            }
+            else {
+                sb.append("not started");
+            }
             sb.append("\n");
         }
 

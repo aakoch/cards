@@ -28,56 +28,42 @@ public class PlayerFactory {
 
     public static List<Player> initializePlayers(int numberOfInstances) {
         List<Player> players = new ArrayList<>(numberOfInstances);
-        players.add(makeJoel());
-        players.add(makeAlyssa());
-        players.add(makeMom());
-        players.add(makeDad());
+        players.add(makeHighest());
+
+        // First: 17.26%, Random: 16.75%, Random: 16.67%, Random: 16.61%, Random: 16.36%, Random: 16.35%
+        // Random: 17.57%, Reverse: 16.75%, Random: 16.59%, Random: 16.55%, Random: 16.34%, Random: 16.20%
+        // Farthest from 7: 18.37%, Random: 17.20%, Random: 16.56%, Random: 16.07%, Random: 16.03%, Random: 15.77%
+        // Random: 16.81%, Random: 16.80%, Lowest: 16.73%, Random: 16.68%, Random: 16.67%, Random: 16.31%
+        // Random: 17.28%, Random: 16.86%, Random: 16.73%, Random: 16.46%, Highest: 16.35%, Random: 16.32%
+
+
+        for (int i = 0; i < 5; i++) {
+            players.add(makeRandom());
+        }
+//        players.add(makeReverse());
+//        players.add(makeDistance());
+//        players.add(makeLowest());
+//        players.add(makeHighest());
         return players;
     }
 
-    private static Player makeDad() {
-        Player dad = new Player("Dad") {
-            @Override
-            protected List<Card> rank(List<? extends Card> cards, List<Card> hand) {
-
-                if (cards.size() > 1) {
-                    cards.sort(new LowestRankComparator());
-                }
-                return (List<Card>) cards;
-            }
-        };
+    private static Player makeLowest() {
+        Player dad = new ComparatorPlayer("Lowest", new LowestRankComparator());
         return dad;
     }
 
-    private static Player makeMom() {
-        Player mom = new Player("Mom") {
-            @Override
-            protected List<Card> rank(List<? extends Card> cards, List<Card> hand) {
+    private static Player makeHighest() {
+        Player dad = new ComparatorPlayer("Highest", new HighestRankComparator());
+        return dad;
+    }
 
-                if (cards.size() > 1) {
-                    cards.sort(new Comparator<Card>() {
-                        @Override
-                        public int compare(Card card1, Card card2) {
-                            int numberOfCardsAfter1 = Math.abs(7 - card1.getRank());
-                            int numberOfCardsAfter2 = Math.abs(7 - card2.getRank());
-                            return numberOfCardsAfter2 - numberOfCardsAfter1;
-                        }
-
-                        @Override
-                        public boolean equals(Object obj) {
-                            return this.equals(obj);
-                        }
-                    });
-                }
-                return (List<Card>) cards;
-            }
-
-        };
+    private static Player makeDistance() {
+        Player mom = new ComparatorPlayer("Farthest from 7", new DistanceFrom7Comparator());
         return mom;
     }
 
-    private static Player makeAlyssa() {
-        Player alyssa = new Player("Alyssa") {
+    private static Player makeReverse() {
+        Player alyssa = new Player("Reverse") {
             @Override
             protected List<Card> rank(List<? extends Card> cardsThatCanPlay, List<Card> hand) {
                 // random
@@ -89,11 +75,22 @@ public class PlayerFactory {
         return alyssa;
     }
 
-    private static Player makeJoel() {
-        Player joel = new Player("Joel") {
+    private static Player makeFirst() {
+        Player joel = new Player("First") {
             @Override
             protected List<Card> rank(List<? extends Card> cardsThatCanPlay, List<Card> hand) {
                 // first card
+                return (List<Card>) cardsThatCanPlay;
+            }
+        };
+        return joel;
+    }
+
+    private static Player makeRandom() {
+        Player joel = new Player("Random") {
+            @Override
+            protected List<Card> rank(List<? extends Card> cardsThatCanPlay, List<Card> hand) {
+                Collections.shuffle(cardsThatCanPlay);
                 return (List<Card>) cardsThatCanPlay;
             }
         };
