@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
  */
 public class Outcome {
     public static final Outcome TIE = new Outcome((Card) null);
+
     private final Card card;
     private Player winner;
     private List<Player> losers;

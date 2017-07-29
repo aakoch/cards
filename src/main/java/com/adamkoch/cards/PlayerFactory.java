@@ -1,6 +1,7 @@
 package com.adamkoch.cards;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -67,8 +68,6 @@ public class PlayerFactory {
         Player player = new Player("Reverse") {
             @Override
             protected List<Card> rank(List<? extends Card> cardsThatCanPlay, List<Card> hand) {
-                // random
-                //Collections.shuffle(cardsThatCanPlay);
                 Collections.reverse(cardsThatCanPlay);
                 return (List<Card>) cardsThatCanPlay;
             }
@@ -102,11 +101,8 @@ public class PlayerFactory {
         Player player = new Player("Count") {
             @Override
             protected List<Card> rank(List<? extends Card> cardsThatCanPlay, List<Card> hand) {
-                Map<Card, Integer> map = new HashMap<>();
-                for (Card card : cardsThatCanPlay) {
-                    int numberOfCardsBehind = findNumberOfCardsBehind(card, hand);
-                    map.put(card, numberOfCardsBehind);
-                }
+                Map<Card, Integer> map = cardsThatCanPlay.parallelStream().collect(
+                        Collectors.toMap(card -> card, card -> findNumberOfCardsBehind(card, hand)));
 
                 Collections.sort(cardsThatCanPlay, new Comparator<Card>() {
                     @Override
@@ -125,26 +121,15 @@ public class PlayerFactory {
 
 
     private static int findNumberOfCardsBehind(Card card, List<Card> cards) {
-        int count = 0;
-
-        for (Card cardFromHand : cards) {
-            if (after(card, cardFromHand)) {
-                count++;
-            }
-        }
-
-        return count;
+        return (int) cards.parallelStream().filter(_card -> after(card, _card)).count();
     }
 
     private static Player makeCountAndDistance() {
         Player player = new Player("Count and Distance") {
             @Override
             protected List<Card> rank(List<? extends Card> cardsThatCanPlay, List<Card> hand) {
-                Map<Card, Integer> map = new HashMap<>();
-                for (Card card : cardsThatCanPlay) {
-                    int numberOfCardsBehind = findNumberOfCardsBehind(card, hand);
-                    map.put(card, numberOfCardsBehind);
-                }
+                Map<Card, Integer> map = cardsThatCanPlay.parallelStream().collect(
+                        Collectors.toMap(card -> card, card -> findNumberOfCardsBehind(card, hand)));
 
                 Collections.sort(cardsThatCanPlay, new Comparator<Card>() {
                     @Override
@@ -172,11 +157,8 @@ public class PlayerFactory {
         Player player = new Player("Distance and Count") {
             @Override
             protected List<Card> rank(List<? extends Card> cardsThatCanPlay, List<Card> hand) {
-                Map<Card, Integer> map = new HashMap<>();
-                for (Card card : cardsThatCanPlay) {
-                    int numberOfCardsBehind = findNumberOfCardsBehind(card, hand);
-                    map.put(card, numberOfCardsBehind);
-                }
+                Map<Card, Integer> map = cardsThatCanPlay.parallelStream().collect(
+                        Collectors.toMap(card -> card, card -> findNumberOfCardsBehind(card, hand)));
 
                 Collections.sort(cardsThatCanPlay, new Comparator<Card>() {
                     @Override

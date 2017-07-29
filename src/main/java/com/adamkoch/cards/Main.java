@@ -14,14 +14,15 @@ public class Main {
 private static final Logger LOGGER = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) {
+        if (LOGGER.isDebugEnabled()) {
+            listStandardDeck();
+        }
 
-        listStandardDeck();
         GamesWonCounter gamesWonCounter = new GamesWonCounter();
         Players players = new Players(PlayerFactory.initializePlayers(4));
 
-        final int totalNumberOfGames = 10000;
+        final int totalNumberOfGames = 100;
         for (int i = 0; i < totalNumberOfGames; i++) {
-
             SevenGame game = new SevenGame(players);
             final Player winner = game.play();
             LOGGER.info(winner.getName() + " won");
@@ -40,9 +41,7 @@ private static final Logger LOGGER = LogManager.getLogger(Main.class);
     }
 
     private static void listStandardDeck() {
-        for (Card card : new StandardDeck().cards()) {
-            LOGGER.debug(CharacterConverter.getUnicode(card));
-        }
+        new StandardDeck().cards().stream().forEach(card -> {LOGGER.debug(CharacterConverter.getUnicode(card));});
     }
 
 }
