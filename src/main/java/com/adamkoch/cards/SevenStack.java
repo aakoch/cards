@@ -28,13 +28,13 @@ public class SevenStack {
     }
 
     public void addCard(Card card) {
-        if (card.getRank() == 7) {
+        if (card.getRank().innerRank == 7) {
             topCard = bottomCard = card;
         }
-        else if (card.getRank() == topCard.getRank() + 1) {
+        else if (card.getRank().innerRank == topCard.getRank().innerRank + 1) {
             topCard = card;
         }
-        else if (card.getRank() == bottomCard.getRank() - 1) {
+        else if (card.getRank().innerRank == bottomCard.getRank().innerRank - 1) {
             bottomCard = card;
         }
     }

@@ -12,7 +12,7 @@ import java.util.Comparator;
 public class HighestRankComparator implements Comparator<Card> {
     @Override
     public int compare(Card card1, Card card2) {
-        return card2.getRank() - card1.getRank();
+        return card2.getRank().compareTo(card1.getRank());
     }
 
     @Override

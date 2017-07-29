@@ -9,12 +9,12 @@ package com.adamkoch.cards;
  */
 public enum SpecialsCards {
     //public static final Card JOKER = new Card();
-    JOKER(Rank.JOKER, Suit.NONE);
+    JOKER(Suit.NONE, Rank.JOKER);
 
     private final Card card;
 
-    SpecialsCards(Rank rank, Suit suit) {
-        this.card = new Card(suit, rank.value());
+    SpecialsCards(Suit suit, Rank rank) {
+        this.card = new Card(suit, rank);
     }
 
     public Card getCard() {

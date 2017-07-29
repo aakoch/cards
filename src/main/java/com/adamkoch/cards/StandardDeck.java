@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * <p>Created by aakoch on 2017-07-13.</p>
  *
  * @author aakoch
@@ -19,7 +18,7 @@ public class StandardDeck extends Deck {
     private static List<Card> createCards() {
         List<Card> cards = new ArrayList<>();
         for (Suit suit : Suit.standardSuits()) {
-            for (int rank = 1; rank < 14; rank++) {
+            for (Rank rank : Rank.standardRanks()) {
                 Card card = new Card(suit, rank);
                 cards.add(card);
             }

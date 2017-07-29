@@ -153,8 +153,8 @@ public class PlayerFactory {
                         int card2Count = map.get(card2);
                         final int count = card2Count - card1Count;
                         if (count == 0) {
-                            int numberOfCardsAfter1 = Math.abs(7 - card1.getRank());
-                            int numberOfCardsAfter2 = Math.abs(7 - card2.getRank());
+                            int numberOfCardsAfter1 = Math.abs(7 - card1.getRank().innerRank);
+                            int numberOfCardsAfter2 = Math.abs(7 - card2.getRank().innerRank);
                             return numberOfCardsAfter2 - numberOfCardsAfter1;
                         }
                         return count;
@@ -181,8 +181,8 @@ public class PlayerFactory {
                 Collections.sort(cardsThatCanPlay, new Comparator<Card>() {
                     @Override
                     public int compare(Card card1, Card card2) {
-                        int numberOfCardsAfter1 = Math.abs(7 - card1.getRank());
-                        int numberOfCardsAfter2 = Math.abs(7 - card2.getRank());
+                        int numberOfCardsAfter1 = Math.abs(7 - card1.getRank().innerRank);
+                        int numberOfCardsAfter2 = Math.abs(7 - card2.getRank().innerRank);
                         final int numberOfCards = numberOfCardsAfter2 - numberOfCardsAfter1;
                         if (numberOfCards == 0) {
 
@@ -203,12 +203,12 @@ public class PlayerFactory {
     public static boolean after(Card card, Card cardFromHand) {
         boolean after = false;
         if (card.getSuit() == cardFromHand.getSuit()) {
-            final int cardRank = card.getRank();
+            final int cardRank = card.getRank().innerRank;
             if (cardRank == 7) {
                 after = true;
             }
             else {
-                final int cardFromHandRank = cardFromHand.getRank();
+                final int cardFromHandRank = cardFromHand.getRank().innerRank;
                 if (cardRank > 7 && cardFromHandRank - cardRank > 0) {
                     after = true;
                 }

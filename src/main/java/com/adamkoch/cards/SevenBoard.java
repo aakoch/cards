@@ -25,15 +25,15 @@ public class SevenBoard {
             if (stack.isStarted()) {
                 Card topCard = stack.getTopCard();
                 Card bottomCard = stack.getBottomCard();
-                if (topCard.getRank() < 13) {
-                    cards.add(new Card(stack.getSuit(), topCard.getRank() + 1));
+                if (topCard.getRank().lessThan(Rank.KING)) {
+                    cards.add(new Card(stack.getSuit(), topCard.getRank().offsetRank(1)));
                 }
-                if (bottomCard.getRank() > 1) {
-                    cards.add(new Card(stack.getSuit(), bottomCard.getRank() - 1));
+                if (bottomCard.getRank().greaterThan(Rank.ACE)) {
+                    cards.add(new Card(stack.getSuit(), bottomCard.getRank().offsetRank(-1)));
                 }
             }
             else {
-                cards.add(new Card(stack.getSuit(), 7));
+                cards.add(new Card(stack.getSuit(), Rank.SEVEN));
             }
         }
 
@@ -66,7 +66,7 @@ public class SevenBoard {
 
     public void startStack(Suit suit) {
         SevenStack stack = new SevenStack(suit);
-        Card card = new Card(suit, 7);
+        Card card = new Card(suit, Rank.SEVEN);
         stack.addCard(card);
         stacks.add(stack);
     }

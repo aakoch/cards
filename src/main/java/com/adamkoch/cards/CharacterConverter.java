@@ -9,7 +9,7 @@ package com.adamkoch.cards;
 public class CharacterConverter {
     public static String getUnicode(Card card) {
         Suit suit = card.getSuit();
-        int rankValue = card.getRank();
+        int rankValue = card.getRank().value();
         int suitOffset = suit.ordinal();
         if (rankValue >= 12) {
             rankValue++;

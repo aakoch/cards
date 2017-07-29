@@ -68,7 +68,7 @@ public enum StandardCard {
     private final Card card;
 
     StandardCard(Rank rank, Suit suit) {
-        this.card = new Card(suit, rank.value());
+        this.card = new Card(suit, rank);
     }
 
     public static void main(String[] args) {

@@ -22,12 +22,12 @@ public class PlayerFactoryTest {
 
     @Before
     public void setUp() {
-        hearts1 = new Card(Suit.HEARTS, 1);
-        hearts5 = new Card(Suit.HEARTS, 5);
-        hearts7 = new Card(Suit.HEARTS, 7);
-        hearts8 = new Card(Suit.HEARTS, 8);
-        hearts9 = new Card(Suit.HEARTS, 9);
-        spades1 = new Card(Suit.SPADES, 1);
+        hearts1 = new Card(Suit.HEARTS, Rank.ACE);
+        hearts5 = new Card(Suit.HEARTS, Rank.FIVE);
+        hearts7 = new Card(Suit.HEARTS, Rank.SEVEN);
+        hearts8 = new Card(Suit.HEARTS, Rank.EIGHT);
+        hearts9 = new Card(Suit.HEARTS, Rank.NINE);
+        spades1 = new Card(Suit.SPADES, Rank.ACE);
     }
 
     @Test

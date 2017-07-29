@@ -1,5 +1,7 @@
 package com.adamkoch.cards;
 
+import java.util.Objects;
+
 /**
  * <p>Created by aakoch on 2017-07-13.</p>
  *
@@ -9,17 +11,16 @@ package com.adamkoch.cards;
 public class Card {
     private static final boolean ACE_IS_HIGH = false;
     private final Suit suit;
-    private final int rank;
+    private final Rank rank;
 
-    public Card(Suit suit, int rank) {
+    public Card(Suit suit, Rank rank) {
+        Objects.requireNonNull(suit, "suit");
+        Objects.requireNonNull(rank, "rank");
         this.suit = suit;
         this.rank = rank;
     }
 
-    public int getRank() {
-        if (ACE_IS_HIGH && rank == 1) {
-            return 14;
-        }
+    public Rank getRank() {
         return rank;
     }
 
@@ -31,19 +32,19 @@ public class Card {
     public String formatRank() {
         String str;
         switch (rank) {
-            case 1:
+            case ACE:
                 str = "A";
                 break;
-            case 10:
+            case TEN:
                 str = "T";
                 break;
-            case 11:
+            case JACK:
                 str = "J";
                 break;
-            case 12:
+            case QUEEN:
                 str = "Q";
                 break;
-            case 13:
+            case KING:
                 str = "K";
                 break;
             default:
@@ -63,16 +64,16 @@ public class Card {
 
         Card card = (Card) o;
 
-        if (rank != card.rank) {
+        if (suit != card.suit) {
             return false;
         }
-        return suit == card.suit;
+        return rank == card.rank;
     }
 
     @Override
     public int hashCode() {
         int result = suit != null ? suit.hashCode() : 0;
-        result = 31 * result + rank;
+        result = 31 * result + (rank != null ? rank.hashCode() : 0);
         return result;
     }
 

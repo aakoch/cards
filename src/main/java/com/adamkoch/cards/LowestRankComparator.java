@@ -13,7 +13,7 @@ public class LowestRankComparator implements Comparator<Card> {
     @Override
     public int compare(Card card1, Card card2) {
         // by rank? (lowest? highest?)
-        return card1.getRank() - card2.getRank();
+        return card1.getRank().innerRank - card2.getRank().innerRank;
     }
 
     @Override

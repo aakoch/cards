@@ -97,7 +97,7 @@ public class SevenGame implements Game {
         Player playerWith7OfHearts = players.list().parallelStream()
                                             .filter(player -> player.getHand()
                                                                     .cards()
-                                                                    .contains(new Card(Suit.HEARTS, 7)))
+                                                                    .contains(new Card(Suit.HEARTS, Rank.SEVEN)))
                                             .findFirst()
                                             .orElseThrow(
                                                     () -> new RuntimeException(

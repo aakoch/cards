@@ -16,10 +16,11 @@ private static final Logger LOGGER = LogManager.getLogger(Main.class);
     public static void main(String[] args) {
 
         listStandardDeck();
+//        GamesWonCounter gamesWonCounter = new GamesWonCounter();
         Map<Player, Integer> map = new ConcurrentHashMap<>();
         Players players = new Players(PlayerFactory.initializePlayers(4));
 
-        final int totalNumberOfGames = 100;
+        final int totalNumberOfGames = 10000;
         for (int i = 0; i < totalNumberOfGames; i++) {
 
             SevenGame game = new SevenGame(players);
