@@ -1,5 +1,9 @@
 package com.adamkoch.cards;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.stream.Stream;
+
 /**
  *
  * <p>Created by aakoch on 2017-07-28.</p>
@@ -68,10 +72,19 @@ public enum StandardCard {
     }
 
     public static void main(String[] args) {
-        for (Suit suit : Suit.values()) {
-            for (Rank rank : Rank.values()) {
-                System.out.println(rank + "_OF_" + suit.name() + "(Rank." + rank + ", Suit." + suit.name() + "),");
-            }
-        }
+//        for (Suit suit : Suit.standardSuits()) {
+//            for (Rank rank : Rank.standardRanks()) {
+//                System.out.println(rank + "_OF_" + suit.name() + "(Rank." + rank + ", Suit." + suit.name() + "),");
+//            }
+//        }
+
+        Stream.concat(Arrays.stream(values()), Arrays.stream(SpecialsCards.values()).map(SpecialsCards::getCard))
+              .forEach(card -> {
+                  System.out.println("card = " + card);
+              });
+    }
+
+    public Card getCard() {
+        return card;
     }
 }

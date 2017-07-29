@@ -18,7 +18,7 @@ public class StandardDeck extends Deck {
 
     private static List<Card> createCards() {
         List<Card> cards = new ArrayList<>();
-        for (Suit suit : Suit.values()) {
+        for (Suit suit : Suit.standardSuits()) {
             for (int rank = 1; rank < 14; rank++) {
                 Card card = new Card(suit, rank);
                 cards.add(card);

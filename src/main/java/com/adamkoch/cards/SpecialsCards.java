@@ -7,6 +7,17 @@ package com.adamkoch.cards;
  * @author aakoch
  * @since 1.0.0
  */
-public class SpecialsCards {
+public enum SpecialsCards {
     //public static final Card JOKER = new Card();
+    JOKER(Rank.JOKER, Suit.NONE);
+
+    private final Card card;
+
+    SpecialsCards(Rank rank, Suit suit) {
+        this.card = new Card(suit, rank.value());
+    }
+
+    public Card getCard() {
+        return card;
+    }
 }

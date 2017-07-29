@@ -19,7 +19,7 @@ private static final Logger LOGGER = LogManager.getLogger(Main.class);
         Map<Player, Integer> map = new ConcurrentHashMap<>();
         Players players = new Players(PlayerFactory.initializePlayers(4));
 
-        final int totalNumberOfGames = 10000;
+        final int totalNumberOfGames = 100;
         for (int i = 0; i < totalNumberOfGames; i++) {
 
             SevenGame game = new SevenGame(players);

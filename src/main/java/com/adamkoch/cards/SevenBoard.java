@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
  * @since 1.0.0
  */
 public class SevenBoard {
-    private List<SevenStack> stacks = Arrays.stream(Suit.values()).map(SevenStack::new).collect(Collectors.toList());
+    private List<SevenStack> stacks = Arrays.stream(Suit.standardSuits()).map(SevenStack::new).collect(Collectors.toList());
 
 
     public void playCard(Card card) {
