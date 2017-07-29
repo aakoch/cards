@@ -1,8 +1,6 @@
 package com.adamkoch.cards;
 
 /**
- * <a href=""></a>
- *
  * <p>Created by aakoch on 2017-07-13.</p>
  *
  * @author aakoch
@@ -28,7 +26,6 @@ public class Card {
     @Override
     public String toString() {
         return formatRank() + suit.toString();
-//        return CharacterConverter.getUnicode(this);
     }
 
     public String formatRank() {

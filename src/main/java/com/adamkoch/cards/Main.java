@@ -1,7 +1,5 @@
 package com.adamkoch.cards;
 
-//import static com.adamkoch.cards.SpecialsCards.JOKER;
-
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +15,7 @@ public class Main {
         Map<Player, Integer> map = new ConcurrentHashMap<>();
         Players players = new Players(PlayerFactory.initializePlayers(4));
 
-        final int totalNumberOfGames = 10000;
+        final int totalNumberOfGames = 100000;
         for (int i = 0; i < totalNumberOfGames; i++) {
 
             SevenGame game = new SevenGame(players);
@@ -28,20 +26,16 @@ public class Main {
             map.computeIfPresent(winner, (player, timesWon) -> Integer.valueOf(timesWon + 1));
 
             resetPlayers(players);
-
         }
 
-        String commaSeparatedNumbers = map.entrySet().stream()
-                                          .sorted(Comparator.comparing((Map.Entry<Player, Integer> entry) -> entry.getValue())
-                                                            .reversed())
-                                              .map(entry -> {
-                                                  final double v = 100.0 * (double) entry.getValue() / (double)
-                                                          totalNumberOfGames;
-                                                  return entry.getKey().getName() + ": " + String.format("%.2f%%",
-                                                          v);
-                                              })
-                                          .collect(Collectors.joining(", "));
-        System.out.println("map = " + commaSeparatedNumbers);
+        String stats = map.entrySet().stream()
+              .sorted(Comparator.comparing((Map.Entry<Player, Integer> entry) -> entry.getValue()) .reversed())
+              .map(entry -> {
+                  final double v = 100.0 * (double) entry.getValue() / (double) totalNumberOfGames;
+                  return entry.getKey().getName() + ": " + String.format("%.2f%%", v);
+              })
+              .collect(Collectors.joining(", "));
+        System.out.println(stats);
     }
 
     private static void resetPlayers(Players players) {

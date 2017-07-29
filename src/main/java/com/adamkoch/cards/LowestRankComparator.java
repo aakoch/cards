@@ -3,7 +3,6 @@ package com.adamkoch.cards;
 import java.util.Comparator;
 
 /**
- * <a href=""></a>
  *
  * <p>Created by aakoch on 2017-07-28.</p>
  *

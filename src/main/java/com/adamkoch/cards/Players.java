@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * <a href=""></a>
  *
  * <p>Created by aakoch on 2017-07-27.</p>
  *

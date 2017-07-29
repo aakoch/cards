@@ -1,7 +1,6 @@
 package com.adamkoch.cards;
 
 /**
- * <a href=""></a>
  *
  * <p>Created by aakoch on 2017-07-13.</p>
  *

@@ -67,12 +67,12 @@ public class SevenBoard {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (SevenStack stack : stacks) {
-            sb.append(stack.getSuit());
-            sb.append(":");
+//            sb.append(stack.getSuit());
+//            sb.append(":");
             if (stack.isStarted()) {
-                sb.append(stack.getBottomCard().formatRank());
-                sb.append("--");
-                sb.append(stack.getTopCard().formatRank());
+                sb.append(CharacterConverter.getUnicode(stack.getBottomCard()));
+                sb.append("-");
+                sb.append(CharacterConverter.getUnicode(stack.getTopCard()));
             }
             else {
                 sb.append("not started");

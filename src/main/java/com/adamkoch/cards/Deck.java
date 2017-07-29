@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * <a href=""></a>
  *
  * <p>Created by aakoch on 2017-07-13.</p>
  *
