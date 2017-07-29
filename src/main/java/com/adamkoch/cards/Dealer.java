@@ -3,6 +3,8 @@ package com.adamkoch.cards;
 import java.util.Iterator;
 import java.util.List;
 
+import com.adamkoch.utils.ListUtils;
+
 /**
  * <p>Created by aakoch on 2017-07-13.</p>
  *
@@ -33,8 +35,10 @@ public class Dealer {
                     + players.size() + " players");
         }
         int startIndex = getIndexOfPlayerToLeftOfDealer(players);
-        Rotation<Player> r = new Rotation<>(players.toArray(new Player[0]), startIndex);
-        for (int i = 0; i < numberOfCards * players.size(); i++) {
+
+        Iterator<? extends Player> r = ListUtils.constructRotator(players, startIndex);
+
+        for (int i = 0; i < numberOfCards * players.size() && r.hasNext(); i++) {
             Player player = r.next();
             player.addCardToHand(cards.remove(0));
         }
@@ -58,7 +62,7 @@ public class Dealer {
 
     public void dealUntilGoneTo(List<Player> players) {
         int startIndex = getIndexOfPlayerToLeftOfDealer(players);
-        Rotation<Player> r = new Rotation<>(players.toArray(new Player[0]), startIndex);
+        Iterator<Player> r = ListUtils.constructRotator(players, startIndex);
 
         Iterator<Card> cardIterator = cards.iterator();
         while (cardIterator.hasNext()) {

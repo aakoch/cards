@@ -3,13 +3,6 @@ package com.adamkoch.cards;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringJoiner;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-
 public class Main {
 private static final Logger LOGGER = LogManager.getLogger(Main.class);
 
@@ -21,7 +14,7 @@ private static final Logger LOGGER = LogManager.getLogger(Main.class);
         GamesWonCounter gamesWonCounter = new GamesWonCounter();
         Players players = new Players(PlayerFactory.initializePlayers(4));
 
-        final int totalNumberOfGames = 100;
+        final int totalNumberOfGames = 1000;
         for (int i = 0; i < totalNumberOfGames; i++) {
             SevenGame game = new SevenGame(players);
             final Player winner = game.play();

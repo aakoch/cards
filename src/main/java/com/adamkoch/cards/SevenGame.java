@@ -1,11 +1,14 @@
 package com.adamkoch.cards;
 
+import com.adamkoch.utils.ListUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.stream.Collectors;
 
 /**
  * <p>Created by aakoch on 2017-07-27.</p>
@@ -43,7 +46,7 @@ public class SevenGame implements Game {
         }
 
         SevenBoard sevenBoard = new SevenBoard();
-        Rotation<Player> r = new Rotation<>(playerQueue.toArray(new Player[0]), 0);
+        Iterator<Player> r = ListUtils.constructRotator(playerQueue.stream().collect(Collectors.toList()), 0);
         while (everyoneHasCards(playerQueue)) {
             Player player = r.next();
             playTurn(player, sevenBoard);
