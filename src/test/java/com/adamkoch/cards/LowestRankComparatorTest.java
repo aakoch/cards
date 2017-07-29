@@ -15,10 +15,13 @@ public class LowestRankComparatorTest {
 
     public static void main(String[] args) {
         LowestRankComparator lowestRankComparator = new LowestRankComparator();
-        List<Card> list = Arrays.asList(new Card(Suit.HEARTS, 8), new Card(Suit.HEARTS, 6), new Card(Suit.HEARTS,
-                9) );
+        final Card hearts8 = new Card(Suit.HEARTS, 8);
+        final Card hearts6 = new Card(Suit.HEARTS, 6);
+        final Card hearts9 = new Card(Suit.HEARTS, 9);
+        List<Card> list = Arrays.asList(hearts8, hearts6, hearts9);
         Collections.sort(list, lowestRankComparator);
         System.out.println("list = " + list);
+//        assertEquals(hearts6, list.get(0));
     }
 
 }
