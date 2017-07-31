@@ -31,7 +31,7 @@ private static final Logger LOGGER = LogManager.getLogger(Main.class);
         LOGGER.info(gamesWonCounter);
     }
 
-    private static void resetPlayers(Players players) {
+    private static void resetPlayers(Players<Player> players) {
         players.list().parallelStream().forEach(player -> player.clearHand());
     }
 

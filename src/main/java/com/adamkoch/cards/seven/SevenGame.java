@@ -21,7 +21,7 @@ public class SevenGame implements Game {
 
     private static final Logger LOGGER = LogManager.getLogger(SevenBoard.class);
 
-    private Players players;
+    private Players<Player> players;
 
     public SevenGame(Players players) {
 
@@ -38,7 +38,7 @@ public class SevenGame implements Game {
         randomPlayer.setAsDealer(deck);
 
         Dealer dealer = new Dealer(randomPlayer, deck);
-        dealer.dealUntilGoneTo(players.list());
+        dealer.dealAllTo(players.list());
 
         final Queue<Player> playerQueue = determineOrderOfPlayers(this.players);
 
@@ -97,7 +97,7 @@ public class SevenGame implements Game {
     }
 
 
-    private Queue<Player> determineOrderOfPlayers(Players players) {
+    private Queue<Player> determineOrderOfPlayers(Players<Player> players) {
         Player playerWith7OfHearts = players.list().parallelStream()
                                             .filter(player -> player.getHand()
                                                                     .cards()

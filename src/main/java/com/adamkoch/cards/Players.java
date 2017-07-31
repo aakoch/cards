@@ -10,18 +10,18 @@ import java.util.Random;
  * @author aakoch
  * @since 1.0.0
  */
-public class Players {
-    private final List<Player> players;
+public class Players<T extends Player> {
+    private final List<T> players;
 
-    public Players(List<Player> players) {
+    public Players(List<T> players) {
         this.players = players;
     }
 
-    public Player pickRandomPlayer() {
+    public T pickRandomPlayer() {
         return players.get((new Random()).nextInt(players.size()));
     }
 
-    public List<Player> list() {
+    public List<T> list() {
         return players;
     }
 

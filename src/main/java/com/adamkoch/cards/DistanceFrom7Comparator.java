@@ -11,9 +11,9 @@ import java.util.Comparator;
 public class DistanceFrom7Comparator implements Comparator<Card> {
     @Override
     public int compare(Card card1, Card card2) {
-        int numberOfCardsAfter1 = Math.abs(7 - card1.getRank().getNumericRank(false));
-        int numberOfCardsAfter2 = Math.abs(7 - card2.getRank().getNumericRank(false));
-        return numberOfCardsAfter2 - numberOfCardsAfter1;
+        int numberOfRanksAfter1 = Math.abs(7 - card1.getRank().getNumericRank(false));
+        int numberOfRanksAfter2 = Math.abs(7 - card2.getRank().getNumericRank(false));
+        return numberOfRanksAfter2 - numberOfRanksAfter1;
     }
 
     @Override

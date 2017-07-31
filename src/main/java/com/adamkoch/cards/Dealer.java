@@ -2,6 +2,7 @@ package com.adamkoch.cards;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import com.adamkoch.utils.ListUtils;
 
@@ -29,16 +30,22 @@ public class Dealer {
         player.setAsDealer(deck);
     }
 
-    public void dealTo(List<? extends Player> players, int numberOfCards) {
-        if (players.size() * numberOfCards > cards.size()) {
-            throw new IllegalArgumentException("Not enough cards to deal " + numberOfCards + " cards to each of the "
+    /**
+     * Deal each player a number of cards
+     * @param players The players  to deal to
+     * @param numberOfCardsToEachPlayer The number of cards to deal to each player
+     */
+    public void dealTo(List<? extends Player> players, int numberOfCardsToEachPlayer) {
+        Objects.requireNonNull(players, "List of players cannot be null");
+        if (players.size() * numberOfCardsToEachPlayer > cards.size()) {
+            throw new IllegalArgumentException("Not enough cards to deal " + numberOfCardsToEachPlayer + " cards to each of the "
                     + players.size() + " players");
         }
         int startIndex = getIndexOfPlayerToLeftOfDealer(players);
 
         Iterator<? extends Player> r = ListUtils.constructRotator(players, startIndex);
 
-        for (int i = 0; i < numberOfCards * players.size() && r.hasNext(); i++) {
+        for (int i = 0; i < numberOfCardsToEachPlayer * players.size() && r.hasNext(); i++) {
             Player player = r.next();
             player.addCardToHand(cards.remove(0));
         }
@@ -60,7 +67,10 @@ public class Dealer {
         return players.get(getIndexOfPlayerToLeftOfDealer(players));
     }
 
-    public void dealUntilGoneTo(List<Player> players) {
+    /**
+     * Deal out all the cards to the players.
+     */
+    public void dealAllTo(List<Player> players) {
         int startIndex = getIndexOfPlayerToLeftOfDealer(players);
         Iterator<Player> r = ListUtils.constructRotator(players, startIndex);
 
