@@ -27,4 +27,9 @@ public class ComparatorPlayer extends Player {
         return (List<Card>) cardsThatCanPlay;
     }
 
+    @Override
+    public Card chooseWhichCardToDiscard(DrawPile drawPile, DiscardPile discardPile) {
+        return null;
+    }
+
 }

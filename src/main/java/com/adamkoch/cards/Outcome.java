@@ -15,10 +15,12 @@ import java.util.stream.Collectors;
 public class Outcome {
     public static final Outcome TIE = new Outcome((Card) null);
 
-    private final Card card;
+    private Card card;
     private Player winner;
     private List<Player> losers;
     private Player loser;
+    private Card discard;
+    private boolean has31;
 
     public Outcome(Card card) {
         this.card = card;
@@ -29,6 +31,10 @@ public class Outcome {
         this.winner = highestPlayer;
         losers = new ArrayList<>();
         losers.add(highestPlayer);
+    }
+
+    public Outcome() {
+
     }
 
     public Card getCard() {
@@ -59,5 +65,17 @@ public class Outcome {
 
     public void setLosers(Set<Player> lowestPlayers) {
         this.losers = new ArrayList<>(lowestPlayers);
+    }
+
+    public void setDiscard(Card discard) {
+        this.discard = discard;
+    }
+
+    public boolean setHas31() {
+        return false;
+    }
+
+    public boolean getHas31() {
+        return has31;
     }
 }

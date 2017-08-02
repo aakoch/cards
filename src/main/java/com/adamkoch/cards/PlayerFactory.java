@@ -1,6 +1,7 @@
 package com.adamkoch.cards;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 
 /**
@@ -11,8 +12,9 @@ import java.util.stream.Collectors;
  * @since 1.0.0
  */
 public class PlayerFactory {
-//    private static List<String> names = Arrays.asList("Steve", "Shorty", "Bob", "Watermelon", "Taz", "Ace", "Mumbles",
-//            "Cool wHip");
+    private static List<String> names = Arrays.asList("Steve", "Shorty", "Bob", "Watermelon", "Taz", "Ace", "Mumbles",
+            "Cool wHip");
+    private static Queue<String> namesQueue = new ConcurrentLinkedQueue<>(names);
 //    private static List<String> names = Arrays.asList("Dad", "Mom", "Alyssa", "Joel");
 //    public static List<Player> initializePlayers(int numberOfInstances) {
 //        List<String> names2 = new ArrayList<>(names);
@@ -28,7 +30,7 @@ public class PlayerFactory {
 
     public static List<Player> initializePlayers(int numberOfInstances) {
         List<Player> players = new ArrayList<>(numberOfInstances);
-        players.add(makeDistanceAndCount());
+//        players.add(makeDistanceAndCount());
 
         // First: 17.26%, Random: 16.75%, Random: 16.67%, Random: 16.61%, Random: 16.36%, Random: 16.35%
         // Random: 17.57%, Reverse: 16.75%, Random: 16.59%, Random: 16.55%, Random: 16.34%, Random: 16.20%
@@ -74,6 +76,11 @@ public class PlayerFactory {
                 Collections.reverse(cardsThatCanPlay);
                 return (List<Card>) cardsThatCanPlay;
             }
+
+            @Override
+            public Card chooseWhichCardToDiscard(DrawPile drawPile, DiscardPile discardPile) {
+                return null;
+            }
         };
         return player;
     }
@@ -88,12 +95,17 @@ public class PlayerFactory {
                 // first card
                 return (List<Card>) cardsThatCanPlay;
             }
+
+            @Override
+            public Card chooseWhichCardToDiscard(DrawPile drawPile, DiscardPile discardPile) {
+                return null;
+            }
         };
         return player;
     }
 
     private static Player makeRandom() {
-        Player player = new Player("Random") {
+        Player player = new Player(randomName()) {
             private Iterator<Card> handIterator;
             private List<Card> discardPile;
 
@@ -102,8 +114,26 @@ public class PlayerFactory {
                 Collections.shuffle(cardsThatCanPlay);
                 return (List<Card>) cardsThatCanPlay;
             }
+
+            @Override
+            public Card chooseWhichCardToDiscard(DrawPile drawPile, DiscardPile discardPile) {
+
+                if (super.discardCard != null) {
+                    Card temp =  discardCard;
+                    discardCard = null;
+                    return temp;
+                }
+
+                return Determiner.chooseCardToDiscard(getHand(), discardPile);
+
+//                return RandomUtils.pickRandom(hand);
+            }
         };
         return player;
+    }
+
+    private static String randomName() {
+        return namesQueue.remove();
     }
 
     private static Player makeCount() {
@@ -126,6 +156,11 @@ public class PlayerFactory {
                 });
 
                 return (List<Card>) cardsThatCanPlay;
+            }
+
+            @Override
+            public Card chooseWhichCardToDiscard(DrawPile drawPile, DiscardPile discardPile) {
+                return null;
             }
         };
         return player;
@@ -163,6 +198,11 @@ public class PlayerFactory {
 
                 return (List<Card>) cardsThatCanPlay;
             }
+
+            @Override
+            public Card chooseWhichCardToDiscard(DrawPile drawPile, DiscardPile discardPile) {
+                return null;
+            }
         };
         return player;
     }
@@ -195,6 +235,11 @@ public class PlayerFactory {
                 });
 
                 return (List<Card>) cardsThatCanPlay;
+            }
+
+            @Override
+            public Card chooseWhichCardToDiscard(DrawPile drawPile, DiscardPile discardPile) {
+                return null;
             }
         };
         return player;

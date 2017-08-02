@@ -1,6 +1,7 @@
 package com.adamkoch.cards;
 
 /**
+ * What is a "game"? A game can have many rounds? Or hands?
  * <p>Created by aakoch on 2017-07-13.</p>
  *
  * @author aakoch
@@ -8,5 +9,6 @@ package com.adamkoch.cards;
  */
 public interface Game {
 
-    Player play();
+    Result play();
+
 }

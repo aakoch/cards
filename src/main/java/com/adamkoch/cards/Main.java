@@ -9,24 +9,28 @@ public class Main {
 private static final Logger LOGGER = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) {
-        if (LOGGER.isDebugEnabled()) {
-            listStandardDeck();
-        }
+        System.out.println(LOGGER.isDebugEnabled());
+//        if (LOGGER.isDebugEnabled()) {
+//            listStandardDeck();
+//        }
 
         GamesWonCounter gamesWonCounter = new GamesWonCounter();
         Players players = new Players(PlayerFactory.initializePlayers(4));
 
-        final int totalNumberOfGames = 1000;
+        final int totalNumberOfGames = 1;
         for (int i = 0; i < totalNumberOfGames; i++) {
-            SevenGame game = new SevenGame(players);
-            final Player winner = game.play();
+            ThirtyOneGame game = new ThirtyOneGame(players);
+
+            final Result result = game.play();
+
+            final Player winner = result.getWinner();
+
             LOGGER.info(winner.getName() + " won");
 
             gamesWonCounter.increment(winner);
 
             resetPlayers(players);
         }
-
 
         LOGGER.info(gamesWonCounter);
     }

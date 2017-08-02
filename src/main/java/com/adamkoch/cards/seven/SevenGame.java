@@ -29,7 +29,7 @@ public class SevenGame implements Game {
     }
 
     @Override
-    public Player play() {
+    public Result play() {
 
         Player randomPlayer = players.pickRandomPlayer();
         final Deck deck = getStartDeck();
@@ -67,7 +67,7 @@ public class SevenGame implements Game {
 
         }
 
-        return winner;
+        return new Result(winner);
 
     }
 

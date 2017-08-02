@@ -75,6 +75,9 @@ public enum Rank {
     }
 
     public int getNumericRank(boolean aceIsHigh) {
+        if (aceIsHigh && this == ACE) {
+            return 14;
+        }
         return innerRank;
     }
 }

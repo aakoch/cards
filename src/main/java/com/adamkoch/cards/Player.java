@@ -16,9 +16,11 @@ import java.util.stream.Collectors;
 public abstract class Player {
     private static final Logger LOGGER = LogManager.getLogger(Player.class);
     protected List<Card> hand;
-    private int index = 0;
     protected String name;
+    private int index = 0;
     private boolean theDealer;
+    private int coinsLeft = 3;
+    protected Card discardCard;
 
     public Player(String name) {
         this.name = name;
@@ -55,7 +57,7 @@ public abstract class Player {
 
     @Override
     public String toString() {
-        return name + ": " + hand;
+        return name + "(" + coinsLeft + "): " + hand;
     }
 
     public Card getCard() {
@@ -107,5 +109,73 @@ public abstract class Player {
 
     protected abstract List<Card> rank(List<? extends Card> cardsThatCanPlay, List<Card> hand);
 
+    public void pay() {
+        coinsLeft--;
+    }
 
+    public boolean stillInGame() {
+        return coinsLeft > -1;
+    }
+
+    public int coinsLeft() {
+        return coinsLeft;
+    }
+
+    public abstract Card chooseWhichCardToDiscard(DrawPile drawPile, DiscardPile discardPile);
+
+    public void drawFromDrawPile(DrawPile drawPile, DiscardPile discardPile) {
+        Card drawCard = drawPile.draw();
+        LOGGER.debug(getName() + " draws card: " + drawCard);
+        hand.add(drawCard);
+    }
+
+    public boolean has31() {
+        Suit firstSuit = hand.get(0).getSuit();
+        boolean has31 = false;
+        if (hand.stream().allMatch(card -> card.getSuit() == firstSuit)) {
+            if (contains2TensAndAnAce(hand)) {
+                has31 = true;
+            }
+        }
+
+        LOGGER.debug("name = " + name + ", hand = " + hand + ", has31 = " + has31);
+        return has31;
+    }
+
+    private boolean contains2TensAndAnAce(List<Card> hand) {
+        int numberOfTens = 0;
+        int numberOfAces = 0;
+        for (Card card : hand) {
+            switch (card.getRank()) {
+                case ACE:
+                    numberOfAces++;
+                    break;
+                case TEN:
+                case JACK:
+                case QUEEN:
+                case KING:
+                    numberOfTens++;
+                    break;
+            }
+        }
+
+        return numberOfAces == 1 && numberOfTens == 2;
+    }
+
+    public boolean chooseCardFromDiscardPile(DrawPile drawPile, DiscardPile discardPile) {
+
+        Card topDiscardedCard = discardPile.topCard();
+
+        hand.add(topDiscardedCard);
+
+        final Card cardToDiscard = chooseWhichCardToDiscard(drawPile, discardPile);
+
+        final boolean equals = topDiscardedCard.equals(cardToDiscard);
+        if (!equals) {
+            LOGGER.debug(getName() + " takes discard card " + topDiscardedCard);
+            discardCard = cardToDiscard;
+        }
+
+        return !equals;
+    }
 }

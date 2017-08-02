@@ -31,6 +31,11 @@ public class DiscardPilePlayer extends Player {
         return null;
     }
 
+    @Override
+    public Card chooseWhichCardToDiscard(DrawPile drawPile, DiscardPile discardPile) {
+        return null;
+    }
+
 
     public List<Card> getDiscardPile() {
         return discardPile;
