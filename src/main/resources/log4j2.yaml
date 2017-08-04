@@ -43,7 +43,7 @@ Configuration:
         AppenderRef:
           ref: STDOUT
       -
-        name: com.adamkoch.cards.StalemateBreakingDecorator
+        name: com.adamkoch.cards.StalemateBreakingPlayer
         level: debug
         additivity: false
         AppenderRef:

@@ -31,6 +31,6 @@ public class GamesWonCounter {
                               return entry.getKey().getName() + ": " + String.format("%.2f%%", v);
                           })
                           .collect(Collectors.joining(", "));
-        return stats;
+        return stats + " -- total number of games=" + totalNumberOfGames;
     }
 }

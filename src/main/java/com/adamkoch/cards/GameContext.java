@@ -37,4 +37,8 @@ public class GameContext {
     public boolean someoneElseHasKnocked() {
         return someoneElseHasKnocked;
     }
+
+    public void setSomeoneElseKnocked() {
+        someoneElseHasKnocked = true;
+    }
 }

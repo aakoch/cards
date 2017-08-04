@@ -28,9 +28,11 @@ public class ThirtyOneRound {
 
     public List<Player> play() {
         LOGGER.info("************************ Start round ************************");
+
         gameContext = new GameContext();
         final List<Player> playerList = playerQueue.stream().collect(Collectors.toList());
         LOGGER.debug(playerList.size() + " players");
+
         gameContext.setNumberOfPlayers(playerList.size());
 
         final List<Card> remainingCards = dealer.dealTo(playerList, 3);
@@ -45,7 +47,7 @@ public class ThirtyOneRound {
         Player player = null;
         int playerTurnCount = 0;
         int turnsLeft = Integer.MAX_VALUE;
-        while (!playerHas31 && r.hasNext() && turnsLeft-- > 0) {
+        while (!playerHas31 && r.hasNext() && turnsLeft-- > 0 && playerTurnCount < 1000) {
             player = r.next();
 
             Outcome outcome = playTurn(player, drawPile, discardPile);
@@ -151,8 +153,9 @@ public class ThirtyOneRound {
         if (player.has31()) {
             outcome.setHas31();
         }
-        else if (gameContext.someoneElseHasKnocked() && shouldPlayerKnock(player, gameContext)) {
+        else if (!gameContext.someoneElseHasKnocked() && shouldPlayerKnock(player, gameContext)) {
             outcome.setPlayerKnocks();
+            gameContext.setSomeoneElseKnocked();
         }
 
         return outcome;

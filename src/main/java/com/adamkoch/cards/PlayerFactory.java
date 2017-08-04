@@ -45,10 +45,10 @@ public class PlayerFactory {
         // Distance and Count: 21.15%, Random: 15.98%, Random: 15.86%, Random: 15.77%, Random: 15.69%, Random: 15.55%
 
         for (int i = 0; i < 5; i++) {
-            players.add(makeEasy());
+            players.add(new StalemateBreakingPlayer(randomName(), 20));
         }
 //        for (int i = 0; i < 4; i++) {
-//            players.add(new StalemateBreakingDecorator(makeEasy()));
+//            players.add(new StalemateBreakingPlayer(makeEasy()));
 //        }
 //        players.add(makeReverse());
 //        players.add(makeDistance());
