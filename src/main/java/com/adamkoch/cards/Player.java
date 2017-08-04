@@ -93,7 +93,7 @@ public abstract class Player {
 
 
     private List<Card> intersect(List<? extends Card> playableCards, List<? extends Card> playerHand) {
-        return playableCards.parallelStream().filter(playerHand::contains).collect(Collectors.toList());
+        return playableCards.stream().filter(playerHand::contains).collect(Collectors.toList());
     }
 
     private Card determineCardToPlay(List<? extends Card> cardsThatCanPlay, List<Card> hand) {

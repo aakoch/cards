@@ -25,6 +25,6 @@ public class ListUtils {
      * Return the intersection of the 2 lists.
      */
     public static <T> List<T> intersect(List<? extends T> list1, List<? extends T> list2) {
-        return list1.parallelStream().filter(list2::contains).collect(Collectors.toList());
+        return list1.stream().filter(list2::contains).collect(Collectors.toList());
     }
 }

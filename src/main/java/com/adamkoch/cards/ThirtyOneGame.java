@@ -75,7 +75,7 @@ public class ThirtyOneGame implements Game {
     }
 
     private Player figureOutWinner(Players<Player> players) {
-        return players.list().parallelStream().filter(player -> player.stillInGame()).findFirst().orElseThrow(() -> new
+        return players.list().stream().filter(player -> player.stillInGame()).findFirst().orElseThrow(() -> new
                 RuntimeException("Could not find winner"));
     }
 

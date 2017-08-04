@@ -36,7 +36,7 @@ private static final Logger LOGGER = LogManager.getLogger(Main.class);
     }
 
     private static void resetPlayers(Players<Player> players) {
-        players.list().parallelStream().forEach(player -> player.resetHandAndCoins());
+        players.list().stream().forEach(player -> player.resetHandAndCoins());
     }
 
     private static void listStandardDeck() {

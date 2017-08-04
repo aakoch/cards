@@ -98,7 +98,7 @@ public class SevenGame implements Game {
 
 
     private Queue<Player> determineOrderOfPlayers(Players<Player> players) {
-        Player playerWith7OfHearts = players.list().parallelStream()
+        Player playerWith7OfHearts = players.list().stream()
                                             .filter(player -> player.getHand()
                                                                     .cards()
                                                                     .contains(new Card(Suit.HEARTS, Rank.SEVEN)))

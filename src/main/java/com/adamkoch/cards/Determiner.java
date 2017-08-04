@@ -184,7 +184,7 @@ public class Determiner {
 
     private static Card oddSuit(List<Card> cards, Map<Suit, Integer> numberOfCardsPerSuit) {
         Suit oddSuit = getOddSuit(numberOfCardsPerSuit);
-        return cards.parallelStream()
+        return cards.stream()
                     .filter(card -> card.getSuit() == oddSuit)
                     .findFirst()
                     .orElseThrow(() -> {
@@ -211,7 +211,7 @@ public class Determiner {
     }
 
     public static Map<Suit, Integer> getNumberOfCardsPerSuit(List<Card> cards) {
-        return cards.parallelStream().collect(Collectors.toMap(Card::getSuit, card -> 1, Integer::sum));
+        return cards.stream().collect(Collectors.toMap(Card::getSuit, card -> 1, Integer::sum));
     }
 
     private static Rule createNumericRankRule() {

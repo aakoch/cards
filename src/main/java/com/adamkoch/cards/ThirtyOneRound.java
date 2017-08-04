@@ -24,11 +24,11 @@ public class ThirtyOneRound {
     public ThirtyOneRound(Dealer dealer, Queue<Player> playerQueue) {
         this.dealer = dealer;
         this.playerQueue = playerQueue;
-        gameContext = new GameContext();
     }
 
     public List<Player> play() {
         LOGGER.info("************************ Start round ************************");
+        gameContext = new GameContext();
         final List<Player> playerList = playerQueue.stream().collect(Collectors.toList());
         LOGGER.debug(playerList.size() + " players");
         gameContext.setNumberOfPlayers(playerList.size());
@@ -151,7 +151,7 @@ public class ThirtyOneRound {
         if (player.has31()) {
             outcome.setHas31();
         }
-        else if (shouldPlayerKnock(player, gameContext)) {
+        else if (gameContext.someoneElseHasKnocked() && shouldPlayerKnock(player, gameContext)) {
             outcome.setPlayerKnocks();
         }
 

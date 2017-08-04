@@ -18,7 +18,7 @@ public class SevenBoard {
 
 
     public void playCard(Card card) {
-        com.adamkoch.cards.seven.SevenStack stack = stacks.parallelStream().filter(_stack -> card.getSuit() == _stack.getSuit
+        com.adamkoch.cards.seven.SevenStack stack = stacks.stream().filter(_stack -> card.getSuit() == _stack.getSuit
                 ()).findFirst().orElse(new com.adamkoch.cards.seven.SevenStack(card.getSuit()));
         stack.addCard(card);
     }

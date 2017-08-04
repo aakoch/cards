@@ -178,7 +178,7 @@ public class PlayerFactory {
 
 
     private static int findNumberOfCardsBehind(Card card, List<Card> cards) {
-        return (int) cards.parallelStream().filter(_card -> after(card, _card)).count();
+        return (int) cards.stream().filter(_card -> after(card, _card)).count();
     }
 
 //    private static Player makeCountAndDistance() {
