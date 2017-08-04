@@ -3,6 +3,7 @@ package com.adamkoch.cards;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class DrawPile {
     private DiscardPile discardPile;
 
     public DrawPile(List<Card> remainingCards) {
-        cards = remainingCards;
+        cards = new ArrayList<>(remainingCards);
         LOGGER.debug("remainingCards.size() = " + remainingCards.size());
     }
 
@@ -29,7 +30,7 @@ public class DrawPile {
         if (cards.isEmpty()) {
             List<Card> cards = discardPile.getCards();
             Collections.shuffle(cards);
-            this.cards = cards;
+            this.cards = new ArrayList<>(cards);
         }
         return cards.remove(0);
     }

@@ -65,21 +65,30 @@ public class ThirtyOneRound {
     private Outcome playTurn(Player player, DrawPile drawPile, DiscardPile discardPile) {
         LOGGER.debug("Start of " + player.getName() + "'s turn: " + player);
 
+        if (player.getHand().cards().get(0).equals(player.getHand().cards().get(1)) ||
+                player.getHand().cards().get(1).equals(player.getHand().cards().get(2)) ||
+                player.getHand().cards().get(0).equals(player.getHand().cards().get(2))) {
+            LOGGER.error("all cards equal");
+        }
+
         Outcome outcome = new Outcome();
-        if (player.chooseCardFromDiscardPile(drawPile, discardPile)) {
-            Card discardCard = player.chooseWhichCardToDiscard(drawPile, discardPile);
-            LOGGER.debug(player.getName() + " discards " + discardCard);
-            discardPile.add(discardCard);
-            outcome.setDiscard(discardCard);
+//        if (!player.chooseCardFromDiscardPile(drawPile, discardPile)) {
+        if (Determiner.cardWouldImproveHand(discardPile.peekAtTopCard(), player.hand)) {
+            LOGGER.debug(player.getName() + " takes " + discardPile.peekAtTopCard() + " from discard pile");
+            player.addCardToHand(discardPile.removeTopCard());
         }
         else {
-            player.drawFromDrawPile(drawPile, discardPile);
-
-            Card discardCard = player.chooseWhichCardToDiscard(drawPile, discardPile);
-            LOGGER.debug(player.getName() + " discards " + discardCard);
-            discardPile.add(discardCard);
-            outcome.setDiscard(discardCard);
+//            player.drawFromDrawPile(drawPile, discardPile);
+            final Card drawnCard = drawPile.draw();
+            LOGGER.debug(player.getName() + " draws " + drawnCard);
+            player.addCardToHand(drawnCard);
         }
+
+        Card discardCard = player.chooseWhichCardToDiscard(drawPile, discardPile);
+        LOGGER.debug(player.getName() + " discards " + discardCard);
+        player.removeFromHand(discardCard);
+        discardPile.add(discardCard);
+        outcome.setDiscard(discardCard);
 
         if (player.has31()) {
             outcome.setHas31();

@@ -1,6 +1,8 @@
 package com.adamkoch.cards;
 
-import java.util.ArrayList;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.List;
 
 /**
@@ -12,30 +14,39 @@ import java.util.List;
  * @since 1.0.0
  */
 public class DiscardPile {
-    private FIFOList<Card> cards;
+    private static final Logger LOGGER = LogManager.getLogger(DiscardPile.class);
+
+    private FIFOList<Card> discardedCards;
     private final DrawPile drawPile;
 
     public DiscardPile(DrawPile drawPile) {
         this.drawPile = drawPile;
         drawPile.setDiscardPile(this);
 
-        cards = new FIFOList<>();
-        cards.add(drawPile.draw());
+        final Card card = drawPile.draw();
+        LOGGER.info("Dealer flips over " + card);
+
+        discardedCards = new FIFOList<>();
+        discardedCards.add(card);
     }
 
-    public Card topCard() {
-        return cards.pop();
+    public Card peekAtTopCard() {
+        return discardedCards.peek();
+    }
+
+    public Card removeTopCard() {
+        return discardedCards.pop();
     }
 
     public List<Card> getCards() {
-        return cards.allButLast();
+        return discardedCards.allButLast();
     }
 
     public void setCards(List<Card> cards) {
-        this.cards = new FIFOList<>(cards);
+        this.discardedCards = new FIFOList<>(cards);
     }
 
     public void add(Card card) {
-        cards.add(card);
+        discardedCards.add(card);
     }
 }

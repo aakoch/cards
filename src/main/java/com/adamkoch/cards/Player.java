@@ -162,20 +162,23 @@ public abstract class Player {
         return numberOfAces == 1 && numberOfTens == 2;
     }
 
-    public boolean chooseCardFromDiscardPile(DrawPile drawPile, DiscardPile discardPile) {
-
-        Card topDiscardedCard = discardPile.topCard();
-
-        hand.add(topDiscardedCard);
-
-        final Card cardToDiscard = chooseWhichCardToDiscard(drawPile, discardPile);
-
-        final boolean equals = topDiscardedCard.equals(cardToDiscard);
-        if (!equals) {
-            LOGGER.debug(getName() + " takes discard card " + topDiscardedCard);
-            discardCard = cardToDiscard;
-        }
-
-        return !equals;
-    }
+//    public boolean chooseCardFromDiscardPile(DrawPile drawPile, DiscardPile discardPile) {
+//
+//        Card topDiscardedCard = discardPile.topCard();
+//        if (Determiner.cardWouldImproveHand(topDiscardedCard, hand)) {
+//
+//            hand.add(topDiscardedCard);
+//
+//            final Card cardToDiscard = chooseWhichCardToDiscard(drawPile, discardPile);
+//
+//            final boolean equals = topDiscardedCard.equals(cardToDiscard);
+//            if (!equals) {
+//                LOGGER.debug(getName() + " takes discard card " + topDiscardedCard);
+//                discardCard = cardToDiscard;
+//            }
+//            return !equals;
+//        }
+//
+//        return false;
+//    }
 }

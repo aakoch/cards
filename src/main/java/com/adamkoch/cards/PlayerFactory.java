@@ -42,7 +42,7 @@ public class PlayerFactory {
         // Distance and Count: 21.15%, Random: 15.98%, Random: 15.86%, Random: 15.77%, Random: 15.69%, Random: 15.55%
 
         for (int i = 0; i < 5; i++) {
-            players.add(makeRandom());
+            players.add(makeEasy());
         }
 //        players.add(makeReverse());
 //        players.add(makeDistance());
@@ -124,9 +124,35 @@ public class PlayerFactory {
                     return temp;
                 }
 
-                return Determiner.chooseCardToDiscard(getHand(), discardPile);
 
-//                return RandomUtils.pickRandom(hand);
+                return RandomUtils.pickRandom(hand);
+            }
+        };
+        return player;
+    }
+
+    private static Player makeEasy() {
+        Player player = new Player(randomName()) {
+            private Iterator<Card> handIterator;
+            private List<Card> discardPile;
+
+            @Override
+            protected List<Card> rank(List<? extends Card> cardsThatCanPlay, List<Card> hand) {
+                Collections.shuffle(cardsThatCanPlay);
+                return (List<Card>) cardsThatCanPlay;
+            }
+
+            @Override
+            public Card chooseWhichCardToDiscard(DrawPile drawPile, DiscardPile discardPile) {
+
+                if (super.discardCard != null) {
+                    Card temp =  discardCard;
+                    discardCard = null;
+                    return temp;
+                }
+
+                return Determiner.chooseCardToDiscard(getHand().cards(), discardPile);
+
             }
         };
         return player;

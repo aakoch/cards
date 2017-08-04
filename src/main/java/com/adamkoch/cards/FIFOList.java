@@ -1,5 +1,7 @@
 package com.adamkoch.cards;
 
+import com.adamkoch.utils.ListUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +31,13 @@ public class FIFOList<T> {
     }
 
     public List<T> allButLast() {
-        return list.subList(0, list.size() - 2);
+        final List<T> subList = list.subList(0, list.size() - 1);
+        List<T> newList = new ArrayList<>(subList);
+        subList.clear();
+        return newList;
+    }
+
+    public T peek() {
+        return list.get(list.size() - 1);
     }
 }

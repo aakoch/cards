@@ -19,7 +19,11 @@ public class Chain {
         rules.add(rule);
     }
 
-    public Card nextRule(List<Card> cards, Card card) {
+    public List<Card> nextRule(List<Card> cards) {
         return rules.get(index++).apply(cards);
+    }
+
+    public boolean hasNext() {
+        return index < rules.size();
     }
 }

@@ -11,7 +11,7 @@ Configuration:
     Console:
       name: STDOUT
       PatternLayout:
-        Pattern: "%d %p %C [%t] %m%n"
+        Pattern: "%d %p [%t] %C %m%n"
 #    File:
 #      name: File
 #      fileName: ${filename}

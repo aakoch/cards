@@ -71,8 +71,8 @@ public class Outcome {
         this.discard = discard;
     }
 
-    public boolean setHas31() {
-        return false;
+    public void setHas31() {
+        has31 = true;
     }
 
     public boolean getHas31() {
