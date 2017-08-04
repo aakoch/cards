@@ -18,4 +18,19 @@ public class Hand {
     public List<Card> cards() {
         return cards;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || this.getClass() != o.getClass()) return false;
+
+        Hand hand = (Hand) o;
+
+        return this.cards != null ? this.cards.equals(hand.cards) : hand.cards == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.cards != null ? this.cards.hashCode() : 0;
+    }
 }

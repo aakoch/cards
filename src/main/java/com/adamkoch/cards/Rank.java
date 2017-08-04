@@ -16,9 +16,7 @@ import java.util.concurrent.ExecutionException;
 public enum Rank {
 
     ACE(1, "A"), TWO(2, "2"), THREE(3, "3"), FOUR(4, "4"), FIVE(5, "5"), SIX(6, "6"), SEVEN(7, "7"), EIGHT(8, "8"),
-    NINE(
-            9, "9"), TEN(10, "T"),
-    JACK(11, "J"), QUEEN(12, "Q"), KING(13, "K"), JOKER(0, "\ud83c\udcdf");
+    NINE(9, "9"), TEN(10, "T"), JACK(11, "J"), QUEEN(12, "Q"), KING(13, "K"), JOKER(0, "\ud83c\udcdf");
 
     private final Cache<Integer, Rank> cache = CacheBuilder.newBuilder().build();
 
@@ -79,5 +77,26 @@ public enum Rank {
             return 14;
         }
         return innerRank;
+    }
+
+    public int getValue(boolean aceIsEleven) {
+        return convert(this, aceIsEleven);
+    }
+
+    private static int convert(Rank rank, boolean aceIsEleven) {
+        int value = 0;
+        if (rank == ACE) {
+            if (aceIsEleven)
+                value = 11;
+            else
+                value = 1;
+        }
+        else if (rank == JACK || rank == QUEEN || rank == KING) {
+            value = 10;
+        }
+        else {
+            value = rank.getNumericRank(true);
+        }
+        return value;
     }
 }

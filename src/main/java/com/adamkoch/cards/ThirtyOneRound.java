@@ -24,11 +24,14 @@ public class ThirtyOneRound {
     public ThirtyOneRound(Dealer dealer, Queue<Player> playerQueue) {
         this.dealer = dealer;
         this.playerQueue = playerQueue;
+        gameContext = new GameContext();
     }
 
     public List<Player> play() {
-        LOGGER.info("Start round");
+        LOGGER.info("************************ Start round ************************");
         final List<Player> playerList = playerQueue.stream().collect(Collectors.toList());
+        LOGGER.debug(playerList.size() + " players");
+        gameContext.setNumberOfPlayers(playerList.size());
 
         final List<Card> remainingCards = dealer.dealTo(playerList, 3);
         DrawPile drawPile = new DrawPile(remainingCards);
@@ -58,12 +61,13 @@ public class ThirtyOneRound {
             }
             else if (outcome.playerKnocks() && !playerKnocked) {
                 playerWhoKnocked = player;
-                LOGGER.info(player.getName() + " knocks\n");
+                LOGGER.info(player.getName() + " knocks with " + player.total() + "\n");
                 playerKnocked = true;
                 turnsLeft = playerList.size() - 1;
             }
 
             playerTurnCount++;
+            gameContext.incrementNumberOfPlays();
         }
         LOGGER.debug("playerTurnCount = " + playerTurnCount);
         LOGGER.debug("playerTurnCount / player count = " + (double) (playerTurnCount / playerList.size()));
@@ -88,6 +92,8 @@ public class ThirtyOneRound {
             if (!player.equals(playerWhoKnocked)) {
                 int total = Calculator.totalCards(player.getHand().cards());
                 if (total > playerWhoKnockedTotal) {
+                    LOGGER.info(player.getName() + " has " + total + " points which is more than the "
+                            + playerWhoKnockedTotal + " " + playerWhoKnocked.getName() + " has!");
                     return Arrays.asList(playerWhoKnocked);
                 }
             }
@@ -153,12 +159,7 @@ public class ThirtyOneRound {
     }
 
     private boolean shouldPlayerKnock(Player player, GameContext gameContext) {
-        final List<Card> cards = player.getHand().cards();
-        return Determiner.areThreeCardsWithSameSuit(cards) && points(cards) > 20;
-    }
-
-    private int points(List<Card> cards) {
-        return cards.stream().mapToInt(card -> card.getRank().getNumericRank(true)).sum();
+        return player.decidesToKnock(gameContext);
     }
 
 }

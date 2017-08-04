@@ -17,7 +17,7 @@ private static final Logger LOGGER = LogManager.getLogger(Main.class);
         GamesWonCounter gamesWonCounter = new GamesWonCounter();
         Players players = new Players(PlayerFactory.initializePlayers(4));
 
-        final int totalNumberOfGames = 1;
+        final int totalNumberOfGames = 100;
         for (int i = 0; i < totalNumberOfGames; i++) {
             ThirtyOneGame game = new ThirtyOneGame(players);
 
@@ -32,11 +32,11 @@ private static final Logger LOGGER = LogManager.getLogger(Main.class);
             resetPlayers(players);
         }
 
-        LOGGER.info(gamesWonCounter);
+        LOGGER.info("\n" + gamesWonCounter);
     }
 
     private static void resetPlayers(Players<Player> players) {
-        players.list().parallelStream().forEach(player -> player.clearHand());
+        players.list().parallelStream().forEach(player -> player.resetHandAndCoins());
     }
 
     private static void listStandardDeck() {

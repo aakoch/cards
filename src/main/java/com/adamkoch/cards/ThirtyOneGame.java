@@ -50,7 +50,7 @@ public class ThirtyOneGame implements Game {
             ThirtyOneRound round = new ThirtyOneRound(dealer, playerQueue);
             List<Player> payers = round.play();
 
-            LOGGER.debug("payers = " + payers + "\n\n");
+            LOGGER.info("payers = " + payers + "\n\n");
 
             deck = getStartDeck();
             deck.shuffle();
@@ -67,6 +67,7 @@ public class ThirtyOneGame implements Game {
         }
 
         Player winner = figureOutWinner(players);
+        LOGGER.info("**************** winner = " + winner + " ************************");
 
         players.list().stream().forEach(player -> LOGGER.debug("player = " + player));
 

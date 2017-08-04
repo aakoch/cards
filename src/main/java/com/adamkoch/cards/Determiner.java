@@ -16,7 +16,7 @@ public class Determiner {
 
     private static final Logger LOGGER = LogManager.getLogger(Determiner.class);
 
-    public static Card chooseCardToDiscard(List<Card> cards, DiscardPile discardPile) {
+    public static Card chooseCardToDiscard(final List<Card> cards, final DiscardPile discardPile) {
 
         assert (cards.size() == 4);
 
@@ -31,8 +31,6 @@ public class Determiner {
         while (returnedCards.size() != 1) {
             returnedCards = chain.nextRule(returnedCards);
         }
-
-        cards.removeAll(returnedCards);
 
         return returnedCards.get(0);
     }
@@ -76,7 +74,8 @@ public class Determiner {
 
         for (Map.Entry<Suit, List<Card>> entry : map.entrySet()) {
             final List<Card> cards = entry.getValue();
-            int rank = calculateRankOfCardsWithSameSuitToBeComparedToOtherLists(cards);
+            //int rank = calculateRankOfCardsWithSameSuitToBeComparedToOtherLists(cards);
+            int rank = calculateValueOfCardsWithSameSuitToBeComparedToOtherLists(cards);
             map2.put(rank, cards);
         }
 
@@ -101,6 +100,20 @@ public class Determiner {
                 rank += 10;
             }
             rank += cardRank.value();
+        }
+
+        LOGGER.debug("rank = " + rank);
+
+        return rank;
+    }
+
+    private static int calculateValueOfCardsWithSameSuitToBeComparedToOtherLists(List<Card> cards) {
+
+        int rank = 0;
+
+        for (Card card : cards) {
+            final Rank cardRank = card.getRank();
+            rank += cardRank.getValue(true);
         }
 
         LOGGER.debug("rank = " + rank);
@@ -216,9 +229,36 @@ public class Determiner {
         if (addingCardWouldMake3OfTheSameSuit(card, cards)) {
             return true;
         }
+        else if (addingCardWouldMake2OfTheSameSuit(card, cards)) {
+            // rank and choose
+            List<Card> newCardsList = new ArrayList<>(cards);
+            newCardsList.add(card);
+            Map<Suit, List<Card>> map = createSuitListMap(newCardsList);
+            List<Card> list = rankAndPickCardsToDiscard(map);
+
+            // if the discarded cards includes the card passed in, then return false
+            return list.contains(card);
+        }
         else {
             return false;
         }
+    }
+
+    private static boolean addingCardWouldMake2OfTheSameSuit(Card card, List<Card> cards) {
+        if (alreadyHave3OfTheSameSuit(cards)) {
+            return false;
+        }
+        List<Card> newHand = new ArrayList<>(cards);
+        final boolean alreadyHave2CardsWithSameSuit = suitWithNumberOfCards(newHand, 2);
+
+        if (alreadyHave2CardsWithSameSuit) {
+            return false;
+        }
+
+        newHand.add(card);
+
+        final boolean foundSuitWith2Cards = suitWithNumberOfCards(newHand, 2);
+        return foundSuitWith2Cards;
     }
 
     private static boolean addingCardWouldMake3OfTheSameSuit(Card card, List<Card> cards) {
@@ -235,7 +275,11 @@ public class Determiner {
     }
 
     public static boolean areThreeCardsWithSameSuit(List<Card> cards) {
+        return suitWithNumberOfCards(cards, 3);
+    }
+
+    private static boolean suitWithNumberOfCards(List<Card> cards, int numberOfCards) {
         final Map<Suit, Integer> numberOfCardsPerSuit = getNumberOfCardsPerSuit(cards);
-        return numberOfCardsPerSuit.values().contains(3);
+        return numberOfCardsPerSuit.values().contains(numberOfCards);
     }
 }

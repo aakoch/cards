@@ -1,6 +1,5 @@
 package com.adamkoch.cards;
 
-import com.sun.tools.javac.code.Types;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -57,7 +56,7 @@ public abstract class Player {
 
     @Override
     public String toString() {
-        return name + "(" + coinsLeft + "): " + hand;
+        return name + "(" + coinsLeft + "): " + hand + "=" + total();
     }
 
     public Card getCard() {
@@ -138,7 +137,7 @@ public abstract class Player {
             }
         }
 
-        LOGGER.debug("name = " + name + ", hand = " + hand + ", has31 = " + has31);
+        LOGGER.debug("name = " + name + ", hand = " + hand + ", total = " + total() + ", has31 = " + has31);
         return has31;
     }
 
@@ -161,6 +160,17 @@ public abstract class Player {
 
         return numberOfAces == 1 && numberOfTens == 2;
     }
+
+    public void resetHandAndCoins() {
+        clearHand();
+        coinsLeft = 3;
+    }
+
+    public int total() {
+        return Calculator.totalCards(hand);
+    }
+
+    public abstract boolean decidesToKnock(GameContext gameContext);
 
 //    public boolean chooseCardFromDiscardPile(DrawPile drawPile, DiscardPile discardPile) {
 //

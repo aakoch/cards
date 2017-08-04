@@ -148,11 +148,13 @@ public class DeterminerTest {
 
         Card newCard = new Card(Suit.SPADES, Rank.FIVE);
         cards.add(newCard);
-        assertEquals(newCard, Determiner.chooseCardToDiscard(cards, null));
+
+        final Card actualCard = Determiner.chooseCardToDiscard(cards, null);
+        assertEquals("Discarded card should have been " + newCard + " out of " + cards + ", but was " + actualCard, newCard, actualCard);
     }
 
     @Test
-    public void testCardWouldImproveHand() throws Exception {
+    public void testCardWouldNotImproveHand() throws Exception {
         List<Card> cards = new ArrayList<>();
         cards.add(new Card(Suit.SPADES, Rank.SEVEN));
         cards.add(new Card(Suit.CLUBS, Rank.ACE));
@@ -184,6 +186,16 @@ public class DeterminerTest {
         assertTrue(Determiner.cardWouldImproveHand(newCard, cards));
     }
 
+    @Test
+    public void testCardWouldImproveHand_real() throws Exception {
+        List<Card> cards = new ArrayList<>();
+        cards.add(new Card(Suit.CLUBS, Rank.THREE));
+        cards.add(new Card(Suit.DIAMONDS, Rank.TEN));
+        cards.add(new Card(Suit.DIAMONDS, Rank.THREE));
+
+        Card newCard = new Card(Suit.CLUBS, Rank.ACE);
+        assertTrue("Adding " + newCard + " should improve hand " + cards + ", but it returned false", Determiner.cardWouldImproveHand(newCard, cards));
+    }
 
     @Test
     public void testRankAndPick() throws Exception {
@@ -203,5 +215,25 @@ public class DeterminerTest {
         map.put(Suit.SPADES, spades);
 
         assertEquals(spades, Determiner.rankAndPickCardsToDiscard(map));
+    }
+
+    @Test
+    public void testRankAndPick_real() throws Exception {
+
+        Map<Suit, List<Card>> map = new HashMap<>();
+
+        List<Card> clubs = new ArrayList<>();
+        List<Card> diamonds = new ArrayList<>();
+
+        clubs.add(new Card(Suit.CLUBS, Rank.THREE));
+        clubs.add(new Card(Suit.CLUBS, Rank.ACE));
+
+        diamonds.add(new Card(Suit.DIAMONDS, Rank.TEN));
+        diamonds.add(new Card(Suit.DIAMONDS, Rank.THREE));
+
+        map.put(Suit.CLUBS, clubs);
+        map.put(Suit.DIAMONDS, diamonds);
+
+        assertEquals(diamonds, Determiner.rankAndPickCardsToDiscard(map));
     }
 }
