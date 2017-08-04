@@ -41,19 +41,7 @@ public class Determiner {
         return new Rule() {
             @Override
             public List<Card> apply(List<Card> cards) {
-                Map<Suit, List<Card>> map = new HashMap<>();
-                for (Suit suit : Suit.standardSuits()) {
-                    map.put(suit, new ArrayList<>());
-                }
-                for (Card card : cards) {
-                    map.get(card.getSuit()).add(card);
-                }
-                for (Iterator<Map.Entry<Suit, List<Card>>> iterator = map.entrySet().iterator(); iterator.hasNext(); ) {
-                    Map.Entry<Suit, List<Card>> entry = iterator.next();
-                    if (entry.getValue().isEmpty()) {
-                        iterator.remove();
-                    }
-                }
+                Map<Suit, List<Card>> map = createSuitListMap(cards);
                 List<Card> list = new ArrayList<>();
                 if (map.size() == 2) {
                     list = rankAndPickCardsToDiscard(map);
@@ -62,6 +50,23 @@ public class Determiner {
                 return list;
             }
         };
+    }
+
+    public static Map<Suit, List<Card>> createSuitListMap(List<Card> cards) {
+        Map<Suit, List<Card>> map = new HashMap<>();
+        for (Suit suit : Suit.standardSuits()) {
+            map.put(suit, new ArrayList<>());
+        }
+        for (Card card : cards) {
+            map.get(card.getSuit()).add(card);
+        }
+        for (Iterator<Map.Entry<Suit, List<Card>>> iterator = map.entrySet().iterator(); iterator.hasNext(); ) {
+            Map.Entry<Suit, List<Card>> entry = iterator.next();
+            if (entry.getValue().isEmpty()) {
+                iterator.remove();
+            }
+        }
+        return map;
     }
 
     public static List<Card> rankAndPickCardsToDiscard(Map<Suit, List<Card>> map) {
@@ -229,7 +234,7 @@ public class Determiner {
         return areThreeCardsWithSameSuit(cards);
     }
 
-    private static boolean areThreeCardsWithSameSuit(List<Card> cards) {
+    public static boolean areThreeCardsWithSameSuit(List<Card> cards) {
         final Map<Suit, Integer> numberOfCardsPerSuit = getNumberOfCardsPerSuit(cards);
         return numberOfCardsPerSuit.values().contains(3);
     }

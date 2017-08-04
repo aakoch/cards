@@ -19,6 +19,7 @@ public class ThirtyOneRound {
 
     private final Dealer dealer;
     private final Queue<Player> playerQueue;
+    private GameContext gameContext;
 
     public ThirtyOneRound(Dealer dealer, Queue<Player> playerQueue) {
         this.dealer = dealer;
@@ -35,10 +36,13 @@ public class ThirtyOneRound {
 
         Iterator<Player> r = ListUtils.constructRotator(playerList, playerList.indexOf(dealer));
 
+        Player playerWhoKnocked = null;
         boolean playerKnocked = false;
         boolean playerHas31 = false;
         Player player = null;
-        while (!playerHas31 && r.hasNext()) {
+        int playerTurnCount = 0;
+        int turnsLeft = Integer.MAX_VALUE;
+        while (!playerHas31 && r.hasNext() && turnsLeft-- > 0) {
             player = r.next();
 
             Outcome outcome = playTurn(player, drawPile, discardPile);
@@ -49,17 +53,65 @@ public class ThirtyOneRound {
             }
 
             if (outcome.getHas31()) {
-                LOGGER.debug(player + " won");
+                LOGGER.info(player + " got 31\n\n");
                 playerHas31 = true;
             }
+            else if (outcome.playerKnocks() && !playerKnocked) {
+                playerWhoKnocked = player;
+                LOGGER.info(player.getName() + " knocks\n");
+                playerKnocked = true;
+                turnsLeft = playerList.size() - 1;
+            }
+
+            playerTurnCount++;
         }
+        LOGGER.debug("playerTurnCount = " + playerTurnCount);
+        LOGGER.debug("playerTurnCount / player count = " + (double) (playerTurnCount / playerList.size()));
         if (playerHas31 && player != null) {
             playerList.remove(player);
             playerList.forEach(Player::pay);
             return playerList;
         }
+        else if (playerKnocked) {
+            List<Player> lowestPlayers = findLowestPlayers(playerWhoKnocked, playerList);
+
+            return lowestPlayers;
+        }
 
         return null;
+    }
+
+    private List<Player> findLowestPlayers(Player playerWhoKnocked, List<Player> playerList) {
+        int playerWhoKnockedTotal = Calculator.totalCards(playerWhoKnocked.getHand().cards());
+
+        for (Player player : playerList) {
+            if (!player.equals(playerWhoKnocked)) {
+                int total = Calculator.totalCards(player.getHand().cards());
+                if (total > playerWhoKnockedTotal) {
+                    return Arrays.asList(playerWhoKnocked);
+                }
+            }
+        }
+
+        int lowestTotal = Integer.MAX_VALUE;
+        for (Player player : playerList) {
+            if (!player.equals(playerWhoKnocked)) {
+                int total = Calculator.totalCards(player.getHand().cards());
+                lowestTotal = Math.min(lowestTotal, total);
+            }
+        }
+
+        List<Player> lowestPlayers = new ArrayList<>();
+        for (Player player : playerList) {
+            if (!player.equals(playerWhoKnocked)) {
+                int total = Calculator.totalCards(player.getHand().cards());
+                if (total == lowestTotal) {
+                    lowestPlayers.add(player);
+                }
+            }
+        }
+
+        return lowestPlayers;
     }
 
     private Outcome playTurn(Player player, DrawPile drawPile, DiscardPile discardPile) {
@@ -93,8 +145,20 @@ public class ThirtyOneRound {
         if (player.has31()) {
             outcome.setHas31();
         }
+        else if (shouldPlayerKnock(player, gameContext)) {
+            outcome.setPlayerKnocks();
+        }
 
         return outcome;
+    }
+
+    private boolean shouldPlayerKnock(Player player, GameContext gameContext) {
+        final List<Card> cards = player.getHand().cards();
+        return Determiner.areThreeCardsWithSameSuit(cards) && points(cards) > 20;
+    }
+
+    private int points(List<Card> cards) {
+        return cards.stream().mapToInt(card -> card.getRank().getNumericRank(true)).sum();
     }
 
 }

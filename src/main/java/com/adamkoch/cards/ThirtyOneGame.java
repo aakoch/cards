@@ -50,7 +50,7 @@ public class ThirtyOneGame implements Game {
             ThirtyOneRound round = new ThirtyOneRound(dealer, playerQueue);
             List<Player> payers = round.play();
 
-            LOGGER.debug("payers = " + payers);
+            LOGGER.debug("payers = " + payers + "\n\n");
 
             deck = getStartDeck();
             deck.shuffle();

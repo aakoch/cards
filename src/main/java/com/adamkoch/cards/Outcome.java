@@ -21,6 +21,7 @@ public class Outcome {
     private Player loser;
     private Card discard;
     private boolean has31;
+    private boolean playerKnocks;
 
     public Outcome(Card card) {
         this.card = card;
@@ -77,5 +78,13 @@ public class Outcome {
 
     public boolean getHas31() {
         return has31;
+    }
+
+    public void setPlayerKnocks() {
+        playerKnocks = true;
+    }
+
+    public boolean playerKnocks() {
+        return playerKnocks;
     }
 }
