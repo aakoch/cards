@@ -38,16 +38,16 @@ public class GameResult {
 
 
         return "GameResult{" +
-                "winner=" + winner +
-                ", roundResults=\n" + Joiner.on("\n").join(roundResults) +
-                ",\n rounds won by knock=" +
+                "winner=" + winner.getName() +
+//                ", roundResults=\n" + Joiner.on("\n").join(roundResults) +
+                ",\n rounds won by knocking=" +
                 roundResults.stream().filter(result -> result.getRoundEndMethod() == RoundEndMethod.KNOCK).count() +
                 ",\n rounds won by 31=" +
                 roundResults.stream()
                             .filter(result -> result.getRoundEndMethod() == RoundEndMethod.THIRTY_ONE)
                             .count() +
-                ",\n rounds won by unknown=" +
-                roundResults.stream().filter(result -> result.getRoundEndMethod() == RoundEndMethod.UNKNOWN).count() +
+//                ",\n rounds won by unknown=" +
+//                roundResults.stream().filter(result -> result.getRoundEndMethod() == RoundEndMethod.UNKNOWN).count() +
                 '}';
     }
 }

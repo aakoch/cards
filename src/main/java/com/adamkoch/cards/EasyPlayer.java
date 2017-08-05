@@ -32,7 +32,7 @@ public class EasyPlayer extends Player {
     }
 
     @Override
-    public Card chooseWhichCardToDiscard(DrawPile drawPile, DiscardPile discardPile) {
+    public Card chooseWhichCardToDiscard(DrawPile drawPile, DiscardPile discardPile, GameContext gameContext) {
 
         if (super.discardCard != null) {
             Card temp = discardCard;
@@ -40,7 +40,7 @@ public class EasyPlayer extends Player {
             return temp;
         }
 
-        final Card cardToDiscard = Determiner.chooseCardToDiscard(getHand().cards(), discardPile);
+        final Card cardToDiscard = Determiner.chooseCardToDiscard(getHand().cards(), gameContext);
 
         getHand().cards().remove(cardToDiscard);
 

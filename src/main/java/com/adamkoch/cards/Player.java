@@ -123,7 +123,7 @@ public abstract class Player {
         return coinsLeft;
     }
 
-    public abstract Card chooseWhichCardToDiscard(DrawPile drawPile, DiscardPile discardPile);
+    public abstract Card chooseWhichCardToDiscard(DrawPile drawPile, DiscardPile discardPile, GameContext gameContext);
 
     public void drawFromDrawPile(DrawPile drawPile, DiscardPile discardPile) {
         Card drawCard = drawPile.draw();
@@ -140,7 +140,7 @@ public abstract class Player {
             }
         }
 
-        LOGGER.debug("name = " + name + ", hand = " + hand + ", total = " + total() + ", has31 = " + has31);
+        LOGGER.trace("name = " + name + ", hand = " + hand + ", total = " + total() + ", has31 = " + has31);
         return has31;
     }
 

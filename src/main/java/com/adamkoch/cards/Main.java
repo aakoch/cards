@@ -12,7 +12,7 @@ public class Main {
 private static final Logger LOGGER = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) {
-        System.out.println(LOGGER.isDebugEnabled());
+//        System.out.println(LOGGER.isDebugEnabled());
 //        if (LOGGER.isDebugEnabled()) {
 //            listStandardDeck();
 //        }

@@ -22,9 +22,12 @@ public class Outcome {
     private Card discard;
     private boolean has31;
     private boolean playerKnocks;
+    private boolean playerDrewFromDiscardPile;
+    private Card cardTakenFromDiscardPile;
 
     public Outcome(Card card) {
         this.card = card;
+        playerDrewFromDiscardPile = false;
     }
 
     public Outcome(Player highestPlayer) {
@@ -32,10 +35,12 @@ public class Outcome {
         this.winner = highestPlayer;
         losers = new ArrayList<>();
         losers.add(highestPlayer);
+        playerDrewFromDiscardPile = false;
     }
 
     public Outcome() {
 
+        playerDrewFromDiscardPile = false;
     }
 
     public Card getCard() {
@@ -86,5 +91,22 @@ public class Outcome {
 
     public boolean playerKnocks() {
         return playerKnocks;
+    }
+
+    public boolean playerDrewFromDiscardPile() {
+        return playerDrewFromDiscardPile;
+    }
+
+    public Card getCardTakenFromDiscardPile() {
+        return cardTakenFromDiscardPile;
+    }
+
+    public void setCardTakenFromDiscardPile(Card cardTakenFromDiscardPile) {
+        playerDrewFromDiscardPile = true;
+        this.cardTakenFromDiscardPile = cardTakenFromDiscardPile;
+    }
+
+    public Card getDiscardCard() {
+        return discard;
     }
 }

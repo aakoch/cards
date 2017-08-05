@@ -1,5 +1,6 @@
 package com.adamkoch.cards;
 
+import com.adamkoch.utils.ListUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,12 +17,14 @@ public class Determiner {
 
     private static final Logger LOGGER = LogManager.getLogger(Determiner.class);
 
-    public static Card chooseCardToDiscard(final List<Card> cards, final DiscardPile discardPile) {
+    public static Card chooseCardToDiscard(final List<Card> cards, GameContext gameContext) {
 
         assert (cards.size() == 4);
 
         Chain chain = new Chain();
+        chain.addRule(createGameContextRule(gameContext));
         chain.addRule(createOddSuitRule());
+        chain.addRule(createComparePairsRule());
         chain.addRule(createNumericRankRule());
         chain.addRule(createKeepTensRule());
         chain.addRule(createRandomRule(cards));
@@ -32,7 +35,50 @@ public class Determiner {
             returnedCards = chain.nextRule(returnedCards);
         }
 
+
         return returnedCards.get(0);
+    }
+
+    private static Rule createComparePairsRule() {
+        return new Rule() {
+            @Override
+            public List<Card> apply(List<Card> cards) {
+
+                if (cards.size() == 4) {
+                    Map<Suit, Integer> map = getNumberOfCardsPerSuit(cards);
+                    if (map.size() == 2 && map.containsValue(Integer.valueOf(2))) {
+
+                        cards.sort((card1, card2) -> card2.getSuit().ordinal() - card1.getSuit().ordinal());
+
+                        List<Card> pair1 = cards.subList(0, 2);
+                        List<Card> pair2 = cards.subList(2, 4);
+                        int total1 = Calculator.totalCards(pair1);
+                        int total2 = Calculator.totalCards(pair2);
+
+                        if (total1 > total2) {
+                            pair2.sort(Comparator.comparingInt(card -> card.getRank().getValue(true)));
+                            return Arrays.asList(pair2.get(0));
+                        }
+                        else if (total2 > total1) {
+                            pair1.sort(Comparator.comparingInt(card -> card.getRank().getValue(true)));
+                            return Arrays.asList(pair1.get(0));
+                        }
+                    }
+                }
+
+                return cards;
+            }
+        };
+    }
+
+    private static Rule createGameContextRule(GameContext gameContext) {
+        return new Rule() {
+            @Override
+            public List<Card> apply(List<Card> cards) {
+                LOGGER.debug("gameContext = " + gameContext);
+                return cards;
+            }
+        };
     }
 
     private static Rule createKeepTensRule() {
@@ -75,15 +121,16 @@ public class Determiner {
         for (Map.Entry<Suit, List<Card>> entry : map.entrySet()) {
             final List<Card> cards = entry.getValue();
             //int rank = calculateRankOfCardsWithSameSuitToBeComparedToOtherLists(cards);
-            int rank = calculateValueOfCardsWithSameSuitToBeComparedToOtherLists(cards);
+
+            int rank = Calculator.totalCards(cards);
             map2.put(rank, cards);
         }
 
         final Map.Entry<Integer, List<Card>> integerListEntry = map2.entrySet()
                                                                     .stream()
                                                                     .sorted(Comparator.comparing((Map.Entry<Integer,
-                                                                            List<Card>>  entry) -> entry.getKey())
-                                                                                      )
+                                                                            List<Card>> entry) -> entry.getKey())
+                                                                    )
                                                                     .findFirst()
                                                                     .orElseThrow(RuntimeException::new);
 
@@ -100,20 +147,6 @@ public class Determiner {
                 rank += 10;
             }
             rank += cardRank.value();
-        }
-
-        LOGGER.debug("rank = " + rank);
-
-        return rank;
-    }
-
-    private static int calculateValueOfCardsWithSameSuitToBeComparedToOtherLists(List<Card> cards) {
-
-        int rank = 0;
-
-        for (Card card : cards) {
-            final Rank cardRank = card.getRank();
-            rank += cardRank.getValue(true);
         }
 
         LOGGER.debug("rank = " + rank);
@@ -177,7 +210,7 @@ public class Determiner {
     }
 
 
-    private static boolean discardingCardWillResultInAnotherPlayerGetting31(Card oddSuit) {
+    private static boolean discardingCardWillResultInAnotherPlayerGetting31(Card card) {
         return false;
     }
 
@@ -225,19 +258,65 @@ public class Determiner {
         };
     }
 
-    public static boolean cardWouldImproveHand(Card card, List<Card> cards) {
-        if (addingCardWouldMake3OfTheSameSuit(card, cards)) {
-            return true;
-        }
-        else if (addingCardWouldMake2OfTheSameSuit(card, cards)) {
-            // rank and choose
-            List<Card> newCardsList = new ArrayList<>(cards);
-            newCardsList.add(card);
-            Map<Suit, List<Card>> map = createSuitListMap(newCardsList);
-            List<Card> list = rankAndPickCardsToDiscard(map);
+    public static boolean cardWouldImproveHand(Card card, List<Card> cards, GameContext gameContext) {
 
-            // if the discarded cards includes the card passed in, then return false
-            return list.contains(card);
+//        final boolean chanceOfGettingBetterCardWithSameSuit;
+//        if (gameContext == null) {
+//            chanceOfGettingBetterCardWithSameSuit = false;
+//        }
+//        else {
+//            final double percentOfGettingBetterCardWithSameSuit = gameContext.chanceOfGettingBetterCardWithSameSuit(card);
+//            LOGGER.debug(String.format("chanceOfGettingBetterCardWithSameSuit=%.2f%%",
+//                    percentOfGettingBetterCardWithSameSuit * 100));
+//            chanceOfGettingBetterCardWithSameSuit = percentOfGettingBetterCardWithSameSuit > .18;
+//        }
+
+//        if (addingCardWouldMake3OfTheSameSuit(card, cards)) {
+//            return true;
+//        }
+//        else if (addingCardWouldMake2OfTheSameSuit(card, cards)) {
+//            // rank and choose
+//            List<Card> newCardsList = new ArrayList<>(cards);
+//            newCardsList.add(card);
+//            Map<Suit, List<Card>> map = createSuitListMap(newCardsList);
+//            List<Card> list = rankAndPickCardsToDiscard(map);
+//
+//            // if the discarded cards includes the card passed in, then return false
+//            return list.contains(card);
+//        }
+//        else if (newPairBetterThanCurrentPair(cards, card)) {
+//            return true;
+//        }
+//        else {
+//            return false;
+//        }
+        return Calculator.totalCards(cards) < Calculator.totalCards(ListUtils.concat(cards, card));
+
+    }
+
+    public static boolean newPairBetterThanCurrentPair(List<Card> cards, Card card) {
+        List<Card> newHand = new ArrayList<>(cards);
+        newHand.add(card);
+        Map<Suit, Integer> map = getNumberOfCardsPerSuit(newHand);
+        if (map.size() == 2 && map.containsValue(Integer.valueOf(2))) {
+            boolean b;
+
+            newHand.sort((card1, card2) -> card2.getSuit().ordinal() - card1.getSuit().ordinal());
+
+            List<Card> pair1 = newHand.subList(0, 2);
+            List<Card> pair2 = newHand.subList(2, 4);
+            int total1 = Calculator.totalCards(pair1);
+            int total2 = Calculator.totalCards(pair2);
+
+            if (pair1.contains(card)) {
+                b = total1 > total2;
+            }
+            else {
+                b = total2 > total1;
+            }
+
+
+            return b;
         }
         else {
             return false;

@@ -3,8 +3,6 @@ package com.adamkoch.cards;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.List;
-
 /**
  * <p>
  * Created by aakoch on 2017.08.04.
@@ -22,10 +20,10 @@ public class StalemateBreakingPlayer extends EasyPlayer {
     }
 
     @Override
-    public Card chooseWhichCardToDiscard(DrawPile drawPile, DiscardPile discardPile) {
+    public Card chooseWhichCardToDiscard(DrawPile drawPile, DiscardPile discardPile, GameContext gameContext) {
 //        int beforeHashCode = getHand().cards().hashCode();
         int totalBefore = total();
-        final Card cardToDiscard = super.chooseWhichCardToDiscard(drawPile, discardPile);
+        final Card cardToDiscard = super.chooseWhichCardToDiscard(drawPile, discardPile, gameContext);
 //        int afterHashCode = getHand().cards().hashCode();
 //        if (beforeHashCode == afterHashCode) {
 //            handChanged = false;

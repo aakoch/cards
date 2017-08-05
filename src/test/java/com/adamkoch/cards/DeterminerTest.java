@@ -150,7 +150,8 @@ public class DeterminerTest {
         cards.add(newCard);
 
         final Card actualCard = Determiner.chooseCardToDiscard(cards, null);
-        assertEquals("Discarded card should have been " + newCard + " out of " + cards + ", but was " + actualCard, newCard, actualCard);
+        assertEquals("Discarded card should have been " + newCard + " out of " + cards + ", but was " + actualCard,
+                newCard, actualCard);
     }
 
     @Test
@@ -161,7 +162,8 @@ public class DeterminerTest {
         cards.add(new Card(Suit.SPADES, Rank.KING));
 
         Card newCard = new Card(Suit.HEARTS, Rank.EIGHT);
-        assertFalse(Determiner.cardWouldImproveHand(newCard, cards));
+        assertFalse("Adding " + newCard + " should NOT improve hand " + cards + ", but it returned true",
+                Determiner.cardWouldImproveHand(newCard, cards, null));
     }
 
     @Test
@@ -172,7 +174,7 @@ public class DeterminerTest {
         cards.add(new Card(Suit.SPADES, Rank.SEVEN));
 
         Card newCard = new Card(Suit.SPADES, Rank.FIVE);
-        assertFalse(Determiner.cardWouldImproveHand(newCard, cards));
+        assertFalse("Adding " + newCard + " should NOT improve hand " + cards + ", but it returned true", Determiner.cardWouldImproveHand(newCard, cards, null));
     }
 
     @Test
@@ -183,7 +185,7 @@ public class DeterminerTest {
         cards.add(new Card(Suit.SPADES, Rank.KING));
 
         Card newCard = new Card(Suit.SPADES, Rank.EIGHT);
-        assertTrue(Determiner.cardWouldImproveHand(newCard, cards));
+        assertTrue(Determiner.cardWouldImproveHand(newCard, cards, null));
     }
 
     @Test
@@ -194,7 +196,90 @@ public class DeterminerTest {
         cards.add(new Card(Suit.DIAMONDS, Rank.THREE));
 
         Card newCard = new Card(Suit.CLUBS, Rank.ACE);
-        assertTrue("Adding " + newCard + " should improve hand " + cards + ", but it returned false", Determiner.cardWouldImproveHand(newCard, cards));
+        assertTrue("Adding " + newCard + " should improve hand " + cards + ", but it returned false",
+                Determiner.cardWouldImproveHand(newCard, cards, null));
+    }
+
+    @Test
+    public void testCardWouldImproveHand_real2() throws Exception {
+        List<Card> cards = new ArrayList<>();
+        cards.add(new Card(Suit.HEARTS, Rank.QUEEN));
+        cards.add(new Card(Suit.SPADES, Rank.TWO));
+        cards.add(new Card(Suit.HEARTS, Rank.FIVE));
+
+        Card newCard = new Card(Suit.HEARTS, Rank.TWO);
+        GameContext gameContext = new GameContext();
+        final List<Card> cardsLeft = new StandardDeck().cards();
+        cardsLeft.removeAll(cards);
+        gameContext.cardsStillOutThere(cardsLeft);
+
+        assertTrue("Adding " + newCard + " should improve hand " + cards + ", but it returned false", Determiner
+                .cardWouldImproveHand(newCard, cards, gameContext));
+    }
+
+    @Test
+    public void testCardWouldImproveHand_real3() throws Exception {
+        List<Card> cards = new ArrayList<>();
+        cards.add(new Card(Suit.HEARTS, Rank.NINE));
+        cards.add(new Card(Suit.CLUBS, Rank.SIX));
+        cards.add(new Card(Suit.CLUBS, Rank.THREE));
+
+        Card newCard = new Card(Suit.HEARTS, Rank.EIGHT);
+        GameContext gameContext = new GameContext();
+        final List<Card> cardsLeft = new StandardDeck().cards();
+        cardsLeft.removeAll(cards);
+        gameContext.cardsStillOutThere(cardsLeft);
+
+        assertTrue("Adding " + newCard + " should improve hand " + cards + ", but it returned false", Determiner
+                .cardWouldImproveHand(newCard, cards, gameContext));
+    }
+
+    @Test
+    public void testCardWouldImproveHand_real4() throws Exception {
+        List<Card> cards = new ArrayList<>();
+        cards.add(new Card(Suit.SPADES, Rank.TEN));
+        cards.add(new Card(Suit.DIAMONDS, Rank.FOUR));
+        cards.add(new Card(Suit.CLUBS, Rank.EIGHT));
+
+        Card newCard = new Card(Suit.HEARTS, Rank.ACE);
+        GameContext gameContext = new GameContext();
+        final List<Card> cardsLeft = new StandardDeck().cards();
+        cardsLeft.removeAll(cards);
+        gameContext.cardsStillOutThere(cardsLeft);
+
+        assertTrue("Adding " + newCard + " should improve hand " + cards + ", but it returned false", Determiner
+                .cardWouldImproveHand(newCard, cards, gameContext));
+    }
+
+    @Test
+    public void testCardWouldImproveHand_fake2() throws Exception {
+        List<Card> cards = new ArrayList<>();
+        cards.add(new Card(Suit.HEARTS, Rank.QUEEN));
+        cards.add(new Card(Suit.SPADES, Rank.TWO));
+        cards.add(new Card(Suit.HEARTS, Rank.FIVE));
+
+        Card newCard = new Card(Suit.HEARTS, Rank.FIVE);
+        GameContext gameContext = new GameContext();
+        final List<Card> cardsLeft = new StandardDeck().cards();
+        cardsLeft.removeAll(cards);
+        gameContext.cardsStillOutThere(cardsLeft);
+
+        assertTrue("Adding " + newCard + " should improve hand " + cards + ", but it returned false", Determiner
+                .cardWouldImproveHand(newCard, cards, gameContext));
+    }
+
+
+    @Test
+    public void testNewPairBetterThanCurrentPair() throws Exception {
+        List<Card> cards = new ArrayList<>();
+        cards.add(new Card(Suit.HEARTS, Rank.QUEEN));
+        cards.add(new Card(Suit.SPADES, Rank.FIVE));
+        cards.add(new Card(Suit.HEARTS, Rank.TWO));
+
+        Card newCard = new Card(Suit.SPADES, Rank.QUEEN);
+
+        assertTrue("New pair should be better than old, but it returned false. cards=" + cards + ", newCard=" + newCard,
+                Determiner.newPairBetterThanCurrentPair(cards, newCard));
     }
 
     @Test
