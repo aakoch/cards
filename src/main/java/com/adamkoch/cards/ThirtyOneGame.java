@@ -3,9 +3,7 @@ package com.adamkoch.cards;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.stream.Collectors;
 
@@ -28,7 +26,8 @@ public class ThirtyOneGame implements Game {
     }
 
     @Override
-    public Result play() {
+    public GameResult play() {
+        GameResult gameResult = new GameResult();
         Player randomPlayer = players.pickRandomPlayer();
         Deck deck = getStartDeck();
         deck.shuffle();
@@ -48,20 +47,19 @@ public class ThirtyOneGame implements Game {
         while(atLeast2PlayersAreStillIn(playerQueue)) {
 
             ThirtyOneRound round = new ThirtyOneRound(dealer, playerQueue);
-            List<Player> payers = round.play();
-
-            LOGGER.info("payers = " + payers + "\n\n");
+            Result result = round.play();
+            gameResult.addRound(result);
+            List<Player> payers = result.getLosers();
+            payers.forEach(Player::pay);
+            LOGGER.debug("payers = " + payers + "\n\n");
 
             deck = getStartDeck();
             deck.shuffle();
             dealer = determineDealer(deck);
 
-            Iterator<Player> iterator = playerQueue.iterator();
-            while (iterator.hasNext()) {
-                Player player = iterator.next();
-                if (!player.stillInGame()) {
-                    iterator.remove();
-                }
+            if (playerQueue.removeIf(player -> !player.stillInGame())) {
+                LOGGER.info("players left in game are " + playerQueue.stream().map(Player::getName).collect
+                        (Collectors.joining(", ")));
             }
 
         }
@@ -70,8 +68,9 @@ public class ThirtyOneGame implements Game {
         LOGGER.info("**************** winner = " + winner + " ************************");
 
         players.list().stream().forEach(player -> LOGGER.debug("player = " + player));
+        gameResult.setWinner(winner);
 
-        return new Result(winner);
+        return gameResult;
     }
 
     private Player figureOutWinner(Players<Player> players) {

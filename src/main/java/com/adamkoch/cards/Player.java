@@ -110,6 +110,9 @@ public abstract class Player {
 
     public void pay() {
         coinsLeft--;
+        if (coinsLeft == 0) {
+            LOGGER.info(getName() + " is on their honor");
+        }
     }
 
     public boolean stillInGame() {

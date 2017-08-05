@@ -4,6 +4,7 @@ import com.adamkoch.utils.ListUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.text.ChoiceFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -26,8 +27,9 @@ public class ThirtyOneRound {
         this.playerQueue = playerQueue;
     }
 
-    public List<Player> play() {
+    public Result play() {
         LOGGER.info("************************ Start round ************************");
+        Result result = new Result();
 
         gameContext = new GameContext();
         final List<Player> playerList = playerQueue.stream().collect(Collectors.toList());
@@ -63,7 +65,7 @@ public class ThirtyOneRound {
             }
             else if (outcome.playerKnocks() && !playerKnocked) {
                 playerWhoKnocked = player;
-                LOGGER.info(player.getName() + " knocks with " + player.total() + "\n");
+                LOGGER.info(player.getName() + " knocks with " + player.total());
                 playerKnocked = true;
                 turnsLeft = playerList.size() - 1;
             }
@@ -73,18 +75,40 @@ public class ThirtyOneRound {
         }
         LOGGER.debug("playerTurnCount = " + playerTurnCount);
         LOGGER.debug("playerTurnCount / player count = " + (double) (playerTurnCount / playerList.size()));
+        final RoundEndMethod roundEndMethod;
         if (playerHas31 && player != null) {
+
+            LOGGER.info(player.getName() + " won so the rest have to pay");
+
+            result.setWinners(Arrays.asList(player));
             playerList.remove(player);
-            playerList.forEach(Player::pay);
-            return playerList;
+
+            result.setLosers(playerList);
+            roundEndMethod = RoundEndMethod.THIRTY_ONE;
         }
         else if (playerKnocked) {
             List<Player> lowestPlayers = findLowestPlayers(playerWhoKnocked, playerList);
 
-            return lowestPlayers;
+            ChoiceFormat wasFormat = new ChoiceFormat("1#was|were");
+            ChoiceFormat hasFormat = new ChoiceFormat("1#has|have");
+
+            LOGGER.info(lowestPlayers + " " + wasFormat.format(lowestPlayers.size()) + " lowest and " + hasFormat
+                    .format(lowestPlayers.size()) + " to pay");
+
+            if (lowestPlayers.contains(playerWhoKnocked)) {
+                result.setKnockerLost(playerWhoKnocked);
+            }
+
+            result.setLosers(lowestPlayers);
+            roundEndMethod = RoundEndMethod.KNOCK;
+        }
+        else {
+            roundEndMethod = RoundEndMethod.UNKNOWN;
         }
 
-        return null;
+        result.setRoundEndMethod(roundEndMethod);
+
+        return result;
     }
 
     private List<Player> findLowestPlayers(Player playerWhoKnocked, List<Player> playerList) {
@@ -93,7 +117,7 @@ public class ThirtyOneRound {
         for (Player player : playerList) {
             if (!player.equals(playerWhoKnocked)) {
                 int total = Calculator.totalCards(player.getHand().cards());
-                if (total > playerWhoKnockedTotal) {
+                if (total >= playerWhoKnockedTotal) {
                     LOGGER.info(player.getName() + " has " + total + " points which is more than the "
                             + playerWhoKnockedTotal + " " + playerWhoKnocked.getName() + " has!");
                     return Arrays.asList(playerWhoKnocked);

@@ -57,7 +57,7 @@ public class EasyPlayer extends Player {
         final boolean totalGreater = total > currentKnockLimit;
         boolean decidesToKnock = Determiner.areThreeCardsWithSameSuit(cards) && totalGreater;
         if (decidesToKnock) {
-            LOGGER.info("after " + rounds + " rounds, " + getName() + " has " + total +
+            LOGGER.debug("after " + rounds + " rounds, " + getName() + " has " + total +
                     " points, which is greater than their limit of " + currentKnockLimit + ", and decides to knock");
         }
         else if (total >= 30) {

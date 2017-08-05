@@ -9,6 +9,6 @@ package com.adamkoch.cards;
  */
 public interface Game {
 
-    Result play();
+    GameResult play();
 
 }
