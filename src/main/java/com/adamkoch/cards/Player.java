@@ -175,6 +175,11 @@ public abstract class Player {
 
     public abstract boolean decidesToKnock(GameContext gameContext);
 
+    /**
+     * Should the user pick the card up from the discard pile?
+     */
+    public abstract boolean chooseCardFromDiscardPile(Card card, GameContext gameContext);
+
 //    public boolean chooseCardFromDiscardPile(DrawPile drawPile, DiscardPile discardPile) {
 //
 //        Card topDiscardedCard = discardPile.topCard();

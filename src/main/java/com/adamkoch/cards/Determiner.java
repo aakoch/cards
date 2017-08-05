@@ -290,6 +290,17 @@ public class Determiner {
 //        else {
 //            return false;
 //        }
+
+        final boolean[] isLowestCard = {false};
+        final Map<Suit, Integer> numberOfCardsPerSuit = Determiner.getNumberOfCardsPerSuit(cards);
+        if (numberOfCardsPerSuit.size() == 1) {
+            final Optional<Card> min = cards.stream().min(Comparator.comparing(Card::getRank));
+            min.ifPresent(card1 -> isLowestCard[0] = true);
+        }
+
+        if (isLowestCard[0]) {
+            return false;
+        }
         return Calculator.totalCards(cards) < Calculator.totalCards(ListUtils.concat(cards, card));
 
     }

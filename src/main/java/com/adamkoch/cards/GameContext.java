@@ -1,9 +1,6 @@
 package com.adamkoch.cards;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -14,16 +11,21 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class GameContext {
     private AtomicInteger numberOfPlays;
-    private int numberOfPlayers;
     private boolean someoneElseHasKnocked;
-    private final Map<Player, List<Card>> hands;
+    private final Map<String, Set<Card>> hands;
+    private final Map<String, Set<Card>> discards;
     private List<Card> cardsLeft;
+    private List<Outcome> outcomes;
+    private List<Player> players;
 
     public GameContext() {
         someoneElseHasKnocked = false;
         numberOfPlays = new AtomicInteger(0);
         hands = new HashMap<>();
         cardsLeft = new ArrayList<>();
+        outcomes = new ArrayList<>();
+        discards = new HashMap<>();
+        players = Collections.emptyList();
     }
 
     public void incrementNumberOfPlays() {
@@ -34,12 +36,16 @@ public class GameContext {
         return numberOfPlays.get();
     }
 
-    public void setNumberOfPlayers(int numberOfPlayers) {
-        this.numberOfPlayers = numberOfPlayers;
+    public void setPlayers(List<Player> players) {
+        this.players = new ArrayList<>(players);
+    }
+
+    public void removePlayer(Player player) {
+        players.remove(player);
     }
 
     public int getNumberOfPlayers() {
-        return numberOfPlayers;
+        return players.size();
     }
 
     public boolean someoneElseHasKnocked() {
@@ -51,13 +57,16 @@ public class GameContext {
     }
 
     public void addCardToHandForPlayer(Player player, Card card) {
-        hands.computeIfAbsent(player, player1 -> new ArrayList<>()).add(card);
+        hands.computeIfAbsent(player.getName(), name -> new HashSet<>()).add(card);
     }
 
     public void removeCardFromHandForPlayer(Player player, Card card) {
-        //hands.getOrDefault(player, new ArrayList<>()).remove(card);
+        if (hands.containsKey(player.getName())) {
+            hands.get(player.getName()).remove(card);
+        }
     }
 
+    @Deprecated
     public void cardsStillOutThere(List<Card> cardsLeft) {
         this.cardsLeft = new ArrayList<>(cardsLeft);
     }
@@ -69,14 +78,30 @@ public class GameContext {
         return numberOfCardsWithSameSuitAndHigher / numberOfCardsLeft;
     }
 
+    public void addOutcome(Outcome outcome) {
+        outcomes.add(outcome);
+    }
+
+    public void addCardToThoseDiscardedByPlayer(Player player, Card discardedCard) {
+        discards.computeIfAbsent(player.getName(), name -> new HashSet<>()).add(discardedCard);
+    }
+
     @Override
     public String toString() {
         return "GameContext{" +
                 "numberOfPlays=" + numberOfPlays +
-                ", numberOfPlayers=" + numberOfPlayers +
+                ", numberOfPlayers=" + players.size() +
                 ", someoneElseHasKnocked=" + someoneElseHasKnocked +
                 ", hands=" + hands +
-                ", cardsLeft=" + cardsLeft +
+                ", discards=" + discards +
                 '}';
+    }
+
+    public Player getNextPlayer(Player player) {
+        int indexOfCurrentPlayer = players.indexOf(player);
+        if (indexOfCurrentPlayer >= players.size() - 1) {
+            indexOfCurrentPlayer = 0;
+        }
+        return players.get(indexOfCurrentPlayer + 1);
     }
 }

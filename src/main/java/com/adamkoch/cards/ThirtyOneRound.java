@@ -35,12 +35,12 @@ public class ThirtyOneRound {
         final List<Player> playerList = playerQueue.stream().collect(Collectors.toList());
         LOGGER.debug(playerList.size() + " players");
 
-        gameContext.setNumberOfPlayers(playerList.size());
+        gameContext.setPlayers(playerList);
 
         final List<Card> remainingCards = dealer.dealTo(playerList, 3);
         DrawPile drawPile = new DrawPile(remainingCards);
         DiscardPile discardPile = new DiscardPile(drawPile);
-        gameContext.cardsStillOutThere(new StandardDeck().cards());
+        //gameContext.cardsStillOutThere(new StandardDeck().cards());
 
         Iterator<Player> r = ListUtils.constructRotator(playerList, playerList.indexOf(dealer));
 
@@ -54,6 +54,7 @@ public class ThirtyOneRound {
             player = r.next();
 
             Outcome outcome = playTurn(player, drawPile, discardPile, gameContext);
+            gameContext.addOutcome(outcome);
 
             final Card outcomeCard = outcome.getCard();
             if (outcomeCard != null) {
@@ -62,13 +63,18 @@ public class ThirtyOneRound {
             final Card discardedCard = outcome.getDiscardCard();
             if (discardedCard != null) {
                 if (outcome.playerDrewFromDiscardPile()) {
+                    if (discardedCard.equals(outcome.getCardTakenFromDiscardPile())) {
+                        throw new IllegalStateException("Player can't pick up the card from the discard pile and then" +
+                                " discard it: " + discardedCard);
+                    }
                     gameContext.addCardToHandForPlayer(player, outcome.getCardTakenFromDiscardPile());
                 }
-                gameContext.removeCardFromHandForPlayer(player, outcomeCard);
+                gameContext.removeCardFromHandForPlayer(player, discardedCard);
+                gameContext.addCardToThoseDiscardedByPlayer(player, discardedCard);
             }
 
             if (outcome.getHas31()) {
-                LOGGER.info(player + " got 31\n\n");
+                LOGGER.info(player.getName() + " got 31! " + player.getHand().cards() + "\n\n");
                 playerHas31 = true;
             }
             else if (outcome.playerKnocks() && !playerKnocked) {
@@ -165,7 +171,7 @@ public class ThirtyOneRound {
 
         Outcome outcome = new Outcome();
 //        if (!player.chooseCardFromDiscardPile(drawPile, discardPile)) {
-        if (Determiner.cardWouldImproveHand(discardPile.peekAtTopCard(), player.hand, gameContext)) {
+        if (player.chooseCardFromDiscardPile(discardPile.peekAtTopCard(), gameContext)) {
             LOGGER.debug(player.getName() + " takes " + discardPile.peekAtTopCard() + " from discard pile");
             outcome.setCardTakenFromDiscardPile(discardPile.peekAtTopCard());
             player.addCardToHand(discardPile.removeTopCard());

@@ -15,8 +15,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class PlayerFactory {
     private static final Logger LOGGER = LogManager.getLogger(PlayerFactory.class);
 
-    private static List<String> names = Arrays.asList("Steve", "Shorty", "Bob", "Watermelon", "Taz", "Ace", "Mumbles",
-            "Cool wHip");
+    private static List<String> names = Arrays.asList("Watermelon",
+            "Cool wHip", "Ace", "C$", "Taz", "Pumpkin", "Shorty", "Bob",  "Mumbles", "Steve");
     private static Queue<String> namesQueue = new ConcurrentLinkedQueue<>(names);
 //    private static List<String> names = Arrays.asList("Dad", "Mom", "Alyssa", "Joel");
 //    public static List<Player> initializePlayers(int numberOfInstances) {
@@ -45,7 +45,7 @@ public class PlayerFactory {
         // Distance and Count: 21.15%, Random: 15.98%, Random: 15.86%, Random: 15.77%, Random: 15.69%, Random: 15.55%
 
         for (int i = 0; i < 5; i++) {
-            players.add(new StalemateBreakingPlayer(randomName(), 30));
+            players.add(new StalemateBreakingPlayer(randomName(), 22 + i));
         }
 //        for (int i = 0; i < 4; i++) {
 //            players.add(new StalemateBreakingPlayer(makeEasy()));
