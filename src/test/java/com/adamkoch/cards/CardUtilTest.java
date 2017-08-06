@@ -32,8 +32,8 @@ public class CardUtilTest {
     }
 
     private List<Card> cardList(String... s) {
-        return Arrays.stream(s).map(str -> new Card(Suit.valueOf(str.charAt(1)), Rank.valueOf(
-                str.charAt(0)))).collect(Collectors.toList());
+        return Arrays.stream(s).map(str -> new Card(Rank.valueOf(
+                str.charAt(0)), Suit.valueOf(str.charAt(1)))).collect(Collectors.toList());
     }
 
 

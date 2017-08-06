@@ -22,10 +22,10 @@ public class DistanceFrom7ComparatorTest {
     @Test
     public void test() {
         DistanceFrom7Comparator distanceFrom7Comparator = new DistanceFrom7Comparator();
-        final Card hearts8 = new Card(Suit.HEARTS, Rank.EIGHT);
-        final Card hearts12 = new Card(Suit.HEARTS, Rank.QUEEN);
-        final Card hearts5 = new Card(Suit.HEARTS, Rank.FIVE);
-        final Card hearts11 = new Card(Suit.HEARTS, Rank.JACK);
+        final Card hearts8 = new Card(Rank.EIGHT, Suit.HEARTS);
+        final Card hearts12 = new Card(Rank.QUEEN, Suit.HEARTS);
+        final Card hearts5 = new Card(Rank.FIVE, Suit.HEARTS);
+        final Card hearts11 = new Card(Rank.JACK, Suit.HEARTS);
         List<Card> list = Arrays.asList(hearts8, hearts12, hearts5, hearts11);
         Collections.sort(list, distanceFrom7Comparator);
         assertEquals(hearts12, list.get(0));

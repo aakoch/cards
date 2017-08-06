@@ -19,7 +19,7 @@ public class StandardDeck extends Deck {
         List<Card> cards = new ArrayList<>();
         for (Suit suit : Suit.standardSuits()) {
             for (Rank rank : Rank.standardRanks()) {
-                Card card = new Card(suit, rank);
+                Card card = new Card(rank, suit);
                 cards.add(card);
             }
         }

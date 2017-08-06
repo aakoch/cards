@@ -12,7 +12,7 @@ public class Card {
     private final Suit suit;
     private final Rank rank;
 
-    public Card(Suit suit, Rank rank) {
+    public Card(Rank rank, Suit suit) {
         Objects.requireNonNull(suit, "suit");
         Objects.requireNonNull(rank, "rank");
         this.suit = suit;

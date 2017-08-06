@@ -1,7 +1,6 @@
 package com.adamkoch.cards;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.stream.Stream;
 
 /**
@@ -68,7 +67,7 @@ public enum StandardCard {
     private final Card card;
 
     StandardCard(Rank rank, Suit suit) {
-        this.card = new Card(suit, rank);
+        this.card = new Card(rank, suit);
     }
 
     public static void main(String[] args) {

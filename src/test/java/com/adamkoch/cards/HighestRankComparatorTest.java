@@ -20,9 +20,9 @@ public class HighestRankComparatorTest {
     @Test
     public void test() {
         HighestRankComparator highestRankComparator = new HighestRankComparator();
-        final Card hearts8 = new Card(Suit.HEARTS, Rank.EIGHT);
-        final Card hearts6 = new Card(Suit.HEARTS, Rank.SIX);
-        final Card hearts9 = new Card(Suit.HEARTS, Rank.NINE);
+        final Card hearts8 = new Card(Rank.EIGHT, Suit.HEARTS);
+        final Card hearts6 = new Card(Rank.SIX, Suit.HEARTS);
+        final Card hearts9 = new Card(Rank.NINE, Suit.HEARTS);
         List<Card> list = Arrays.asList(hearts8, hearts6, hearts9);
         Collections.sort(list, highestRankComparator);
 //        System.out.println("list = " + list);

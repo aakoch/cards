@@ -31,16 +31,16 @@ public class DeterminerTest {
 
     @Before
     public void setUp() {
-        hearts1 = new Card(Suit.HEARTS, Rank.ACE);
-        hearts2 = new Card(Suit.HEARTS, Rank.TWO);
-        hearts5 = new Card(Suit.HEARTS, Rank.FIVE);
-        hearts7 = new Card(Suit.HEARTS, Rank.SEVEN);
-        hearts8 = new Card(Suit.HEARTS, Rank.EIGHT);
-        hearts9 = new Card(Suit.HEARTS, Rank.NINE);
-        spades1 = new Card(Suit.SPADES, Rank.ACE);
-        clubs1 = new Card(Suit.CLUBS, Rank.ACE);
-        clubs2 = new Card(Suit.CLUBS, Rank.TWO);
-        clubs3 = new Card(Suit.CLUBS, Rank.THREE);
+        hearts1 = new Card(Rank.ACE, Suit.HEARTS);
+        hearts2 = new Card(Rank.TWO, Suit.HEARTS);
+        hearts5 = new Card(Rank.FIVE, Suit.HEARTS);
+        hearts7 = new Card(Rank.SEVEN, Suit.HEARTS);
+        hearts8 = new Card(Rank.EIGHT, Suit.HEARTS);
+        hearts9 = new Card(Rank.NINE, Suit.HEARTS);
+        spades1 = new Card(Rank.ACE, Suit.SPADES);
+        clubs1 = new Card(Rank.ACE, Suit.CLUBS);
+        clubs2 = new Card(Rank.TWO, Suit.CLUBS);
+        clubs3 = new Card(Rank.THREE, Suit.CLUBS);
 
         Player player = new EasyPlayer("Test", 22);
         determiner = new Determiner(player);
@@ -49,10 +49,10 @@ public class DeterminerTest {
     @Test
     public void testChooseCardToDiscard_3Hearts_1Club() throws Exception {
         List<Card> cards = new ArrayList<>();
-        cards.add(new Card(Suit.HEARTS, Rank.ACE));
-        cards.add(new Card(Suit.HEARTS, Rank.KING));
-        cards.add(new Card(Suit.HEARTS, Rank.QUEEN));
-        final Card twoOfClubs = new Card(Suit.CLUBS, Rank.TWO);
+        cards.add(new Card(Rank.ACE, Suit.HEARTS));
+        cards.add(new Card(Rank.KING, Suit.HEARTS));
+        cards.add(new Card(Rank.QUEEN, Suit.HEARTS));
+        final Card twoOfClubs = new Card(Rank.TWO, Suit.CLUBS);
         cards.add(twoOfClubs);
         Collections.shuffle(cards);
         assertEquals(twoOfClubs, determiner.chooseCardToDiscard(cards, null));
@@ -62,8 +62,8 @@ public class DeterminerTest {
     public void testChooseCardToDiscard_3Clubs_1Heart() throws Exception {
         List<Card> cards = new ArrayList<>();
         cards.add(clubs1);
-        cards.add(new Card(Suit.CLUBS, Rank.KING));
-        cards.add(new Card(Suit.CLUBS, Rank.NINE));
+        cards.add(new Card(Rank.KING, Suit.CLUBS));
+        cards.add(new Card(Rank.NINE, Suit.CLUBS));
         cards.add(clubs2);
         Collections.shuffle(cards);
         assertEquals(clubs2, determiner.chooseCardToDiscard(cards, null));
@@ -72,10 +72,10 @@ public class DeterminerTest {
     @Test
     public void testChooseCardToDiscard_3Aces_1Deuce() throws Exception {
         List<Card> cards = new ArrayList<>();
-        cards.add(new Card(Suit.HEARTS, Rank.ACE));
-        cards.add(new Card(Suit.DIAMONDS, Rank.ACE));
-        cards.add(new Card(Suit.CLUBS, Rank.ACE));
-        final Card twoOfClubs = new Card(Suit.SPADES, Rank.TWO);
+        cards.add(new Card(Rank.ACE, Suit.HEARTS));
+        cards.add(new Card(Rank.ACE, Suit.DIAMONDS));
+        cards.add(new Card(Rank.ACE, Suit.CLUBS));
+        final Card twoOfClubs = new Card(Rank.TWO, Suit.SPADES);
         cards.add(twoOfClubs);
         Collections.shuffle(cards);
         assertEquals(twoOfClubs, determiner.chooseCardToDiscard(cards, null));
@@ -135,22 +135,22 @@ public class DeterminerTest {
     @Test
     public void testChooseCardToDiscard_real1() throws Exception {
         List<Card> cards = new ArrayList<>();
-        final Card heartsJack = new Card(Suit.HEARTS, Rank.JACK);
+        final Card heartsJack = new Card(Rank.JACK, Suit.HEARTS);
         cards.add(heartsJack);
-        cards.add(new Card(Suit.DIAMONDS, Rank.ACE));
-        cards.add(new Card(Suit.CLUBS, Rank.SIX));
-        cards.add(new Card(Suit.CLUBS, Rank.TEN));
+        cards.add(new Card(Rank.ACE, Suit.DIAMONDS));
+        cards.add(new Card(Rank.SIX, Suit.CLUBS));
+        cards.add(new Card(Rank.TEN, Suit.CLUBS));
         assertEquals(heartsJack, determiner.chooseCardToDiscard(cards, null));
     }
 
     @Test
     public void testChooseCardToDiscard_real2() throws Exception {
         List<Card> cards = new ArrayList<>();
-        cards.add(new Card(Suit.CLUBS, Rank.JACK));
-        cards.add(new Card(Suit.CLUBS, Rank.FOUR));
-        cards.add(new Card(Suit.SPADES, Rank.SEVEN));
+        cards.add(new Card(Rank.JACK, Suit.CLUBS));
+        cards.add(new Card(Rank.FOUR, Suit.CLUBS));
+        cards.add(new Card(Rank.SEVEN, Suit.SPADES));
 
-        Card newCard = new Card(Suit.SPADES, Rank.FIVE);
+        Card newCard = new Card(Rank.FIVE, Suit.SPADES);
         cards.add(newCard);
 
         final Card actualCard = determiner.chooseCardToDiscard(cards, null);
@@ -161,11 +161,11 @@ public class DeterminerTest {
     @Test
     public void testChooseCardToDiscard_real3() throws Exception {
         List<Card> cards = new ArrayList<>();
-        cards.add(new Card(Suit.HEARTS, Rank.TWO));
-        cards.add(new Card(Suit.DIAMONDS, Rank.EIGHT));
-        cards.add(new Card(Suit.HEARTS, Rank.KING));
+        cards.add(new Card(Rank.TWO, Suit.HEARTS));
+        cards.add(new Card(Rank.EIGHT, Suit.DIAMONDS));
+        cards.add(new Card(Rank.KING, Suit.HEARTS));
 
-        Card newCard = new Card(Suit.SPADES, Rank.EIGHT);
+        Card newCard = new Card(Rank.EIGHT, Suit.SPADES);
         cards.add(newCard);
 
         final Card actualCard = determiner.chooseCardToDiscard(cards, null);
@@ -176,11 +176,11 @@ public class DeterminerTest {
     @Test
     public void testCardWouldNotImproveHand() throws Exception {
         List<Card> cards = new ArrayList<>();
-        cards.add(new Card(Suit.SPADES, Rank.SEVEN));
-        cards.add(new Card(Suit.CLUBS, Rank.ACE));
-        cards.add(new Card(Suit.SPADES, Rank.KING));
+        cards.add(new Card(Rank.SEVEN, Suit.SPADES));
+        cards.add(new Card(Rank.ACE, Suit.CLUBS));
+        cards.add(new Card(Rank.KING, Suit.SPADES));
 
-        Card newCard = new Card(Suit.HEARTS, Rank.EIGHT);
+        Card newCard = new Card(Rank.EIGHT, Suit.HEARTS);
         assertFalse("Adding " + newCard + " should NOT improve hand " + cards + ", but it returned true",
                 determiner.cardWouldImproveHand(newCard, cards, null));
     }
@@ -188,11 +188,11 @@ public class DeterminerTest {
     @Test
     public void testCardWouldImproveHand3() throws Exception {
         List<Card> cards = new ArrayList<>();
-        cards.add(new Card(Suit.CLUBS, Rank.JACK));
-        cards.add(new Card(Suit.CLUBS, Rank.FOUR));
-        cards.add(new Card(Suit.SPADES, Rank.SEVEN));
+        cards.add(new Card(Rank.JACK, Suit.CLUBS));
+        cards.add(new Card(Rank.FOUR, Suit.CLUBS));
+        cards.add(new Card(Rank.SEVEN, Suit.SPADES));
 
-        Card newCard = new Card(Suit.SPADES, Rank.FIVE);
+        Card newCard = new Card(Rank.FIVE, Suit.SPADES);
         assertFalse("Adding " + newCard + " should NOT improve hand " + cards + ", but it returned true",
                 determiner.cardWouldImproveHand(newCard, cards, null));
     }
@@ -200,22 +200,22 @@ public class DeterminerTest {
     @Test
     public void testCardWouldImproveHand2() throws Exception {
         List<Card> cards = new ArrayList<>();
-        cards.add(new Card(Suit.SPADES, Rank.SEVEN));
-        cards.add(new Card(Suit.CLUBS, Rank.ACE));
-        cards.add(new Card(Suit.SPADES, Rank.KING));
+        cards.add(new Card(Rank.SEVEN, Suit.SPADES));
+        cards.add(new Card(Rank.ACE, Suit.CLUBS));
+        cards.add(new Card(Rank.KING, Suit.SPADES));
 
-        Card newCard = new Card(Suit.SPADES, Rank.EIGHT);
+        Card newCard = new Card(Rank.EIGHT, Suit.SPADES);
         assertTrue(determiner.cardWouldImproveHand(newCard, cards, null));
     }
 
     @Test
     public void testCardWouldImproveHand_real() throws Exception {
         List<Card> cards = new ArrayList<>();
-        cards.add(new Card(Suit.CLUBS, Rank.THREE));
-        cards.add(new Card(Suit.DIAMONDS, Rank.TEN));
-        cards.add(new Card(Suit.DIAMONDS, Rank.THREE));
+        cards.add(new Card(Rank.THREE, Suit.CLUBS));
+        cards.add(new Card(Rank.TEN, Suit.DIAMONDS));
+        cards.add(new Card(Rank.THREE, Suit.DIAMONDS));
 
-        Card newCard = new Card(Suit.CLUBS, Rank.ACE);
+        Card newCard = new Card(Rank.ACE, Suit.CLUBS);
         assertTrue("Adding " + newCard + " should improve hand " + cards + ", but it returned false",
                 determiner.cardWouldImproveHand(newCard, cards, null));
     }
@@ -223,11 +223,11 @@ public class DeterminerTest {
     @Test
     public void testCardWouldImproveHand_real2() throws Exception {
         List<Card> cards = new ArrayList<>();
-        cards.add(new Card(Suit.HEARTS, Rank.QUEEN));
-        cards.add(new Card(Suit.SPADES, Rank.TWO));
-        cards.add(new Card(Suit.HEARTS, Rank.FIVE));
+        cards.add(new Card(Rank.QUEEN, Suit.HEARTS));
+        cards.add(new Card(Rank.TWO, Suit.SPADES));
+        cards.add(new Card(Rank.FIVE, Suit.HEARTS));
 
-        Card newCard = new Card(Suit.HEARTS, Rank.TWO);
+        Card newCard = new Card(Rank.TWO, Suit.HEARTS);
         GameContext gameContext = new GameContext();
         final List<Card> cardsLeft = new StandardDeck().cards();
         cardsLeft.removeAll(cards);
@@ -240,11 +240,11 @@ public class DeterminerTest {
     @Test
     public void testCardWouldImproveHand_real3() throws Exception {
         List<Card> cards = new ArrayList<>();
-        cards.add(new Card(Suit.HEARTS, Rank.NINE));
-        cards.add(new Card(Suit.CLUBS, Rank.SIX));
-        cards.add(new Card(Suit.CLUBS, Rank.THREE));
+        cards.add(new Card(Rank.NINE, Suit.HEARTS));
+        cards.add(new Card(Rank.SIX, Suit.CLUBS));
+        cards.add(new Card(Rank.THREE, Suit.CLUBS));
 
-        Card newCard = new Card(Suit.HEARTS, Rank.EIGHT);
+        Card newCard = new Card(Rank.EIGHT, Suit.HEARTS);
         GameContext gameContext = new GameContext();
         final List<Card> cardsLeft = new StandardDeck().cards();
         cardsLeft.removeAll(cards);
@@ -257,11 +257,11 @@ public class DeterminerTest {
     @Test
     public void testCardWouldImproveHand_real4() throws Exception {
         List<Card> cards = new ArrayList<>();
-        cards.add(new Card(Suit.SPADES, Rank.TEN));
-        cards.add(new Card(Suit.DIAMONDS, Rank.FOUR));
-        cards.add(new Card(Suit.CLUBS, Rank.EIGHT));
+        cards.add(new Card(Rank.TEN, Suit.SPADES));
+        cards.add(new Card(Rank.FOUR, Suit.DIAMONDS));
+        cards.add(new Card(Rank.EIGHT, Suit.CLUBS));
 
-        Card newCard = new Card(Suit.HEARTS, Rank.ACE);
+        Card newCard = new Card(Rank.ACE, Suit.HEARTS);
         GameContext gameContext = new GameContext();
         final List<Card> cardsLeft = new StandardDeck().cards();
         cardsLeft.removeAll(cards);
@@ -274,11 +274,11 @@ public class DeterminerTest {
     @Test
     public void testCardWouldImproveHand_real5() throws Exception {
         List<Card> cards = new ArrayList<>();
-        cards.add(new Card(Suit.DIAMONDS, Rank.KING));
-        cards.add(new Card(Suit.DIAMONDS, Rank.TEN));
-        cards.add(new Card(Suit.DIAMONDS, Rank.EIGHT));
+        cards.add(new Card(Rank.KING, Suit.DIAMONDS));
+        cards.add(new Card(Rank.TEN, Suit.DIAMONDS));
+        cards.add(new Card(Rank.EIGHT, Suit.DIAMONDS));
 
-        Card newCard = new Card(Suit.DIAMONDS, Rank.THREE);
+        Card newCard = new Card(Rank.THREE, Suit.DIAMONDS);
         GameContext gameContext = new GameContext();
 
         assertFalse("Adding " + newCard + " should NOT improve hand " + cards + ", but it returned true", determiner
@@ -288,11 +288,11 @@ public class DeterminerTest {
     @Test
     public void testCardWouldImproveHand_fake2() throws Exception {
         List<Card> cards = new ArrayList<>();
-        cards.add(new Card(Suit.HEARTS, Rank.QUEEN));
-        cards.add(new Card(Suit.SPADES, Rank.TWO));
-        cards.add(new Card(Suit.HEARTS, Rank.FIVE));
+        cards.add(new Card(Rank.QUEEN, Suit.HEARTS));
+        cards.add(new Card(Rank.TWO, Suit.SPADES));
+        cards.add(new Card(Rank.FIVE, Suit.HEARTS));
 
-        Card newCard = new Card(Suit.HEARTS, Rank.FIVE);
+        Card newCard = new Card(Rank.FIVE, Suit.HEARTS);
         GameContext gameContext = new GameContext();
 
         assertTrue("Adding " + newCard + " should improve hand " + cards + ", but it returned false", determiner
@@ -302,11 +302,11 @@ public class DeterminerTest {
     @Test
     public void testNewPairBetterThanCurrentPair() throws Exception {
         List<Card> cards = new ArrayList<>();
-        cards.add(new Card(Suit.HEARTS, Rank.QUEEN));
-        cards.add(new Card(Suit.SPADES, Rank.FIVE));
-        cards.add(new Card(Suit.HEARTS, Rank.TWO));
+        cards.add(new Card(Rank.QUEEN, Suit.HEARTS));
+        cards.add(new Card(Rank.FIVE, Suit.SPADES));
+        cards.add(new Card(Rank.TWO, Suit.HEARTS));
 
-        Card newCard = new Card(Suit.SPADES, Rank.QUEEN);
+        Card newCard = new Card(Rank.QUEEN, Suit.SPADES);
 
         assertTrue("New pair should be better than old, but it returned false. cards=" + cards + ", newCard=" + newCard,
                 Determiner.newPairBetterThanCurrentPair(cards, newCard));
@@ -320,11 +320,11 @@ public class DeterminerTest {
         List<Card> hearts = new ArrayList<>();
         List<Card> spades = new ArrayList<>();
 
-        hearts.add(new Card(Suit.HEARTS, Rank.TEN));
-        hearts.add(new Card(Suit.HEARTS, Rank.FOUR));
+        hearts.add(new Card(Rank.TEN, Suit.HEARTS));
+        hearts.add(new Card(Rank.FOUR, Suit.HEARTS));
 
-        spades.add(new Card(Suit.SPADES, Rank.SEVEN));
-        spades.add(new Card(Suit.SPADES, Rank.FIVE));
+        spades.add(new Card(Rank.SEVEN, Suit.SPADES));
+        spades.add(new Card(Rank.FIVE, Suit.SPADES));
 
         map.put(Suit.HEARTS, hearts);
         map.put(Suit.SPADES, spades);
@@ -340,11 +340,11 @@ public class DeterminerTest {
         List<Card> clubs = new ArrayList<>();
         List<Card> diamonds = new ArrayList<>();
 
-        clubs.add(new Card(Suit.CLUBS, Rank.THREE));
-        clubs.add(new Card(Suit.CLUBS, Rank.ACE));
+        clubs.add(new Card(Rank.THREE, Suit.CLUBS));
+        clubs.add(new Card(Rank.ACE, Suit.CLUBS));
 
-        diamonds.add(new Card(Suit.DIAMONDS, Rank.TEN));
-        diamonds.add(new Card(Suit.DIAMONDS, Rank.THREE));
+        diamonds.add(new Card(Rank.TEN, Suit.DIAMONDS));
+        diamonds.add(new Card(Rank.THREE, Suit.DIAMONDS));
 
         map.put(Suit.CLUBS, clubs);
         map.put(Suit.DIAMONDS, diamonds);

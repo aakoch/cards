@@ -14,7 +14,7 @@ public enum SpecialsCards {
     private final Card card;
 
     SpecialsCards(Suit suit, Rank rank) {
-        this.card = new Card(suit, rank);
+        this.card = new Card(rank, suit);
     }
 
     public Card getCard() {

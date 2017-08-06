@@ -79,7 +79,7 @@ public abstract class Player {
     }
 
     public Card play7OfHearts() {
-        final Card card = new Card(Suit.HEARTS, Rank.SEVEN);
+        final Card card = new Card(Rank.SEVEN, Suit.HEARTS);
         hand.remove(card);
         return card;
     }
