@@ -26,12 +26,12 @@ public class Calculator {
                                                                         .build();
 
     public static int totalCards(List<Card> cards) {
-        try {
-            List<Card> synchronizedList = synchronizedList(cards);
-            return cache.get(cards, new Callable<Integer>() {
-                @Override
-                public Integer call() throws Exception {
-                    Map<Suit, List<Card>> map = Determiner.createSuitListMap(synchronizedList);
+//        try {
+//            List<Card> synchronizedList = synchronizedList(cards);
+//            return cache.get(synchronizedList, new Callable<Integer>() {
+//                @Override
+//                public Integer call() throws Exception {
+                    Map<Suit, List<Card>> map = RuleFactory.createSuitListMap(cards);
                     int sum = 0;
                     for (Map.Entry<Suit, List<Card>> entry : map.entrySet()) {
                         sum = Math.max(sum, entry.getValue().stream().mapToInt(card -> card.getRank().getValue(true)).sum());
@@ -39,10 +39,10 @@ public class Calculator {
 
                     LOGGER.debug("cards = " + cards + ", sum = " + sum);
                     return sum;
-                }
-            });
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        }
+//                }
+//            });
+//        } catch (ExecutionException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 }

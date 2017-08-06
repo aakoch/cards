@@ -1,5 +1,6 @@
 package com.adamkoch.cards;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -36,6 +37,7 @@ public class Dealer {
      * @param numberOfCardsToEachPlayer The number of cards to deal to each player
      */
     public List<Card> dealTo(List<? extends Player> players, int numberOfCardsToEachPlayer) {
+        List<Card> pile = new ArrayList<>(cards);
         Objects.requireNonNull(players, "List of players cannot be null");
         if (players.size() * numberOfCardsToEachPlayer > cards.size()) {
             throw new IllegalArgumentException("Not enough cards to deal " + numberOfCardsToEachPlayer + " cards to each of the "
@@ -48,9 +50,9 @@ public class Dealer {
 
         for (int i = 0; i < numberOfCardsToEachPlayer * players.size() && r.hasNext(); i++) {
             Player player = r.next();
-            player.addCardToHand(cards.remove(0));
+            player.addCardToHand(pile.remove(0));
         }
-        return cards;
+        return pile;
     }
 
     public int getIndexOfPlayerToLeftOfDealer(List<? extends Player> players) {
@@ -88,5 +90,9 @@ public class Dealer {
     @Override
     public String toString() {
         return player.toString();
+    }
+
+    public Player asPlayer() {
+        return player;
     }
 }

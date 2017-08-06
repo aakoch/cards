@@ -4,26 +4,26 @@ import com.adamkoch.cards.utils.CharacterConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.LinkedBlockingDeque;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main {
-private static final Logger LOGGER = LogManager.getLogger(Main.class);
+    private static final Logger LOGGER = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) {
-//        System.out.println(LOGGER.isDebugEnabled());
-//        if (LOGGER.isDebugEnabled()) {
-//            listStandardDeck();
-//        }
 
-//        GamesWonCounter gamesWonCounter = new GamesWonCounter();
-        Players players = new Players(PlayerFactory.initializePlayers(4));
+        final int numberOfPlayers = 5;
+        final int startKnockLimit = 25;
+        final int totalNumberOfGames = 10;
+        LOGGER.info(
+                "Starting " + totalNumberOfGames + " games with " + numberOfPlayers + " players and starting knock limit of " +
+                        startKnockLimit);
+
+        final List<Player> players = PlayerFactory.initializePlayers(numberOfPlayers, startKnockLimit);
 
         List<GameResult> gameResults = new ArrayList<>();
-        final int totalNumberOfGames = 1;
-        for (int i = 0; i < totalNumberOfGames; i++) {
-            ThirtyOneGame game = new ThirtyOneGame(players);
+        for (int gameCounter = 0; gameCounter < totalNumberOfGames; gameCounter++) {
+            ThirtyOneGame game = new ThirtyOneGame(new ArrayList<>(players));
 
             final GameResult result = game.play();
             gameResults.add(result);
@@ -32,17 +32,61 @@ private static final Logger LOGGER = LogManager.getLogger(Main.class);
 
             LOGGER.info(winner.getName() + " won");
 
-//            gamesWonCounter.increment(winner);
-
             resetPlayers(players);
         }
 
-//        LOGGER.info("\n" + gamesWonCounter);
         LOGGER.info("gameResults = " + gameResults);
+        SortedMap<String, Map<String, AtomicInteger>> roundsWinMap = getStringMapSortedMap(gameResults);
+
+        players.sort(Comparator.comparing(Player::getName));
+
+//        LOGGER.info(gamesWinMap);
+        LOGGER.info(roundsWinMap);
+        LOGGER.info(players);
+
+        String s = new GameResultsParser(gameResults, players, roundsWinMap).getCsv();
+        LOGGER.info(s);
     }
 
-    private static void resetPlayers(Players<Player> players) {
-        players.list().stream().forEach(player -> player.resetHandAndCoins());
+    public static SortedMap<String, Map<String, AtomicInteger>> getStringMapSortedMap(List<GameResult> gameResults) {
+        SortedMap<String, AtomicInteger> gamesWinMap = new TreeMap<>();
+        SortedMap<String, Map<String, AtomicInteger>> roundsWinMap = new TreeMap<>();
+        for (GameResult gameResult : gameResults) {
+
+            gamesWinMap.computeIfAbsent(gameResult.getWinner().getName(), player4 -> new AtomicInteger())
+                       .incrementAndGet();
+
+            roundsWinMap.computeIfAbsent(gameResult.getWinner().getName(), player3 -> {
+                Map<String, AtomicInteger> map = new HashMap<>();
+                map.put("Total", new AtomicInteger());
+                Arrays.stream(RoundEndMethod.values())
+//                      .filter(roundEndMethod -> roundEndMethod != RoundEndMethod.UNKNOWN)
+                      .forEach
+                              (roundEndMethod -> map.put
+                                      (roundEndMethod
+                                                      .toString(),
+                                              new AtomicInteger(0)));
+                return map;
+            });
+
+            for (Result roundResult : gameResult.getRoundResults()) {
+                try {
+                    roundsWinMap.get(gameResult.getWinner().getName()).get("Total").incrementAndGet();
+                    roundsWinMap.get(gameResult.getWinner().getName())
+                                .get(roundResult.getRoundEndMethod().toString())
+                                .incrementAndGet();
+                }
+                catch (RuntimeException e) {
+                    LOGGER.error("Error looping over win map. gameResult=" + gameResult, e);
+                }
+            }
+
+        }
+        return roundsWinMap;
+    }
+
+    private static void resetPlayers(List<Player> players) {
+        players.stream().forEach(player -> player.resetHandAndCoins());
     }
 
     private static void listStandardDeck() {

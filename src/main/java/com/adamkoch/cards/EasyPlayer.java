@@ -17,13 +17,29 @@ import java.util.List;
 public class EasyPlayer extends Player {
     private static final Logger LOGGER = LogManager.getLogger(PlayerFactory.class);
 
-    private final int knockLimit;
     private Iterator<Card> handIterator;
     private List<Card> discardPile;
+    private Determiner determiner;
 
     public EasyPlayer(String name, int knockLimit) {
-        super(name);
-        this.knockLimit = knockLimit;
+        super(name, knockLimit);
+
+        determiner = new Determiner(this);
+    }
+
+    @Override
+    public Chain getChain(GameContext gameContext) {
+
+        Chain chain = new Chain();
+        chain.addRule(RuleFactory.createGameContextRule(gameContext));
+        chain.addRule(RuleFactory.createOddSuitRule());
+        chain.addRule(RuleFactory.createComparePairsRule());
+        chain.addRule(RuleFactory.createSameRankChooseLast());
+        chain.addRule(RuleFactory.createNumericRankRule());
+        chain.addRule(RuleFactory.createKeepTensRule());
+        chain.addRule(RuleFactory.createRandomRule());
+
+        return chain;
     }
 
     @Override
@@ -41,27 +57,30 @@ public class EasyPlayer extends Player {
             return temp;
         }
 
-        Card cardToDiscard = Determiner.chooseCardToDiscard(getHand().cards(), gameContext);
+        Card cardToDiscard = determiner.chooseCardToDiscard(getHand(), gameContext);
 
         if (nextPlayerWillWinWithCard(cardToDiscard, gameContext)) {
             LOGGER.error("Next player will win if " + getName() + " plays " + cardToDiscard);
-            final List<Card> newCardList = new ArrayList<>(getHand().cards());
+            final List<Card> newCardList = new ArrayList<>(getHand());
             newCardList.remove(cardToDiscard);
-            cardToDiscard = Determiner.chooseCardToDiscard(newCardList, gameContext);
+            cardToDiscard = determiner.chooseCardToDiscard(newCardList, gameContext);
         }
 
-        getHand().cards().remove(cardToDiscard);
+        getHand().remove(cardToDiscard);
 
         return cardToDiscard;
     }
 
     private boolean nextPlayerWillWinWithCard(Card card, GameContext gameContext) {
         boolean win = false;
-        List<Card> nextPlayersHand = new ArrayList<Card>(getNextPlayer(gameContext).getHand().cards());
+        final Player nextPlayer = getNextPlayer(gameContext);
+        List<Card> nextPlayersHand = new ArrayList<Card>(gameContext.getKnownHand(nextPlayer));
         nextPlayersHand.add(card);
         nextPlayersHand.removeIf(card1 -> card1.getRank().lessThan(Rank.TEN));
 
         if (Calculator.totalCards(nextPlayersHand) >= 31) {
+            // TODO:
+            LOGGER.warn("Next player, " + nextPlayer.getName() + "'s hand=" + nextPlayersHand + ", card=" + card);
             win = true;
         }
 
@@ -74,10 +93,10 @@ public class EasyPlayer extends Player {
 
     @Override
     public boolean decidesToKnock(GameContext gameContext) {
-        final List<Card> cards = getHand().cards();
+        final List<Card> cards = getHand();
         final int total = Calculator.totalCards(cards);
         final int rounds = Math.round(gameContext.getNumberOfPlays() / gameContext.getNumberOfPlayers());
-        final int currentKnockLimit = this.knockLimit + rounds;
+        final int currentKnockLimit = this.getKnockLimit() + rounds;
         final boolean totalGreater = total > currentKnockLimit;
         boolean decidesToKnock = Determiner.areThreeCardsWithSameSuit(cards) && totalGreater;
         if (decidesToKnock) {
@@ -92,7 +111,8 @@ public class EasyPlayer extends Player {
             }
             else {
                 LOGGER.info("after " + rounds + " rounds, " + getName() + " has " + total +
-                        " points, but decides not to knock. starting knock limit=" + this.knockLimit + ", current=" + currentKnockLimit);
+                        " points, but decides not to knock. starting knock limit=" + this.getKnockLimit() + ", current=" +
+                        currentKnockLimit);
             }
         }
 
@@ -102,6 +122,12 @@ public class EasyPlayer extends Player {
 
     @Override
     public boolean chooseCardFromDiscardPile(Card card, GameContext gameContext) {
-        return Determiner.cardWouldImproveHand(card, getHand().cards(), gameContext);
+        return Determiner.cardWouldImproveHand(card, getHand(), gameContext);
+    }
+
+    @Override
+    public String toString() {
+        return name + ':' + hand +
+                ":knockLimit=" + getKnockLimit();
     }
 }

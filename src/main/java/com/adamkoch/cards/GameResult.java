@@ -3,6 +3,7 @@ package com.adamkoch.cards;
 import com.google.common.base.Joiner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -33,12 +34,22 @@ public class GameResult {
         roundResults.add(result);
     }
 
+    public List<Result> getRoundResults() {
+        return roundResults;
+    }
+
     @Override
     public String toString() {
 
 
+        final String winnerName;
+        if (winner == null) {
+            winnerName = "null";
+        }
+        else
+        winnerName = winner.getName();
         return "GameResult{" +
-                "winner=" + winner.getName() +
+                "winner=" + winnerName +
 //                ", roundResults=\n" + Joiner.on("\n").join(roundResults) +
                 ",\n rounds won by knocking=" +
                 roundResults.stream().filter(result -> result.getRoundEndMethod() == RoundEndMethod.KNOCK).count() +

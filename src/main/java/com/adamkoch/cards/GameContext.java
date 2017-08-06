@@ -10,10 +10,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @since 1.0.0
  */
 public class GameContext {
-    private AtomicInteger numberOfPlays;
-    private boolean someoneElseHasKnocked;
     private final Map<String, Set<Card>> hands;
     private final Map<String, Set<Card>> discards;
+    private AtomicInteger numberOfPlays;
+    private boolean someoneElseHasKnocked;
     private List<Card> cardsLeft;
     private List<Outcome> outcomes;
     private List<Player> players;
@@ -34,10 +34,6 @@ public class GameContext {
 
     public int getNumberOfPlays() {
         return numberOfPlays.get();
-    }
-
-    public void setPlayers(List<Player> players) {
-        this.players = new ArrayList<>(players);
     }
 
     public void removePlayer(Player player) {
@@ -72,8 +68,10 @@ public class GameContext {
     }
 
     public double chanceOfGettingBetterCardWithSameSuit(Card card) {
-        double numberOfCardsWithSameSuitAndHigher = cardsLeft.stream().filter(cardLeft -> cardLeft.getSuit() == card.getSuit()
-            && cardLeft.getRank().greaterThan(card.getRank())).count();
+        double numberOfCardsWithSameSuitAndHigher = cardsLeft.stream()
+                                                             .filter(cardLeft -> cardLeft.getSuit() == card.getSuit()
+                                                                     && cardLeft.getRank().greaterThan(card.getRank()))
+                                                             .count();
         double numberOfCardsLeft = cardsLeft.size();
         return numberOfCardsWithSameSuitAndHigher / numberOfCardsLeft;
     }
@@ -100,8 +98,32 @@ public class GameContext {
     public Player getNextPlayer(Player player) {
         int indexOfCurrentPlayer = players.indexOf(player);
         if (indexOfCurrentPlayer >= players.size() - 1) {
-            indexOfCurrentPlayer = 0;
+            indexOfCurrentPlayer = -1;
         }
-        return players.get(indexOfCurrentPlayer + 1);
+        final Player nextPlayer = players.get(indexOfCurrentPlayer + 1);
+        return nextPlayer;
+    }
+
+    public Set<Card> getKnownHand(Player player) {
+        return hands.getOrDefault(player.getName(), Collections.emptySet());
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(List<Player> players) {
+        this.players = new ArrayList<>(players);
+    }
+
+    public void startNewRound() {
+
+        hands.clear();
+        numberOfPlays.set(0);
+        someoneElseHasKnocked = false;
+        discards.clear();
+        cardsLeft = new ArrayList<>();
+        outcomes = new ArrayList<>();
+
     }
 }

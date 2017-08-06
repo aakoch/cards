@@ -55,8 +55,11 @@ public class StalemateBreakingPlayer extends EasyPlayer {
     private boolean handHasNotChangedIn4Turns() {
         final boolean handHasNotChanged = handHasNotChangeCounter > 40;
         LOGGER.debug("handHasNotChangeCounter = " + handHasNotChangeCounter+", handHasNotChanged = " + handHasNotChanged);
-        if (handHasNotChanged)
-            System.exit(0);
+//        if (handHasNotChanged) {
+//            LOGGER.error("handHasNotChangeCounter = " + handHasNotChangeCounter+", handHasNotChanged = " +
+//                    handHasNotChanged);
+//            System.exit(0);
+//        }
         return handHasNotChanged;
     }
 

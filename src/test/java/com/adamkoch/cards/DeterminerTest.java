@@ -27,6 +27,7 @@ public class DeterminerTest {
     private Card clubs1;
     private Card clubs2;
     private Card clubs3;
+    private Determiner determiner;
 
     @Before
     public void setUp() {
@@ -40,6 +41,9 @@ public class DeterminerTest {
         clubs1 = new Card(Suit.CLUBS, Rank.ACE);
         clubs2 = new Card(Suit.CLUBS, Rank.TWO);
         clubs3 = new Card(Suit.CLUBS, Rank.THREE);
+
+        Player player = new EasyPlayer("Test", 22);
+        determiner = new Determiner(player);
     }
     
     @Test
@@ -51,7 +55,7 @@ public class DeterminerTest {
         final Card twoOfClubs = new Card(Suit.CLUBS, Rank.TWO);
         cards.add(twoOfClubs);
         Collections.shuffle(cards);
-        assertEquals(twoOfClubs, Determiner.chooseCardToDiscard(cards, null));
+        assertEquals(twoOfClubs, determiner.chooseCardToDiscard(cards, null));
     }
 
     @Test
@@ -62,7 +66,7 @@ public class DeterminerTest {
         cards.add(new Card(Suit.CLUBS, Rank.NINE));
         cards.add(clubs2);
         Collections.shuffle(cards);
-        assertEquals(clubs2, Determiner.chooseCardToDiscard(cards, null));
+        assertEquals(clubs2, determiner.chooseCardToDiscard(cards, null));
     }
 
     @Test
@@ -74,7 +78,7 @@ public class DeterminerTest {
         final Card twoOfClubs = new Card(Suit.SPADES, Rank.TWO);
         cards.add(twoOfClubs);
         Collections.shuffle(cards);
-        assertEquals(twoOfClubs, Determiner.chooseCardToDiscard(cards, null));
+        assertEquals(twoOfClubs, determiner.chooseCardToDiscard(cards, null));
     }
 
     @Test
@@ -85,7 +89,7 @@ public class DeterminerTest {
         cards.add(clubs2);
         cards.add(clubs3);
         Collections.shuffle(cards);
-        assertEquals(hearts1, Determiner.chooseCardToDiscard(cards, null));
+        assertEquals(hearts1, determiner.chooseCardToDiscard(cards, null));
     }
 
     @Test
@@ -95,7 +99,7 @@ public class DeterminerTest {
         cards.add(this.hearts5);
         cards.add(this.hearts7);
         cards.add(this.hearts8);
-        assertEquals(this.hearts5, Determiner.chooseCardToDiscard(cards, null));
+        assertEquals(this.hearts5, determiner.chooseCardToDiscard(cards, null));
     }
 
     @Test
@@ -105,7 +109,7 @@ public class DeterminerTest {
         cards.add(this.hearts5);
         cards.add(this.hearts7);
         cards.add(this.hearts8);
-        assertEquals(4, Determiner.getNumberOfCardsPerSuit(cards).get(Suit.HEARTS).intValue());
+        assertEquals(4, determiner.getNumberOfCardsPerSuit(cards).get(Suit.HEARTS).intValue());
 
         cards.clear();
         cards.add(this.hearts1);
@@ -125,7 +129,7 @@ public class DeterminerTest {
         cards.add(hearts2);
         cards.add(clubs3);
         Collections.shuffle(cards);
-        assertEquals(hearts2, Determiner.chooseCardToDiscard(cards, null));
+        assertEquals(hearts2, determiner.chooseCardToDiscard(cards, null));
     }
 
     @Test
@@ -136,7 +140,7 @@ public class DeterminerTest {
         cards.add(new Card(Suit.DIAMONDS, Rank.ACE));
         cards.add(new Card(Suit.CLUBS, Rank.SIX));
         cards.add(new Card(Suit.CLUBS, Rank.TEN));
-        assertEquals(heartsJack, Determiner.chooseCardToDiscard(cards, null));
+        assertEquals(heartsJack, determiner.chooseCardToDiscard(cards, null));
     }
 
     @Test
@@ -149,7 +153,22 @@ public class DeterminerTest {
         Card newCard = new Card(Suit.SPADES, Rank.FIVE);
         cards.add(newCard);
 
-        final Card actualCard = Determiner.chooseCardToDiscard(cards, null);
+        final Card actualCard = determiner.chooseCardToDiscard(cards, null);
+        assertEquals("Discarded card should have been " + newCard + " out of " + cards + ", but was " + actualCard,
+                newCard, actualCard);
+    }
+
+    @Test
+    public void testChooseCardToDiscard_real3() throws Exception {
+        List<Card> cards = new ArrayList<>();
+        cards.add(new Card(Suit.HEARTS, Rank.TWO));
+        cards.add(new Card(Suit.DIAMONDS, Rank.EIGHT));
+        cards.add(new Card(Suit.HEARTS, Rank.KING));
+
+        Card newCard = new Card(Suit.SPADES, Rank.EIGHT);
+        cards.add(newCard);
+
+        final Card actualCard = determiner.chooseCardToDiscard(cards, null);
         assertEquals("Discarded card should have been " + newCard + " out of " + cards + ", but was " + actualCard,
                 newCard, actualCard);
     }
@@ -279,7 +298,6 @@ public class DeterminerTest {
                 .cardWouldImproveHand(newCard, cards, gameContext));
     }
 
-
     @Test
     public void testNewPairBetterThanCurrentPair() throws Exception {
         List<Card> cards = new ArrayList<>();
@@ -310,7 +328,7 @@ public class DeterminerTest {
         map.put(Suit.HEARTS, hearts);
         map.put(Suit.SPADES, spades);
 
-        assertEquals(spades, Determiner.rankAndPickCardsToDiscard(map));
+        assertEquals(spades, RuleFactory.rankAndPickCardsToDiscard(map));
     }
 
     @Test
@@ -330,6 +348,6 @@ public class DeterminerTest {
         map.put(Suit.CLUBS, clubs);
         map.put(Suit.DIAMONDS, diamonds);
 
-        assertEquals(diamonds, Determiner.rankAndPickCardsToDiscard(map));
+        assertEquals(diamonds, RuleFactory.rankAndPickCardsToDiscard(map));
     }
 }

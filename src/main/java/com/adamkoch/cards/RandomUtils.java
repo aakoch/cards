@@ -12,8 +12,11 @@ import java.util.Random;
  * @since 1.0.0
  */
 public class RandomUtils {
-    public static <T> T pickRandom(List<T> list) {
-        Random random = new Random();
-        return list.remove(random.nextInt(list.size()));
+    private static Random RANDOM = new Random();
+    public static <T> T removeRandom(List<T> list) {
+        return list.remove(RANDOM.nextInt(list.size()));
+    }
+    public static <T> T getRandom(List<T> list) {
+        return list.get(RANDOM.nextInt(list.size()));
     }
 }

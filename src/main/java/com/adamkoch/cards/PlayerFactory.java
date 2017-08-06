@@ -18,42 +18,13 @@ public class PlayerFactory {
     private static List<String> names = Arrays.asList("Watermelon",
             "Cool wHip", "Ace", "C$", "Taz", "Pumpkin", "Shorty", "Bob",  "Mumbles", "Steve");
     private static Queue<String> namesQueue = new ConcurrentLinkedQueue<>(names);
-//    private static List<String> names = Arrays.asList("Dad", "Mom", "Alyssa", "Joel");
-//    public static List<Player> initializePlayers(int numberOfInstances) {
-//        List<String> names2 = new ArrayList<>(names);
-//        Collections.shuffle(names2);
-//        List<Player> players = new ArrayList<>(numberOfInstances);
-//        for (int i = 0; i < numberOfInstances; i++) {
-//            final int index = (new Random()).nextInt(names2.size());
-//            final String name = names2.remove(index);
-//            players.add(new Player(name));
-//        }
-//        return players;
-//    }
 
-    public static List<Player> initializePlayers(int numberOfInstances) {
+    public static List<Player> initializePlayers(int numberOfInstances, int startKnockLimit) {
         List<Player> players = new ArrayList<>(numberOfInstances);
-//        players.add(makeDistanceAndCount());
 
-        // First: 17.26%, Random: 16.75%, Random: 16.67%, Random: 16.61%, Random: 16.36%, Random: 16.35%
-        // Random: 17.57%, Reverse: 16.75%, Random: 16.59%, Random: 16.55%, Random: 16.34%, Random: 16.20%
-        // Farthest from 7: 18.37%, Random: 17.20%, Random: 16.56%, Random: 16.07%, Random: 16.03%, Random: 15.77%
-        // Random: 16.81%, Random: 16.80%, Lowest: 16.73%, Random: 16.68%, Random: 16.67%, Random: 16.31%
-        // Random: 17.28%, Random: 16.86%, Random: 16.73%, Random: 16.46%, Highest: 16.35%, Random: 16.32%
-        // Count: 21.23%, Random: 16.61%, Random: 16.00%, Random: 15.49%, Random: 15.37%, Random: 15.30%
-        // Count and Distance: 25.33%, Random: 15.26%, Random: 15.02%, Random: 14.94%, Random: 14.76%, Random: 14.69%
-        // Distance and Count: 21.15%, Random: 15.98%, Random: 15.86%, Random: 15.77%, Random: 15.69%, Random: 15.55%
-
-        for (int i = 0; i < 5; i++) {
-            players.add(new StalemateBreakingPlayer(randomName(), 22 + i));
+        for (int i = 0; i < numberOfInstances; i++) {
+            players.add(new StalemateBreakingPlayer(randomName(), startKnockLimit + i));
         }
-//        for (int i = 0; i < 4; i++) {
-//            players.add(new StalemateBreakingPlayer(makeEasy()));
-//        }
-//        players.add(makeReverse());
-//        players.add(makeDistance());
-//        players.add(makeLowest());
-//        players.add(makeHighest());
         return players;
     }
 
@@ -131,7 +102,7 @@ public class PlayerFactory {
 //                }
 //
 //
-//                return RandomUtils.pickRandom(hand);
+//                return RandomUtils.removeRandom(hand);
 //            }
 //        };
 //        return player;

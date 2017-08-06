@@ -1,5 +1,6 @@
 package com.adamkoch.cards;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,6 +20,7 @@ public class Result {
     private Player knockerLost;
 
     public Result() {
+        winners = Collections.emptyList();
     }
 
     public List<Player> getLosers() {

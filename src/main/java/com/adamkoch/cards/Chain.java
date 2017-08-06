@@ -24,6 +24,10 @@ public class Chain {
     }
 
     public boolean hasNext() {
-        return index < rules.size();
+        final boolean next = index < rules.size();
+        if (!next) {
+            index = 0;
+        }
+        return next;
     }
 }

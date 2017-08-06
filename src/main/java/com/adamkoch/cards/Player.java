@@ -16,18 +16,20 @@ public abstract class Player {
     private static final Logger LOGGER = LogManager.getLogger(Player.class);
     protected List<Card> hand;
     protected String name;
+    protected Card discardCard;
     private int index = 0;
     private boolean theDealer;
     private int coinsLeft = 3;
-    protected Card discardCard;
+    private int knockLimit;
 
-    public Player(String name) {
+    public Player(String name, int knockLimit) {
         this.name = name;
+        this.knockLimit = knockLimit;
         hand = new ArrayList<>();
     }
 
-    public Hand getHand() {
-        return new Hand(hand);
+    public List<Card> getHand() {
+        return hand;
     }
 
     public void addCardToHand(Card card) {
@@ -82,13 +84,13 @@ public abstract class Player {
         return card;
     }
 
-    public void removeFromHand(Card card) {
-        hand.remove(card);
+    public boolean removeFromHand(Card card) {
+        return hand.remove(card);
     }
 
     public Card determineCardToPlay(List<? extends Card> possiblePlays) {
-        List<Card> intersection = intersect(possiblePlays, getHand().cards());
-        return determineCardToPlay(intersection, getHand().cards());
+        List<Card> intersection = intersect(possiblePlays, getHand());
+        return determineCardToPlay(intersection, getHand());
     }
 
 
@@ -179,6 +181,12 @@ public abstract class Player {
      * Should the user pick the card up from the discard pile?
      */
     public abstract boolean chooseCardFromDiscardPile(Card card, GameContext gameContext);
+
+    public int getKnockLimit() {
+        return knockLimit;
+    }
+
+    public abstract Chain getChain(GameContext gameContext);
 
 //    public boolean chooseCardFromDiscardPile(DrawPile drawPile, DiscardPile discardPile) {
 //
