@@ -108,6 +108,18 @@ public abstract class Player {
         }
     }
 
+    protected Chain getBaseChain(GameContext gameContext) {
+        Chain chain = new Chain();
+        chain.addRule(RuleFactory.createGameContextRule(gameContext));
+        chain.addRule(RuleFactory.createOddSuitRule());
+        chain.addRule(RuleFactory.createComparePairsRule());
+        chain.addRule(RuleFactory.createSameRankChooseLastRule());
+        chain.addRule(RuleFactory.createNumericRankRule());
+        chain.addRule(RuleFactory.createKeepTensRule());
+        chain.addRule(RuleFactory.createRandomRule());
+        return chain;
+    }
+
     protected abstract List<Card> rank(List<? extends Card> cardsThatCanPlay, List<Card> hand);
 
     public void pay() {
@@ -180,7 +192,7 @@ public abstract class Player {
     /**
      * Should the user pick the card up from the discard pile?
      */
-    public abstract boolean chooseCardFromDiscardPile(Card card, GameContext gameContext);
+    public abstract boolean shouldTakeCardFromDiscardPile(Card card, GameContext gameContext);
 
     public int getKnockLimit() {
         return knockLimit;
@@ -188,7 +200,7 @@ public abstract class Player {
 
     public abstract Chain getChain(GameContext gameContext);
 
-//    public boolean chooseCardFromDiscardPile(DrawPile drawPile, DiscardPile discardPile) {
+//    public boolean shouldTakeCardFromDiscardPile(DrawPile drawPile, DiscardPile discardPile) {
 //
 //        Card topDiscardedCard = discardPile.topCard();
 //        if (Determiner.cardWouldImproveHand(topDiscardedCard, hand)) {

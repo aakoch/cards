@@ -99,4 +99,53 @@ public enum Rank {
         }
         return value;
     }
+
+    public static Rank valueOf(char c) {
+        Rank rank;
+        switch (c) {
+            case 'A':
+            case '1':
+                rank = ACE;
+                break;
+            case '2':
+                rank = TWO;
+                break;
+            case '3':
+                rank = THREE;
+                break;
+            case '4':
+                rank = FOUR;
+                break;
+            case '5':
+                rank = FIVE;
+                break;
+            case '6':
+                rank = SIX;
+                break;
+            case '7':
+                rank = SEVEN;
+                break;
+            case '8':
+                rank = EIGHT;
+                break;
+            case '9':
+                rank = NINE;
+                break;
+            case 'T':
+                rank = TEN;
+                break;
+            case 'J':
+                rank = JACK;
+                break;
+            case 'Q':
+                rank = QUEEN;
+                break;
+            case 'K':
+                rank = KING;
+                break;
+            default:
+                rank = null;
+        }
+        return rank;
+    }
 }

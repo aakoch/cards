@@ -109,14 +109,14 @@ public class DeterminerTest {
         cards.add(this.hearts5);
         cards.add(this.hearts7);
         cards.add(this.hearts8);
-        assertEquals(4, determiner.getNumberOfCardsPerSuit(cards).get(Suit.HEARTS).intValue());
+        assertEquals(4, CardUtil.getNumberOfCardsPerSuit(cards).get(Suit.HEARTS).intValue());
 
         cards.clear();
         cards.add(this.hearts1);
         cards.add(this.hearts5);
         cards.add(this.hearts7);
         cards.add(this.spades1);
-        final Map<Suit, Integer> numberOfCardsPerSuit = Determiner.getNumberOfCardsPerSuit(cards);
+        final Map<Suit, Integer> numberOfCardsPerSuit = CardUtil.getNumberOfCardsPerSuit(cards);
         assertEquals(3, numberOfCardsPerSuit.get(Suit.HEARTS).intValue());
         assertEquals(1, numberOfCardsPerSuit.get(Suit.SPADES).intValue());
     }
@@ -182,7 +182,7 @@ public class DeterminerTest {
 
         Card newCard = new Card(Suit.HEARTS, Rank.EIGHT);
         assertFalse("Adding " + newCard + " should NOT improve hand " + cards + ", but it returned true",
-                Determiner.cardWouldImproveHand(newCard, cards, null));
+                determiner.cardWouldImproveHand(newCard, cards, null));
     }
 
     @Test
@@ -193,7 +193,8 @@ public class DeterminerTest {
         cards.add(new Card(Suit.SPADES, Rank.SEVEN));
 
         Card newCard = new Card(Suit.SPADES, Rank.FIVE);
-        assertFalse("Adding " + newCard + " should NOT improve hand " + cards + ", but it returned true", Determiner.cardWouldImproveHand(newCard, cards, null));
+        assertFalse("Adding " + newCard + " should NOT improve hand " + cards + ", but it returned true",
+                determiner.cardWouldImproveHand(newCard, cards, null));
     }
 
     @Test
@@ -204,7 +205,7 @@ public class DeterminerTest {
         cards.add(new Card(Suit.SPADES, Rank.KING));
 
         Card newCard = new Card(Suit.SPADES, Rank.EIGHT);
-        assertTrue(Determiner.cardWouldImproveHand(newCard, cards, null));
+        assertTrue(determiner.cardWouldImproveHand(newCard, cards, null));
     }
 
     @Test
@@ -216,7 +217,7 @@ public class DeterminerTest {
 
         Card newCard = new Card(Suit.CLUBS, Rank.ACE);
         assertTrue("Adding " + newCard + " should improve hand " + cards + ", but it returned false",
-                Determiner.cardWouldImproveHand(newCard, cards, null));
+                determiner.cardWouldImproveHand(newCard, cards, null));
     }
 
     @Test
@@ -232,7 +233,7 @@ public class DeterminerTest {
         cardsLeft.removeAll(cards);
         gameContext.cardsStillOutThere(cardsLeft);
 
-        assertTrue("Adding " + newCard + " should improve hand " + cards + ", but it returned false", Determiner
+        assertTrue("Adding " + newCard + " should improve hand " + cards + ", but it returned false", determiner
                 .cardWouldImproveHand(newCard, cards, gameContext));
     }
 
@@ -249,7 +250,7 @@ public class DeterminerTest {
         cardsLeft.removeAll(cards);
         gameContext.cardsStillOutThere(cardsLeft);
 
-        assertTrue("Adding " + newCard + " should improve hand " + cards + ", but it returned false", Determiner
+        assertTrue("Adding " + newCard + " should improve hand " + cards + ", but it returned false", determiner
                 .cardWouldImproveHand(newCard, cards, gameContext));
     }
 
@@ -266,7 +267,7 @@ public class DeterminerTest {
         cardsLeft.removeAll(cards);
         gameContext.cardsStillOutThere(cardsLeft);
 
-        assertTrue("Adding " + newCard + " should improve hand " + cards + ", but it returned false", Determiner
+        assertTrue("Adding " + newCard + " should improve hand " + cards + ", but it returned false", determiner
                 .cardWouldImproveHand(newCard, cards, gameContext));
     }
 
@@ -280,7 +281,7 @@ public class DeterminerTest {
         Card newCard = new Card(Suit.DIAMONDS, Rank.THREE);
         GameContext gameContext = new GameContext();
 
-        assertFalse("Adding " + newCard + " should NOT improve hand " + cards + ", but it returned true", Determiner
+        assertFalse("Adding " + newCard + " should NOT improve hand " + cards + ", but it returned true", determiner
                 .cardWouldImproveHand(newCard, cards, gameContext));
     }
 
@@ -294,7 +295,7 @@ public class DeterminerTest {
         Card newCard = new Card(Suit.HEARTS, Rank.FIVE);
         GameContext gameContext = new GameContext();
 
-        assertTrue("Adding " + newCard + " should improve hand " + cards + ", but it returned false", Determiner
+        assertTrue("Adding " + newCard + " should improve hand " + cards + ", but it returned false", determiner
                 .cardWouldImproveHand(newCard, cards, gameContext));
     }
 

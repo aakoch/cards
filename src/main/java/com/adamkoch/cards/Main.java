@@ -14,7 +14,7 @@ public class Main {
 
         final int numberOfPlayers = 5;
         final int startKnockLimit = 25;
-        final int totalNumberOfGames = 10;
+        final int totalNumberOfGames = 1000;
         LOGGER.info(
                 "Starting " + totalNumberOfGames + " games with " + numberOfPlayers + " players and starting knock limit of " +
                         startKnockLimit);

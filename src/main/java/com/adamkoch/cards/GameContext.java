@@ -17,6 +17,7 @@ public class GameContext {
     private List<Card> cardsLeft;
     private List<Outcome> outcomes;
     private List<Player> players;
+    private int discardPileShuffled;
 
     public GameContext() {
         someoneElseHasKnocked = false;
@@ -26,6 +27,7 @@ public class GameContext {
         outcomes = new ArrayList<>();
         discards = new HashMap<>();
         players = Collections.emptyList();
+        discardPileShuffled = 0;
     }
 
     public void incrementNumberOfPlays() {
@@ -124,6 +126,57 @@ public class GameContext {
         discards.clear();
         cardsLeft = new ArrayList<>();
         outcomes = new ArrayList<>();
+        discardPileShuffled = 0;
 
+    }
+
+    public void incrementDiscardPileShuffled() {
+        discardPileShuffled++;
+    }
+
+    public int getNumberOfTimesDiscardPileShuffled() {
+        return discardPileShuffled;
+    }
+
+    public Suit getOtherPlayersMostLikelyCollectingSuit(Player thisPlayer) {
+        if (getNumberOfPlayers() == 2) {
+            Player otherPlayer = getNextPlayer(thisPlayer);
+            return suitPlayerLikelyHas(otherPlayer);
+        }
+        return Suit.NONE;
+    }
+
+    public Suit suitPlayerLikelyHas(Player player) {
+        Optional<Suit> knownHandSuitOptional = suitPlayerLikelyHasUsingKnownHand(player);
+        if (knownHandSuitOptional.isPresent()) {
+            return knownHandSuitOptional.get();
+        }
+
+        Optional<Suit> usingDiscardsSuitOptional = suitPlayerLikelyHasUsingDiscards(player);
+        return usingDiscardsSuitOptional.orElse(Suit.NONE);
+    }
+
+    public Optional<Suit> suitPlayerLikelyHasUsingKnownHand(Player player) {
+        Optional<Suit> majoritySuit;
+        final Set<Card> cardSet = hands.get(player.getName());
+        if (cardSet == null || cardSet.isEmpty()) {
+            majoritySuit = Optional.empty();
+        }
+        else {
+            majoritySuit = CardUtil.findMajoritySuit(cardSet);
+        }
+        return majoritySuit;
+    }
+
+    public Optional<Suit> suitPlayerLikelyHasUsingDiscards(Player player) {
+        Optional<Suit> minoritySuit;
+        final Set<Card> cards = discards.get(player.getName());
+        if (cards == null || cards.isEmpty()) {
+            minoritySuit = Optional.empty();
+        }
+        else {
+            minoritySuit = CardUtil.findMinoritySuit(cards);
+        }
+        return minoritySuit;
     }
 }

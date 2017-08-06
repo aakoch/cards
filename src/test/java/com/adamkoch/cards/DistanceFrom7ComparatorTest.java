@@ -1,5 +1,6 @@
 package com.adamkoch.cards;
 
+import com.adamkoch.cards.seven.DistanceFrom7Comparator;
 import org.junit.Test;
 
 import java.util.Arrays;

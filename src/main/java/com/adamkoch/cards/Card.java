@@ -9,7 +9,6 @@ import java.util.Objects;
  * @since 1.0.0
  */
 public class Card {
-    private static final boolean ACE_IS_HIGH = false;
     private final Suit suit;
     private final Rank rank;
 

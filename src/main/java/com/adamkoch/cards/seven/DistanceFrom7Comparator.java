@@ -1,4 +1,6 @@
-package com.adamkoch.cards;
+package com.adamkoch.cards.seven;
+
+import com.adamkoch.cards.Card;
 
 import java.util.Comparator;
 

@@ -8,6 +8,7 @@ import java.util.List;
  * @author aakoch
  * @since 1.0.0
  */
+@FunctionalInterface
 public interface Rule {
 
     /**

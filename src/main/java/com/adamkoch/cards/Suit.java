@@ -27,4 +27,25 @@ public enum Suit {
     public static Suit[] standardSuits() {
         return STANDARD_SUITS;
     }
+
+    public static Suit valueOf(char c) {
+        Suit suit;
+        switch (c) {
+            case '♣':
+                suit = CLUBS;
+                break;
+            case '♠':
+                suit = SPADES;
+                break;
+            case '♥':
+                suit = HEARTS;
+                break;
+            case '♦':
+                suit = DIAMONDS;
+                break;
+            default:
+                suit = null;
+        }
+        return suit;
+    }
 }

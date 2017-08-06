@@ -19,10 +19,12 @@ public class DrawPile {
     private static final Logger LOGGER = LogManager.getLogger(DrawPile.class);
 
     private List<Card> cards;
+    private final GameContext gameContext;
     private DiscardPile discardPile;
 
-    public DrawPile(List<Card> remainingCards) {
+    public DrawPile(List<Card> remainingCards, GameContext gameContext) {
         cards = new ArrayList<>(remainingCards);
+        this.gameContext = gameContext;
         LOGGER.debug("remainingCards.size() = " + remainingCards.size());
     }
 
@@ -30,6 +32,8 @@ public class DrawPile {
         if (cards.isEmpty()) {
             List<Card> cards = discardPile.getCards();
             Collections.shuffle(cards);
+            LOGGER.debug("Shuffling discard pile back into draw pile: " + cards);
+            gameContext.incrementDiscardPileShuffled();
             this.cards = new ArrayList<>(cards);
         }
         return cards.remove(0);

@@ -1,11 +1,9 @@
-package com.adamkoch.cards;
+package com.adamkoch.cards.utils;
 
 import java.util.List;
 import java.util.Random;
 
 /**
- * <a href=""></a>
- *
  * <p>Created by aakoch on 2017-07-31.</p>
  *
  * @author aakoch
@@ -13,9 +11,11 @@ import java.util.Random;
  */
 public class RandomUtils {
     private static Random RANDOM = new Random();
+
     public static <T> T removeRandom(List<T> list) {
         return list.remove(RANDOM.nextInt(list.size()));
     }
+
     public static <T> T getRandom(List<T> list) {
         return list.get(RANDOM.nextInt(list.size()));
     }

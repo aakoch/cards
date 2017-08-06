@@ -17,8 +17,6 @@ import java.util.List;
 public class EasyPlayer extends Player {
     private static final Logger LOGGER = LogManager.getLogger(PlayerFactory.class);
 
-    private Iterator<Card> handIterator;
-    private List<Card> discardPile;
     private Determiner determiner;
 
     public EasyPlayer(String name, int knockLimit) {
@@ -29,15 +27,7 @@ public class EasyPlayer extends Player {
 
     @Override
     public Chain getChain(GameContext gameContext) {
-
-        Chain chain = new Chain();
-        chain.addRule(RuleFactory.createGameContextRule(gameContext));
-        chain.addRule(RuleFactory.createOddSuitRule());
-        chain.addRule(RuleFactory.createComparePairsRule());
-        chain.addRule(RuleFactory.createSameRankChooseLast());
-        chain.addRule(RuleFactory.createNumericRankRule());
-        chain.addRule(RuleFactory.createKeepTensRule());
-        chain.addRule(RuleFactory.createRandomRule());
+        Chain chain = getBaseChain(gameContext);
 
         return chain;
     }
@@ -66,7 +56,7 @@ public class EasyPlayer extends Player {
             cardToDiscard = determiner.chooseCardToDiscard(newCardList, gameContext);
         }
 
-        getHand().remove(cardToDiscard);
+        //getHand().remove(cardToDiscard);
 
         return cardToDiscard;
     }
@@ -98,31 +88,18 @@ public class EasyPlayer extends Player {
         final int rounds = Math.round(gameContext.getNumberOfPlays() / gameContext.getNumberOfPlayers());
         final int currentKnockLimit = this.getKnockLimit() + rounds;
         final boolean totalGreater = total > currentKnockLimit;
-        boolean decidesToKnock = Determiner.areThreeCardsWithSameSuit(cards) && totalGreater;
+        boolean decidesToKnock = CardUtil.areThreeCardsWithSameSuit(cards) && totalGreater;
         if (decidesToKnock) {
             LOGGER.debug("after " + rounds + " rounds, " + getName() + " has " + total +
                     " points, which is greater than their limit of " + currentKnockLimit + ", and decides to knock");
         }
-        else if (total >= 30) {
-            if (rounds > 100) {
-                LOGGER.info("Stalemate. after " + rounds + " rounds, " + getName() + " has " + total +
-                        " points, which is not greater than their limit of " + currentKnockLimit + ", but decides to knock anyway");
-                decidesToKnock = true;
-            }
-            else {
-                LOGGER.info("after " + rounds + " rounds, " + getName() + " has " + total +
-                        " points, but decides not to knock. starting knock limit=" + this.getKnockLimit() + ", current=" +
-                        currentKnockLimit);
-            }
-        }
-
         return decidesToKnock;
 
     }
 
     @Override
-    public boolean chooseCardFromDiscardPile(Card card, GameContext gameContext) {
-        return Determiner.cardWouldImproveHand(card, getHand(), gameContext);
+    public boolean shouldTakeCardFromDiscardPile(Card card, GameContext gameContext) {
+        return determiner.cardWouldImproveHand(card, getHand(), gameContext);
     }
 
     @Override

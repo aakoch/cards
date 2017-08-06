@@ -6,7 +6,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.text.ChoiceFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -39,11 +38,11 @@ public class ThirtyOneRound {
         LOGGER.debug(gameContext.getNumberOfPlayers() + " players");
 
         final List<Card> remainingCards = dealer.dealTo(players, 3);
-        DrawPile drawPile = new DrawPile(remainingCards);
+        DrawPile drawPile = new DrawPile(remainingCards, gameContext);
         DiscardPile discardPile = new DiscardPile(drawPile);
         //gameContext.cardsStillOutThere(new StandardDeck().cards());
 
-        Iterator<Player> r = ListUtils.constructRotator(players, players.indexOf(dealer));
+        Iterator<Player> r = ListUtils.constructRotator(players, -getStartIndex() - 1);
 
         Player playerWhoKnocked = null;
         boolean playerKnocked = false;
@@ -51,7 +50,11 @@ public class ThirtyOneRound {
         Player player = null;
         int playerTurnCount = 0;
         int turnsLeft = Integer.MAX_VALUE;
-        while (!playerHas31 && r.hasNext() && turnsLeft-- > 0 && playerTurnCount < 1000) {
+        while (!playerHas31 && r.hasNext() && turnsLeft-- > 0) {
+            if (playerTurnCount > 10000) {
+                LOGGER.error("Over 10000 turns taken");
+//                throw new RuntimeException("Over 10000 turns taken");
+            }
             player = r.next();
 
             Outcome outcome = playTurn(player, drawPile, discardPile, gameContext);
@@ -133,8 +136,15 @@ public class ThirtyOneRound {
         }
 
         result.setRoundEndMethod(roundEndMethod);
+        players.forEach(Player::clearHand);
 
         return result;
+    }
+
+    protected int getStartIndex() {
+        final int index = players.indexOf(dealer.asPlayer());
+
+        return index;
     }
 
 
@@ -149,7 +159,7 @@ public class ThirtyOneRound {
             if (!player.equals(playerWhoKnocked)) {
                 int total = Calculator.totalCards(player.getHand());
                 if (total >= playerWhoKnockedTotal) {
-                    LOGGER.info(player.getName() + " has " + total + " points which is more than the "
+                    LOGGER.info(player.getName() + " has " + total + " points which is more than or equal to the "
                             + playerWhoKnockedTotal + " " + playerWhoKnocked.getName() + " has!");
                     return Arrays.asList(playerWhoKnocked);
                 }
@@ -187,12 +197,14 @@ public class ThirtyOneRound {
         }
 
         Outcome outcome = new Outcome();
-        if (player.chooseCardFromDiscardPile(discardPile.peekAtTopCard(), gameContext)) {
-            LOGGER.debug(player.getName() + " takes " + discardPile.peekAtTopCard() + " from discard pile");
-            outcome.setCardTakenFromDiscardPile(discardPile.peekAtTopCard());
+        final Card topDiscardCard = discardPile.peekAtTopCard();
+        if (player.shouldTakeCardFromDiscardPile(topDiscardCard, gameContext)) {
+            LOGGER.debug(player.getName() + " takes " + topDiscardCard + " from discard pile");
+            outcome.setCardTakenFromDiscardPile(topDiscardCard);
             player.addCardToHand(discardPile.removeTopCard());
         }
         else {
+            LOGGER.debug(player.getName() + " leaves " + topDiscardCard + " on discard pile");
             final Card drawnCard = drawPile.draw();
             LOGGER.debug(player.getName() + " draws " + drawnCard);
             player.addCardToHand(drawnCard);
@@ -200,7 +212,7 @@ public class ThirtyOneRound {
 
         Card discardCard = player.chooseWhichCardToDiscard(drawPile, discardPile, gameContext);
         LOGGER.debug(player.getName() + " discards " + discardCard);
-        if (player.removeFromHand(discardCard)) {
+        if (!player.removeFromHand(discardCard)) {
             LOGGER.debug(discardCard + " wasn't in hand");
         }
         discardPile.add(discardCard);
