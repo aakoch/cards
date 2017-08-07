@@ -35,7 +35,7 @@ public class ThirtyOneRound {
 
         Result result = new Result();
 
-        LOGGER.debug(gameContext.getNumberOfPlayers() + " players");
+        LOGGER.debug(gameContext.getNumberOfPlayersStillInGame() + " players");
 
         final List<Card> remainingCards = dealer.dealTo(players, 3);
         DrawPile drawPile = new DrawPile(remainingCards, gameContext);

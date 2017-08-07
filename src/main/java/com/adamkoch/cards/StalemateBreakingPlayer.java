@@ -1,5 +1,7 @@
 package com.adamkoch.cards;
 
+import com.adamkoch.cards.utils.CardUtil;
+import com.adamkoch.cards.utils.RandomUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,7 +38,7 @@ public class StalemateBreakingPlayer extends EasyPlayer {
         else {
             cardToDiscard = super.chooseWhichCardToDiscard(drawPile, discardPile, gameContext);
 
-            if (gameContext.getNumberOfTimesDiscardPileShuffled() > 20) {
+            if (gameContext.getNumberOfTimesDiscardPileShuffled() > 4) {
                 LOGGER.debug("Probably stalemate");
                 if (CardUtil.areThreeCardsWithSameSuit(super.getHand())) {
 
@@ -46,7 +48,7 @@ public class StalemateBreakingPlayer extends EasyPlayer {
                         final boolean allPlayersHaveSameSuit = doAllPlayersHaveSameSuit(gameContext, suit);
                         LOGGER.debug("allPlayersHaveSameSuit = " + allPlayersHaveSameSuit);
                         if (allPlayersHaveSameSuit || gameContext
-                                .getNumberOfTimesDiscardPileShuffled() > 40) {
+                                .getNumberOfTimesDiscardPileShuffled() > 8) {
                             stalemateSuit = suit.get();
                             LOGGER.info("From now on, not collecting " + stalemateSuit);
                         }
@@ -77,7 +79,7 @@ public class StalemateBreakingPlayer extends EasyPlayer {
         if (!decidesToKnock) {
             final List<Card> cards = getHand();
             final int total = Calculator.totalCards(cards);
-            final int rounds = Math.round(gameContext.getNumberOfPlays() / gameContext.getNumberOfPlayers());
+            final int rounds = Math.round(gameContext.getNumberOfPlays() / gameContext.getNumberOfPlayersStillInGame());
             final int currentKnockLimit = this.getKnockLimit() + rounds;
             if (total == 30) {
                 if (rounds > 100) {

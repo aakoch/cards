@@ -1,5 +1,7 @@
 package com.adamkoch.cards;
 
+import com.adamkoch.cards.utils.RandomUtils;
+import com.adamkoch.utils.ListUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -60,7 +62,11 @@ public class ThirtyOneGame implements Game {
 
             //deck = getStartDeck();
             deck.shuffle();
-            dealer = passDealerRole(dealer, deck);
+            dealer = passDealerRole(players, dealer, deck);
+
+            if (!dealer.asPlayer().stillInGame()) {
+                throw new RuntimeException("A person not in the game can't deal");
+            }
 
             if (players.removeIf(player -> !player.stillInGame())) {
                 LOGGER.info("players left in game are " + players.stream().map(Player::getName).collect
@@ -78,8 +84,17 @@ public class ThirtyOneGame implements Game {
         return gameResult;
     }
 
-    private Dealer passDealerRole(Dealer currentDealer, Deck deck) {
-        Dealer dealer = new Dealer(gameContext.getNextPlayer(currentDealer.asPlayer()), deck);
+    private Dealer passDealerRole(List<Player> players, Dealer currentDealer, Deck deck) {
+        Player nextPlayer = ListUtils.getNext(players, currentDealer.asPlayer());
+        while (!nextPlayer.stillInGame()) {
+            LOGGER.debug(nextPlayer.getName() + " is no longer in the game so I have to find someone else");
+            nextPlayer = ListUtils.getNext(players, nextPlayer);
+        }
+        if (players.stream().filter(Player::stillInGame).count() > 1 && currentDealer.asPlayer().equals(nextPlayer)) {
+            throw new RuntimeException(nextPlayer.getName() + " can't deal again");
+        }
+        players.stream().forEach(Player::notDealer);
+        Dealer dealer = new Dealer(nextPlayer, deck);
         return dealer;
     }
 

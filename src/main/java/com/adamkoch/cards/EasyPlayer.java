@@ -1,11 +1,12 @@
 package com.adamkoch.cards;
 
+import com.adamkoch.cards.utils.CardUtil;
+import com.adamkoch.utils.ListUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -78,14 +79,14 @@ public class EasyPlayer extends Player {
     }
 
     private Player getNextPlayer(GameContext gameContext) {
-        return gameContext.getNextPlayer(this);
+        return ListUtils.getNext(gameContext.getPlayersStillInTheGame(), this);
     }
 
     @Override
     public boolean decidesToKnock(GameContext gameContext) {
         final List<Card> cards = getHand();
         final int total = Calculator.totalCards(cards);
-        final int rounds = Math.round(gameContext.getNumberOfPlays() / gameContext.getNumberOfPlayers());
+        final int rounds = Math.round(gameContext.getNumberOfPlays() / gameContext.getNumberOfPlayersStillInGame());
         final int currentKnockLimit = this.getKnockLimit() + rounds;
         final boolean totalGreater = total > currentKnockLimit;
         boolean decidesToKnock = CardUtil.areThreeCardsWithSameSuit(cards) && totalGreater;

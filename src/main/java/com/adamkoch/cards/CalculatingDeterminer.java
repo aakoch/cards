@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.adamkoch.cards.CardUtil.addingCardWouldMake2OfTheSameSuit;
-import static com.adamkoch.cards.CardUtil.addingCardWouldMake3OfTheSameSuit;
-import static com.adamkoch.cards.CardUtil.createSuitListMap;
 import static com.adamkoch.cards.RuleFactory.rankAndPickCardsToDiscard;
+import static com.adamkoch.cards.utils.CardUtil.addingCardWouldMake2OfTheSameSuit;
+import static com.adamkoch.cards.utils.CardUtil.addingCardWouldMake3OfTheSameSuit;
+import static com.adamkoch.cards.utils.CardUtil.createSuitListMap;
 
 /**
  * <p>Created by aakoch on 2017-08-05.</p>

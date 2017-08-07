@@ -1,5 +1,6 @@
 package com.adamkoch.cards;
 
+import com.adamkoch.cards.utils.CardUtil;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import org.apache.logging.log4j.LogManager;

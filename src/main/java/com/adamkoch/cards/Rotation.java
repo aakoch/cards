@@ -2,6 +2,7 @@ package com.adamkoch.cards;
 
 /**
  * Class to rotate through an array of objects and then starts over.
+ *
  * <p>Created by aakoch on 2017-07-27.</p>
  *
  * @author aakoch

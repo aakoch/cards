@@ -47,6 +47,14 @@ public class Result {
         return roundEndMethod;
     }
 
+    public void setKnockerLost(Player knockerLost) {
+        this.knockerLost = knockerLost;
+    }
+
+    public Player getKnockerLost() {
+        return knockerLost;
+    }
+
     @Override
     public String toString() {
         return "Result{" +
@@ -55,13 +63,5 @@ public class Result {
                 ", roundEndMethod=" + roundEndMethod +
                 (knockerLost == null ? "" : ", knockerLost=" + knockerLost) +
                 '}';
-    }
-
-    public void setKnockerLost(Player knockerLost) {
-        this.knockerLost = knockerLost;
-    }
-
-    public Player getKnockerLost() {
-        return knockerLost;
     }
 }

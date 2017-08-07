@@ -1,5 +1,7 @@
-package com.adamkoch.cards;
+package com.adamkoch.cards.utils;
 
+import com.adamkoch.cards.Card;
+import com.adamkoch.cards.Suit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

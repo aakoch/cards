@@ -1,7 +1,11 @@
 package com.adamkoch.cards;
 
+import com.adamkoch.cards.utils.CardUtil;
+
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * <p>Created by aakoch on 2017-08-03.</p>
@@ -42,8 +46,16 @@ public class GameContext {
         players.remove(player);
     }
 
-    public int getNumberOfPlayers() {
-        return players.size();
+    public int getNumberOfPlayersStillInGame() {
+        return (int) getPlayersStillInTheGameStream().count();
+    }
+
+    private Stream<Player> getPlayersStillInTheGameStream() {
+        return players.stream().filter(Player::stillInGame);
+    }
+
+    public List<Player> getPlayersStillInTheGame() {
+        return getPlayersStillInTheGameStream().collect(Collectors.toList());
     }
 
     public boolean someoneElseHasKnocked() {
@@ -97,14 +109,26 @@ public class GameContext {
                 '}';
     }
 
-    public Player getNextPlayer(Player player) {
-        int indexOfCurrentPlayer = players.indexOf(player);
-        if (indexOfCurrentPlayer >= players.size() - 1) {
-            indexOfCurrentPlayer = -1;
-        }
-        final Player nextPlayer = players.get(indexOfCurrentPlayer + 1);
-        return nextPlayer;
-    }
+//    public Player getNextPlayer(Player player) {
+//        final List<Player> players = getPlayersStillInTheGame();
+//        int indexOfCurrentPlayer = players.indexOf(player);
+//        if (indexOfCurrentPlayer == -1) {
+//            // dealer got out -- find out where he was in the original lineup
+//            indexOfCurrentPlayer = this.players.indexOf(player);
+//        }
+//        if (indexOfCurrentPlayer >= players.size() - 1) {
+//            indexOfCurrentPlayer = -1;
+//        }
+//        Player nextPlayer;
+////        do {
+//            nextPlayer = players.get(indexOfCurrentPlayer + 1);
+////            if (!nextPlayer.stillInGame()) {
+////                indexOfCurrentPlayer++;
+////            }
+////        } while (nextPlayer == null);
+//
+//        return nextPlayer;
+//    }
 
     public Set<Card> getKnownHand(Player player) {
         return hands.getOrDefault(player.getName(), Collections.emptySet());
@@ -136,14 +160,6 @@ public class GameContext {
 
     public int getNumberOfTimesDiscardPileShuffled() {
         return discardPileShuffled;
-    }
-
-    public Suit getOtherPlayersMostLikelyCollectingSuit(Player thisPlayer) {
-        if (getNumberOfPlayers() == 2) {
-            Player otherPlayer = getNextPlayer(thisPlayer);
-            return suitPlayerLikelyHas(otherPlayer);
-        }
-        return Suit.NONE;
     }
 
     public Suit suitPlayerLikelyHas(Player player) {

@@ -23,9 +23,8 @@ public class Card {
         return rank;
     }
 
-    @Override
-    public String toString() {
-        return formatRank() + suit.toString();
+    public Suit getSuit() {
+        return suit;
     }
 
     public String formatRank() {
@@ -53,6 +52,11 @@ public class Card {
     }
 
     @Override
+    public String toString() {
+        return formatRank() + suit.toString();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -72,7 +76,4 @@ public class Card {
         return result;
     }
 
-    public Suit getSuit() {
-        return suit;
-    }
 }

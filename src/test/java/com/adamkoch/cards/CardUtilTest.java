@@ -1,5 +1,6 @@
 package com.adamkoch.cards;
 
+import com.adamkoch.cards.utils.CardUtil;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -7,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.adamkoch.cards.CardUtil.getNumberOfCardsPerSuit;
+import static com.adamkoch.cards.utils.CardUtil.getNumberOfCardsPerSuit;
 import static org.junit.Assert.*;
 
 /**

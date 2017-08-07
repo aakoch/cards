@@ -12,7 +12,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        final int numberOfPlayers = 5;
+        final int numberOfPlayers = 4;
         final int startKnockLimit = 25;
         final int totalNumberOfGames = 1000;
         LOGGER.info(

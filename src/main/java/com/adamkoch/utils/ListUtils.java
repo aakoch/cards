@@ -1,12 +1,10 @@
 package com.adamkoch.utils;
 
 import com.adamkoch.cards.Card;
+import com.adamkoch.cards.Player;
 import com.google.common.collect.Iterables;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -33,5 +31,19 @@ public class ListUtils {
         List<Card> newList = new ArrayList<>(cards);
         newList.add(card);
         return newList;
+    }
+
+    /**
+     * Return the next item in the list. If at the end of the list, return the first.
+     */
+    public static <T> T getNext(List<T> list, T item) {
+        int index = list.indexOf(item);
+        if (index == -1) {
+            throw new NoSuchElementException(item + " is not in list " + list);
+        }
+        if (index >= list.size() - 1) {
+            index = -1;
+        }
+        return list.get(index + 1);
     }
 }

@@ -1,5 +1,6 @@
 package com.adamkoch.cards;
 
+import com.adamkoch.cards.utils.CardUtil;
 import org.junit.Before;
 import org.junit.Test;
 
