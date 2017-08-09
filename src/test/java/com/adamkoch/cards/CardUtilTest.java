@@ -3,10 +3,8 @@ package com.adamkoch.cards;
 import com.adamkoch.cards.utils.CardUtil;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.adamkoch.cards.utils.CardUtil.getNumberOfCardsPerSuit;
 import static org.junit.Assert.*;
@@ -22,25 +20,19 @@ import static org.junit.Assert.*;
 public class CardUtilTest {
     @Test
     public void testFindMajoritySuit() throws Exception {
-        List<Card> cards = cardList("4♣︎", "7♣︎", "8♣︎", "4♦︎");
+        List<Card> cards = CardUtil.asCardList("4♣︎", "7♣︎", "8♣︎", "4♦︎");
         assertEquals(Suit.CLUBS, CardUtil.findMajoritySuit(cards).get());
     }
 
     @Test
     public void testFindMinoritySuit() throws Exception {
-        List<Card> cards = cardList("4♣︎", "7♣︎", "8♣︎", "4♦︎");
+        List<Card> cards = CardUtil.asCardList("4♣︎", "7♣︎", "8♣︎", "4♦︎");
         assertEquals(Suit.DIAMONDS, CardUtil.findMinoritySuit(cards).get());
     }
 
-    private List<Card> cardList(String... s) {
-        return Arrays.stream(s).map(str -> new Card(Rank.valueOf(
-                str.charAt(0)), Suit.valueOf(str.charAt(1)))).collect(Collectors.toList());
-    }
-
-
     @Test
     public void testName() throws Exception {
-        List<Card> cards = cardList("K♥",
+        List<Card> cards = CardUtil.asCardList("K♥",
                 "3♣",
                 "Q♥",
                 "4♦",

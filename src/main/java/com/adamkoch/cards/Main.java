@@ -14,7 +14,7 @@ public class Main {
 
         final int numberOfPlayers = 4;
         final int startKnockLimit = 25;
-        final int totalNumberOfGames = 1000;
+        final int totalNumberOfGames = 1;
         LOGGER.info(
                 "Starting " + totalNumberOfGames + " games with " + numberOfPlayers + " players and starting knock limit of " +
                         startKnockLimit);
@@ -36,7 +36,7 @@ public class Main {
         }
 
         LOGGER.info("gameResults = " + gameResults);
-        SortedMap<String, Map<String, AtomicInteger>> roundsWinMap = getStringMapSortedMap(gameResults);
+        SortedMap<String, Map<String, AtomicInteger>> roundsWinMap = getStringMapSortedMap(gameResults, players);
 
         players.sort(Comparator.comparing(Player::getName));
 
@@ -48,7 +48,7 @@ public class Main {
         LOGGER.info(s);
     }
 
-    public static SortedMap<String, Map<String, AtomicInteger>> getStringMapSortedMap(List<GameResult> gameResults) {
+    public static SortedMap<String, Map<String, AtomicInteger>> getStringMapSortedMap(List<GameResult> gameResults, List<Player> players) {
         SortedMap<String, AtomicInteger> gamesWinMap = new TreeMap<>();
         SortedMap<String, Map<String, AtomicInteger>> roundsWinMap = new TreeMap<>();
         for (GameResult gameResult : gameResults) {
@@ -56,25 +56,25 @@ public class Main {
             gamesWinMap.computeIfAbsent(gameResult.getWinner().getName(), player4 -> new AtomicInteger())
                        .incrementAndGet();
 
-            roundsWinMap.computeIfAbsent(gameResult.getWinner().getName(), player3 -> {
+            for (Player player : players) {
                 Map<String, AtomicInteger> map = new HashMap<>();
                 map.put("Total", new AtomicInteger());
-                Arrays.stream(RoundEndMethod.values())
-//                      .filter(roundEndMethod -> roundEndMethod != RoundEndMethod.UNKNOWN)
-                      .forEach
-                              (roundEndMethod -> map.put
-                                      (roundEndMethod
-                                                      .toString(),
-                                              new AtomicInteger(0)));
-                return map;
-            });
+                for (RoundEndMethod roundEndMethod : RoundEndMethod.values()) {
+                    map.put(roundEndMethod.toString(), new AtomicInteger());
+                }
+                roundsWinMap.put(player.getName(), map);
+            }
 
             for (Result roundResult : gameResult.getRoundResults()) {
                 try {
-                    roundsWinMap.get(gameResult.getWinner().getName()).get("Total").incrementAndGet();
-                    roundsWinMap.get(gameResult.getWinner().getName())
-                                .get(roundResult.getRoundEndMethod().toString())
-                                .incrementAndGet();
+                    List<Player> winners = roundResult.getWinners();
+                    for (Player winner : winners) {
+                        roundsWinMap.get(winner.getName()).get("Total").incrementAndGet();
+
+                        roundsWinMap.get(winner.getName())
+                                    .get(roundResult.getRoundEndMethod().toString())
+                                    .incrementAndGet();
+                    }
                 }
                 catch (RuntimeException e) {
                     LOGGER.error("Error looping over win map. gameResult=" + gameResult, e);

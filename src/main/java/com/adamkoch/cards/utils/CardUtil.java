@@ -1,6 +1,7 @@
 package com.adamkoch.cards.utils;
 
 import com.adamkoch.cards.Card;
+import com.adamkoch.cards.Rank;
 import com.adamkoch.cards.Suit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -164,5 +165,10 @@ public class CardUtil {
             e.printStackTrace();
         }
         return Optional.empty();
+    }
+
+    public static List<Card> asCardList(String... s) {
+        return Arrays.stream(s).map(str -> new Card(Rank.valueOf(
+                str.charAt(0)), Suit.valueOf(str.charAt(1)))).collect(Collectors.toList());
     }
 }

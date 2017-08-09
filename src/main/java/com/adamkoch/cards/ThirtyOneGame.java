@@ -54,7 +54,11 @@ public class ThirtyOneGame implements Game {
                     if (p != null)
                         p.pay();
                 });
-                LOGGER.debug("payers = " + payers + "\n\n");
+                LOGGER.debug("payers = " + payers.stream().map(player -> {
+                    return player.getName() + " with " + player.coinsLeft() + " coins left";
+                }).collect(Collectors.joining(". ")) +
+                        "\n\n");
+
             }
             catch (RuntimeException e) {
                 LOGGER.error("Round failed", e);
@@ -78,8 +82,8 @@ public class ThirtyOneGame implements Game {
         Player winner = figureOutWinner(players);
         gameResult.setWinner(winner);
 
-        LOGGER.info("**************** winner = " + winner + " ************************");
-        players.stream().forEach(player -> LOGGER.debug("player = " + player));
+        LOGGER.info("**************** winner = " + winner.getName() + " ************************");
+        gameContext.getPlayers().stream().forEach(player -> LOGGER.debug("player = " + player));
 
         return gameResult;
     }

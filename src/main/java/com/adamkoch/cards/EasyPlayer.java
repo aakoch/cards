@@ -105,7 +105,7 @@ public class EasyPlayer extends Player {
 
     @Override
     public String toString() {
-        return name + ':' + hand +
+        return name + ':' + hand + ":coins=" + coinsLeft() +
                 ":knockLimit=" + getKnockLimit();
     }
 }
