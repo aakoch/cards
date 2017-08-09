@@ -2,6 +2,7 @@ package com.adamkoch.cards;
 
 import com.adamkoch.cards.utils.CardUtil;
 import org.hamcrest.CoreMatchers;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -16,6 +17,17 @@ import static org.junit.Assert.*;
  * @since 1.0.0
  */
 public class KnockHelperTest {
+
+    private PickUpStrategy pickupStrategy;
+    private KnockStrategy knockStrategy;
+    private DiscardStrategy discardStrategy;
+
+    @Before
+    public void setUp() {
+        pickupStrategy = new DefaultPickUpStrategy(new Determiner());
+        knockStrategy = new DefaultKnockStrategy();
+        discardStrategy = new DefaultDiscardStrategy();
+    }
 
     @Test
     public void testFindLowestPlayers() throws Exception {
@@ -59,7 +71,7 @@ public class KnockHelperTest {
     }
 
     public Player makePlayerWithHand(String... cards) {
-        Player player = new EasyPlayer("test", 30);
+        Player player = new EasyPlayer("test", 30, knockStrategy, pickupStrategy, discardStrategy);
         player.getHand().addAll(CardUtil.asCardList(cards));
         return player;
     }

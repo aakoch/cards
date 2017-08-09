@@ -4,6 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
+import java.util.function.IntConsumer;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -18,15 +20,14 @@ public class KnockHelper {
     public static List<Player> findLowestPlayers(Player playerWhoKnocked, List<Player> playerList) {
         int playerWhoKnockedTotal = Calculator.totalCards(playerWhoKnocked.getHand());
 
-        for (Player player : playerList) {
-            if (!player.equals(playerWhoKnocked)) {
-                int total = Calculator.totalCards(player.getHand());
-                if (total >= playerWhoKnockedTotal) {
-                    LOGGER.info(player.getName() + " has " + total + " points which is more than or equal to the "
-                            + playerWhoKnockedTotal + " " + playerWhoKnocked.getName() + " has!");
-                    return Arrays.asList(playerWhoKnocked);
-                }
-            }
+        final Optional<Player> playerWithHigherPoints = playerList.stream().filter(player -> !player.equals(playerWhoKnocked))
+                                     .filter(player -> Calculator.totalCards(player.getHand()) >= playerWhoKnockedTotal)
+                                     .findFirst();
+        if (playerWithHigherPoints.isPresent()) {
+            LOGGER.info(playerWithHigherPoints.get().getName() + " has " + Calculator.totalCards(
+                    playerWithHigherPoints.get().getHand()) + " points which is more than or equal to the "
+                    + playerWhoKnockedTotal + " " + playerWhoKnocked.getName() + " has!");
+            return Collections.singletonList(playerWithHigherPoints.get());
         }
 
 //        playerList.stream().min(Comparator.comparingInt(player -> Calculator.totalCards(player.getHand())));
@@ -39,36 +40,18 @@ public class KnockHelper {
     }
 
     public static int findLowestTotal(Player playerWhoKnocked, List<Player> playerList) {
-        final Optional<List<Card>> cardList = playerList.stream()
-                                                        .filter(player -> !player.equals(playerWhoKnocked))
-                                                        .map(Player::getHand)
-                                                        .min(Comparator.comparingInt(Calculator::totalCards));
-
-
-        final Optional<Player> min = playerList.stream()
-                                               .filter(player -> !player.equals(playerWhoKnocked))
-                                               .min(Comparator.comparingInt(
-                                                       player2 -> Calculator.totalCards(player2.getHand())));
-
-
         return playerList.stream()
-            .filter(player -> !player.equals(playerWhoKnocked))
-            .map(Player::getHand)
-            .mapToInt(Calculator::totalCards)
-            .min()
-            .getAsInt();
+                         .filter(player -> !player.equals(playerWhoKnocked))
+                         .map(Player::getHand)
+                         .mapToInt(Calculator::totalCards)
+                         .min()
+                         .getAsInt();
     }
 
     public static List<Player> findPlayersWithScore(Player playerWhoKnocked, List<Player> playerList, int lowestTotal) {
-        List<Player> lowestPlayers = new ArrayList<>();
-        for (Player player : playerList) {
-            if (!player.equals(playerWhoKnocked)) {
-                int total = Calculator.totalCards(player.getHand());
-                if (total == lowestTotal) {
-                    lowestPlayers.add(player);
-                }
-            }
-        }
-        return lowestPlayers;
+        return playerList.stream()
+                         .filter(player -> !player.equals(playerWhoKnocked))
+                         .filter(player -> Calculator.totalCards(player.getHand()) == lowestTotal)
+                         .collect(Collectors.toList());
     }
 }

@@ -22,8 +22,17 @@ public class PlayerFactory {
     public static List<Player> initializePlayers(int numberOfInstances, int startKnockLimit) {
         List<Player> players = new ArrayList<>(numberOfInstances);
 
-        for (int i = 0; i < numberOfInstances; i++) {
-            players.add(new StalemateBreakingPlayer(randomName(), startKnockLimit + i));
+            KnockStrategy defaultKnockStrategy = new DefaultKnockStrategy();
+        Determiner defaultDeterminer = new Determiner();
+        PickUpStrategy defaultPickupStrategy = new DefaultPickUpStrategy(defaultDeterminer);
+        DiscardStrategy defaultDiscardStrategy = new DefaultDiscardStrategy();
+
+        players.add(new StalemateBreakingPlayer(randomName(), startKnockLimit, defaultKnockStrategy,
+                new LeaveSmallCardsOnDiscardPileStategy(defaultPickupStrategy), defaultDiscardStrategy));
+
+        for (int i = 1; i < numberOfInstances; i++) {
+            players.add(new EasyPlayer(randomName(), startKnockLimit + i, defaultKnockStrategy,
+                    defaultPickupStrategy, defaultDiscardStrategy));
         }
         return players;
     }
@@ -108,10 +117,10 @@ public class PlayerFactory {
 //        return player;
 //    }
 
-    private static Player makeEasy() {
-        Player player = new EasyPlayer(randomName(), 20);
-        return player;
-    }
+//    private static Player makeEasy() {
+//        Player player = new EasyPlayer(randomName(), 20);
+//        return player;
+//    }
 
     private static String randomName() {
         return namesQueue.remove();

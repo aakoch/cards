@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * <p>Created by aakoch on 2017-07-13.</p>
@@ -21,10 +20,16 @@ public abstract class Player {
     private boolean theDealer;
     private int coinsLeft = 3;
     private int knockLimit;
+    private final KnockStrategy knockStrategy;
+    private final PickUpStrategy pickupStrategy;
+    private final DiscardStrategy discardStrategy;
 
-    public Player(String name, int knockLimit) {
+    public Player(String name, int knockLimit, KnockStrategy knockStrategy, PickUpStrategy pickupStrategy, DiscardStrategy discardStrategy) {
         this.name = name;
         this.knockLimit = knockLimit;
+        this.knockStrategy = knockStrategy;
+        this.pickupStrategy = pickupStrategy;
+        this.discardStrategy = discardStrategy;
         hand = new ArrayList<>();
     }
 
@@ -78,34 +83,8 @@ public abstract class Player {
         theDealer = false;
     }
 
-    public Card play7OfHearts() {
-        final Card card = new Card(Rank.SEVEN, Suit.HEARTS);
-        hand.remove(card);
-        return card;
-    }
-
     public boolean removeFromHand(Card card) {
         return hand.remove(card);
-    }
-
-    public Card determineCardToPlay(List<? extends Card> possiblePlays) {
-        List<Card> intersection = intersect(possiblePlays, getHand());
-        return determineCardToPlay(intersection, getHand());
-    }
-
-
-    private List<Card> intersect(List<? extends Card> playableCards, List<? extends Card> playerHand) {
-        return playableCards.stream().filter(playerHand::contains).collect(Collectors.toList());
-    }
-
-    private Card determineCardToPlay(List<? extends Card> cardsThatCanPlay, List<Card> hand) {
-        if (cardsThatCanPlay.isEmpty()) {
-            return null;
-        }
-        else {
-            final List<Card> rankedCards = rank(cardsThatCanPlay, hand);
-            return rankedCards.get(0);
-        }
     }
 
     protected Chain getBaseChain(GameContext gameContext) {
@@ -119,8 +98,6 @@ public abstract class Player {
         chain.addRule(RuleFactory.createRandomRule());
         return chain;
     }
-
-    protected abstract List<Card> rank(List<? extends Card> cardsThatCanPlay, List<Card> hand);
 
     public void pay() {
         coinsLeft--;
@@ -137,7 +114,10 @@ public abstract class Player {
         return coinsLeft;
     }
 
-    public abstract Card chooseWhichCardToDiscard(DrawPile drawPile, DiscardPile discardPile, GameContext gameContext);
+    public Card chooseWhichCardToDiscard(DrawPile drawPile, DiscardPile discardPile,
+                                         GameContext gameContext) {
+        return getDiscardStrategy().chooseWhichCardToDiscard(this, drawPile, discardPile, gameContext);
+    }
 
     public void drawFromDrawPile(DrawPile drawPile, DiscardPile discardPile) {
         Card drawCard = drawPile.draw();
@@ -187,18 +167,35 @@ public abstract class Player {
         return Calculator.totalCards(hand);
     }
 
-    public abstract boolean decidesToKnock(GameContext gameContext);
+    public boolean decidesToKnock(GameContext gameContext) {
+        return getKnockStrategy().shouldKnock(this, gameContext);
+    }
 
-    /**
-     * Should the user pick the card up from the discard pile?
-     */
-    public abstract boolean shouldTakeCardFromDiscardPile(Card card, GameContext gameContext);
+    protected KnockStrategy getKnockStrategy() {
+        return knockStrategy;
+    }
 
     public int getKnockLimit() {
         return knockLimit;
     }
 
     public abstract Chain getChain(GameContext gameContext);
+
+    public boolean shouldTakeCardFromDiscardPile(Card topDiscardCard, GameContext gameContext) {
+        return getPickupStrategy().shouldTakeCardFromDiscardPile(this, topDiscardCard, gameContext);
+    }
+
+    protected PickUpStrategy getPickupStrategy() {
+        return pickupStrategy;
+    }
+
+    public void setHand(List<Card> hand) {
+        this.hand = hand;
+    }
+
+    public DiscardStrategy getDiscardStrategy() {
+        return discardStrategy;
+    }
 
 //    public boolean shouldTakeCardFromDiscardPile(DrawPile drawPile, DiscardPile discardPile) {
 //

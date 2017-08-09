@@ -21,10 +21,6 @@ import static com.adamkoch.cards.utils.CardUtil.createSuitListMap;
 public class CalculatingDeterminer extends Determiner {
     private static final Logger LOGGER = LogManager.getLogger(CalculatingDeterminer.class);
 
-    public CalculatingDeterminer(Player player) {
-        super(player);
-    }
-
     @Override
     public boolean cardWouldImproveHand(Card card, List<Card> cards, GameContext gameContext) {
 

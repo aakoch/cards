@@ -17,18 +17,11 @@ public class Determiner {
 
     private static final Logger LOGGER = LogManager.getLogger(Determiner.class);
 
-    private final Player player;
-
-    public Determiner(Player player) {
-        this.player = player;
-    }
-
     public static boolean discardingCardWillResultInAnotherPlayerGetting31(Card card) {
         return false;
     }
 
     public boolean cardWouldImproveHand(Card card, List<Card> cards, GameContext gameContext) {
-
         final boolean[] isLowestCard = {false};
         final Map<Suit, Integer> numberOfCardsPerSuit = CardUtil.getNumberOfCardsPerSuit(cards);
         if (numberOfCardsPerSuit.size() == 1) {
@@ -42,7 +35,6 @@ public class Determiner {
         final int currentCardsTotal = Calculator.totalCards(cards);
         final int candidateCardsTotal = Calculator.totalCards(ListUtils.concat(cards, card));
         return currentCardsTotal < candidateCardsTotal;
-
     }
 
     public static boolean newPairBetterThanCurrentPair(List<Card> cards, Card card) {
@@ -73,7 +65,8 @@ public class Determiner {
         }
     }
 
-    public Card chooseCardToDiscard(final List<Card> cards, GameContext gameContext) {
+    public Card chooseCardToDiscard(Player player, GameContext gameContext) {
+        final List<Card> cards = player.getHand();
 
         assert (cards.size() == 4);
 

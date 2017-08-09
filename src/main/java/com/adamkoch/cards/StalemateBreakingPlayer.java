@@ -20,8 +20,9 @@ public class StalemateBreakingPlayer extends EasyPlayer {
 
     private Suit stalemateSuit;
 
-    public StalemateBreakingPlayer(String name, int knockLimit) {
-        super(name, knockLimit);
+    public StalemateBreakingPlayer(String name, int knockLimit, KnockStrategy knockStrategy, PickUpStrategy
+            pickupStrategy, DiscardStrategy discardStrategy) {
+        super(name, knockLimit, knockStrategy, pickupStrategy, discardStrategy);
         stalemateSuit = null;
     }
 
@@ -31,9 +32,7 @@ public class StalemateBreakingPlayer extends EasyPlayer {
         if (stalemateSuit != null && CardUtil.handContainSuit(super.getHand(), stalemateSuit)) {
             cardToDiscard = RandomUtils.getRandom(
                     super.getHand().stream().filter(card -> card.getSuit() == stalemateSuit)
-                         .collect
-                                 (Collectors
-                                         .toList()));
+                         .collect(Collectors.toList()));
         }
         else {
             cardToDiscard = super.chooseWhichCardToDiscard(drawPile, discardPile, gameContext);
@@ -72,33 +71,33 @@ public class StalemateBreakingPlayer extends EasyPlayer {
                        });
     }
 
-    @Override
-    public boolean decidesToKnock(GameContext gameContext) {
-        boolean decidesToKnock = super.decidesToKnock(gameContext);
-
-        if (!decidesToKnock) {
-            final List<Card> cards = getHand();
-            final int total = Calculator.totalCards(cards);
-            final int rounds = Math.round(gameContext.getNumberOfPlays() / gameContext.getNumberOfPlayersStillInGame());
-            final int currentKnockLimit = this.getKnockLimit() + rounds;
-            if (total == 30) {
-                if (rounds > 100) {
-                    LOGGER.info("Stalemate. after " + rounds + " rounds, " + getName() + " has " + total +
-                            " points, which is not greater than their limit of " + currentKnockLimit + ", but decides to " +
-                            "knock anyway. numberOfTimesDiscardPileShuffled=" + gameContext
-                            .getNumberOfTimesDiscardPileShuffled());
-                    decidesToKnock = true;
-                }
-                else {
-                    LOGGER.info("after " + rounds + " rounds, " + getName() + " has " + total +
-                            " points, but decides not to knock. starting knock limit=" + this.getKnockLimit() + ", current=" +
-                            currentKnockLimit);
-                }
-            }
-        }
-
-        return decidesToKnock;
-    }
+//    @Override
+//    public boolean decidesToKnock(GameContext gameContext) {
+//        boolean decidesToKnock = super.decidesToKnock(gameContext);
+//
+//        if (!decidesToKnock) {
+//            final List<Card> cards = getHand();
+//            final int total = Calculator.totalCards(cards);
+//            final int rounds = Math.round(gameContext.getNumberOfPlays() / gameContext.getNumberOfPlayersStillInGame());
+//            final int currentKnockLimit = this.getKnockLimit() + rounds;
+//            if (total == 30) {
+//                if (rounds > 100) {
+//                    LOGGER.info("Stalemate. after " + rounds + " rounds, " + getName() + " has " + total +
+//                            " points, which is not greater than their limit of " + currentKnockLimit + ", but decides to " +
+//                            "knock anyway. numberOfTimesDiscardPileShuffled=" + gameContext
+//                            .getNumberOfTimesDiscardPileShuffled());
+//                    decidesToKnock = true;
+//                }
+//                else {
+//                    LOGGER.info("after " + rounds + " rounds, " + getName() + " has " + total +
+//                            " points, but decides not to knock. starting knock limit=" + this.getKnockLimit() + ", current=" +
+//                            currentKnockLimit);
+//                }
+//            }
+//        }
+//
+//        return decidesToKnock;
+//    }
 
     @Override
     public void clearHand() {
