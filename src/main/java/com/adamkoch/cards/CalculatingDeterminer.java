@@ -22,7 +22,7 @@ public class CalculatingDeterminer extends Determiner {
     private static final Logger LOGGER = LogManager.getLogger(CalculatingDeterminer.class);
 
     @Override
-    public boolean cardWouldImproveHand(Card card, List<Card> cards, GameContext gameContext) {
+    public boolean cardWouldImproveHand(Card card, List<Card> hand, GameContext gameContext) {
 
         final boolean chanceOfGettingBetterCardWithSameSuit;
         if (gameContext == null) {
@@ -36,12 +36,12 @@ public class CalculatingDeterminer extends Determiner {
             chanceOfGettingBetterCardWithSameSuit = percentOfGettingBetterCardWithSameSuit > .18;
         }
 
-        if (addingCardWouldMake3OfTheSameSuit(card, cards)) {
+        if (addingCardWouldMake3OfTheSameSuit(card, hand)) {
             return true;
         }
-        else if (addingCardWouldMake2OfTheSameSuit(card, cards)) {
+        else if (addingCardWouldMake2OfTheSameSuit(card, hand)) {
             // rank and choose
-            List<Card> newCardsList = new ArrayList<>(cards);
+            List<Card> newCardsList = new ArrayList<>(hand);
             newCardsList.add(card);
             Map<Suit, List<Card>> map = createSuitListMap(newCardsList);
             List<Card> list = rankAndPickCardsToDiscard(map);
@@ -49,7 +49,7 @@ public class CalculatingDeterminer extends Determiner {
             // if the discarded cards includes the card passed in, then return false
             return list.contains(card);
         }
-        else if (newPairBetterThanCurrentPair(cards, card)) {
+        else if (newPairBetterThanCurrentPair(hand, card)) {
             return true;
         }
         else {

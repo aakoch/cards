@@ -1,4 +1,4 @@
-package com.adamkoch.cards.utils;
+package com.adamkoch.utils;
 
 import java.util.List;
 import java.util.Random;

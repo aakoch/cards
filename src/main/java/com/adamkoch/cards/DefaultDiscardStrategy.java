@@ -17,7 +17,7 @@ public class DefaultDiscardStrategy implements DiscardStrategy {
     private static final Logger LOGGER = LogManager.getLogger(DefaultDiscardStrategy.class);
 
     @Override
-    public Card chooseWhichCardToDiscard(Player player, DrawPile drawPile, DiscardPile discardPile, GameContext gameContext) {
+    public Card chooseWhichCardToDiscard(Player player, GameContext gameContext) {
 
         final Determiner determiner = new Determiner();
         Card cardToDiscard = determiner.chooseCardToDiscard(player, gameContext);

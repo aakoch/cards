@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
  * @since 1.0.0
  */
 public class ThirtyOneRound {
+    private static final Logger AUDIT = LogManager.getLogger("outcome.auditor");
     private static final Logger LOGGER = LogManager.getLogger(ThirtyOneRound.class);
 
     private final Dealer dealer;
@@ -54,21 +55,18 @@ public class ThirtyOneRound {
         while (!playerHas31 && r.hasNext() && turnsLeft-- > 0) {
             if (playerTurnCount > 10000) {
                 LOGGER.error("Over 10000 turns taken");
-//                throw new RuntimeException("Over 10000 turns taken");
+                throw new StalemateException("Over 10000 turns taken");
             }
             player = r.next();
 
             Outcome outcome = playTurn(player, drawPile, discardPile, gameContext);
+            AUDIT.info(outcome);
             gameContext.addOutcome(outcome);
 
-            final Card outcomeCard = outcome.getCard();
-            if (outcomeCard != null) {
-                discardPile.add(outcomeCard);
-            }
             final Card discardedCard = outcome.getDiscardCard();
             if (discardedCard != null) {
                 try {
-                    if (outcome.playerDrewFromDiscardPile()) {
+                    if (outcome.didPlayerDrewFromDiscardPile()) {
                         if (discardedCard.equals(outcome.getCardTakenFromDiscardPile())) {
                             throw new IllegalStateException(
                                     "Player can't pick up the card from the discard pile and then" +
@@ -168,6 +166,7 @@ public class ThirtyOneRound {
 //        }
 
         Outcome outcome = new Outcome();
+        outcome.setPlayer(player);
         final Card topDiscardCard = discardPile.peekAtTopCard();
         if (player.shouldTakeCardFromDiscardPile(topDiscardCard, gameContext)) {
             LOGGER.debug(player.getName() + " takes " + topDiscardCard + " from discard pile");
@@ -178,6 +177,7 @@ public class ThirtyOneRound {
             final Card drawnCard = drawPile.draw();
             LOGGER.debug(player.getName() + " leaves " + topDiscardCard + " and draws " + drawnCard);
             player.addCardToHand(drawnCard);
+            outcome.setDrawnCard(drawnCard);
         }
 
         Card discardCard = player.chooseWhichCardToDiscard(drawPile, discardPile, gameContext);

@@ -1,10 +1,5 @@
 package com.adamkoch.cards;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 /**
  *
  * <p>Created by aakoch on 2017-07-13.</p>
@@ -13,64 +8,20 @@ import java.util.stream.Collectors;
  * @since 1.0.0
  */
 public class Outcome {
-    public static final Outcome TIE = new Outcome((Card) null);
 
-    private Card card;
-    private Player winner;
-    private List<Player> losers;
-    private Player loser;
+    private PlayerAction playerAction;
+
     private Card discard;
     private boolean has31;
     private boolean playerKnocks;
     private boolean playerDrewFromDiscardPile;
     private Card cardTakenFromDiscardPile;
-
-    public Outcome(Card card) {
-        this.card = card;
-        playerDrewFromDiscardPile = false;
-    }
-
-    public Outcome(Player highestPlayer) {
-        this.card = null;
-        this.winner = highestPlayer;
-        losers = new ArrayList<>();
-        losers.add(highestPlayer);
-        playerDrewFromDiscardPile = false;
-    }
+    private Player player;
+    private boolean playerDrewCard;
+    private Card drawnCard;
 
     public Outcome() {
-
         playerDrewFromDiscardPile = false;
-    }
-
-    public Card getCard() {
-        return card;
-    }
-
-    @Override
-    public String toString() {
-        return "winner=" + card;
-    }
-
-    public Player getWinner() {
-        return winner;
-    }
-
-    public List<Player> getLosers() {
-        return losers;
-    }
-
-//    public Player getLoser() {
-//        return losers.get(0);
-//    }
-//
-//    public void setLoser(Player loser) {
-//        losers.clear();
-//        losers.add(loser);
-//    }
-
-    public void setLosers(Set<Player> lowestPlayers) {
-        this.losers = new ArrayList<>(lowestPlayers);
     }
 
     public void setDiscard(Card discard) {
@@ -93,7 +44,7 @@ public class Outcome {
         return playerKnocks;
     }
 
-    public boolean playerDrewFromDiscardPile() {
+    public boolean didPlayerDrewFromDiscardPile() {
         return playerDrewFromDiscardPile;
     }
 
@@ -108,5 +59,25 @@ public class Outcome {
 
     public Card getDiscardCard() {
         return discard;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public void setDrawnCard(Card drawnCard) {
+        this.drawnCard = drawnCard;
+    }
+
+    public PlayerAction getPlayerAction() {
+        return playerAction;
+    }
+
+    public void setPlayerAction(PlayerAction playerAction) {
+        this.playerAction = playerAction;
     }
 }

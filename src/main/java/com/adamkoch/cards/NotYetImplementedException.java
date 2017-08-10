@@ -6,7 +6,5 @@ package com.adamkoch.cards;
  * @author aakoch
  * @since 1.0.0
  */
-public interface DiscardStrategy {
-
-    Card chooseWhichCardToDiscard(Player player, GameContext gameContext);
+public class NotYetImplementedException extends RuntimeException {
 }

@@ -7,5 +7,5 @@ package com.adamkoch.cards;
  * @since 1.0.0
  */
 public enum RoundEndMethod {
-    KNOCK, KNOCK_BACKFIRED, UNKNOWN, THIRTY_ONE
+    KNOCK, KNOCK_BACKFIRED, UNKNOWN, EXCEPTION, THIRTY_ONE
 }

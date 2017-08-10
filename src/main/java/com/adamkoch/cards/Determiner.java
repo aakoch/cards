@@ -21,19 +21,19 @@ public class Determiner {
         return false;
     }
 
-    public boolean cardWouldImproveHand(Card card, List<Card> cards, GameContext gameContext) {
+    public boolean cardWouldImproveHand(Card card, List<Card> hand, GameContext gameContext) {
         final boolean[] isLowestCard = {false};
-        final Map<Suit, Integer> numberOfCardsPerSuit = CardUtil.getNumberOfCardsPerSuit(cards);
+        final Map<Suit, Integer> numberOfCardsPerSuit = CardUtil.getNumberOfCardsPerSuit(hand);
         if (numberOfCardsPerSuit.size() == 1) {
-            final Optional<Card> min = cards.stream().min(Comparator.comparing(Card::getRank));
+            final Optional<Card> min = hand.stream().min(Comparator.comparing(Card::getRank));
             min.ifPresent(card1 -> isLowestCard[0] = true);
         }
 
         if (isLowestCard[0]) {
             return false;
         }
-        final int currentCardsTotal = Calculator.totalCards(cards);
-        final int candidateCardsTotal = Calculator.totalCards(ListUtils.concat(cards, card));
+        final int currentCardsTotal = Calculator.totalCards(hand);
+        final int candidateCardsTotal = Calculator.totalCards(ListUtils.concat(hand, card));
         return currentCardsTotal < candidateCardsTotal;
     }
 
@@ -77,6 +77,10 @@ public class Determiner {
             returnedCards = chain.nextRule(returnedCards);
         }
 
+        if (returnedCards.size() != 1) {
+            throw new DeterminerFailureException("Could not determine which card to discard based on the current " +
+                    "rules");
+        }
         return returnedCards.get(0);
     }
 

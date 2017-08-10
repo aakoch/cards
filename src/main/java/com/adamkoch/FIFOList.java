@@ -1,6 +1,4 @@
-package com.adamkoch.cards;
-
-import com.adamkoch.utils.ListUtils;
+package com.adamkoch;
 
 import java.util.ArrayList;
 import java.util.List;

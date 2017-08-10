@@ -1,6 +1,6 @@
 package com.adamkoch.cards;
 
-import com.adamkoch.cards.utils.RandomUtils;
+import com.adamkoch.utils.RandomUtils;
 import com.adamkoch.utils.ListUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,14 +54,15 @@ public class ThirtyOneGame implements Game {
                     if (p != null)
                         p.pay();
                 });
-                LOGGER.debug("payers = " + payers.stream().map(player -> {
-                    return player.getName() + " with " + player.coinsLeft() + " coins left";
-                }).collect(Collectors.joining(". ")) +
+                LOGGER.debug("payers = " + payers.stream().map(player -> player.getName() + " with " + player.coinsLeft() + " coins left").collect(Collectors.joining(". ")) +
                         "\n\n");
 
             }
             catch (RuntimeException e) {
                 LOGGER.error("Round failed", e);
+                final Result result = new Result();
+                result.setRoundEndMethod(RoundEndMethod.EXCEPTION);
+                gameResult.addRound(result);
             }
 
             //deck = getStartDeck();
@@ -95,6 +96,7 @@ public class ThirtyOneGame implements Game {
             nextPlayer = ListUtils.getNext(players, nextPlayer);
         }
         if (players.stream().filter(Player::stillInGame).count() > 1 && currentDealer.asPlayer().equals(nextPlayer)) {
+
             throw new RuntimeException(nextPlayer.getName() + " can't deal again");
         }
         players.stream().forEach(Player::notDealer);

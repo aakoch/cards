@@ -1,7 +1,7 @@
 package com.adamkoch.cards;
 
 import com.adamkoch.cards.utils.CardUtil;
-import com.adamkoch.cards.utils.RandomUtils;
+import com.adamkoch.utils.RandomUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

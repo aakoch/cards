@@ -89,7 +89,7 @@ public abstract class Player {
 
     protected Chain getBaseChain(GameContext gameContext) {
         Chain chain = new Chain();
-        chain.addRule(RuleFactory.createGameContextRule(gameContext));
+//        chain.addRule(RuleFactory.createGameContextRule(gameContext));
         chain.addRule(RuleFactory.createOddSuitRule());
         chain.addRule(RuleFactory.createComparePairsRule());
         chain.addRule(RuleFactory.createSameRankChooseLastRule());
@@ -116,7 +116,7 @@ public abstract class Player {
 
     public Card chooseWhichCardToDiscard(DrawPile drawPile, DiscardPile discardPile,
                                          GameContext gameContext) {
-        return getDiscardStrategy().chooseWhichCardToDiscard(this, drawPile, discardPile, gameContext);
+        return getDiscardStrategy().chooseWhichCardToDiscard(this, gameContext);
     }
 
     public void drawFromDrawPile(DrawPile drawPile, DiscardPile discardPile) {

@@ -192,6 +192,24 @@ public class DeterminerTest {
     }
 
     @Test
+    public void testChooseCardToDiscard_real4() throws Exception {
+        List<Card> cards = toCards("[7♦, T♦, J♣]");
+
+        Card newCard = new Card(Rank.QUEEN, Suit.HEARTS);
+        cards.add(newCard);
+
+        player.setHand(cards);
+        GameContext gameContext = new GameContext();
+        final Card actualCard = determiner.chooseCardToDiscard(player, gameContext);
+        assertEquals("Maybe card should have been " + newCard + " out of " + cards + ", but was " + actualCard,
+                newCard, actualCard);
+    }
+
+    private List<Card> toCards(String s) {
+        return CardUtil.asCardList(s.substring(1, s.length() - 1).split(", "));
+    }
+
+    @Test
     public void testCardWouldNotImproveHand() throws Exception {
         List<Card> cards = new ArrayList<>();
         cards.add(new Card(Rank.SEVEN, Suit.SPADES));
