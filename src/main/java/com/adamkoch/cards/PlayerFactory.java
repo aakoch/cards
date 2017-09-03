@@ -16,19 +16,19 @@ public class PlayerFactory {
     private static final Logger LOGGER = LogManager.getLogger(PlayerFactory.class);
 
     private static List<String> names = Arrays.asList("Watermelon",
-            "Cool wHip", "Ace", "C$", "Taz", "Pumpkin", "Shorty", "Bob",  "Mumbles", "Steve");
+            "Cool wHip", "Ace", "C$", "Taz", "Pumpkin", "Shorty", "Bob", "Mumbles", "Steve");
     private static Queue<String> namesQueue = new ConcurrentLinkedQueue<>(names);
 
     public static List<Player> initializePlayers(int numberOfInstances, int startKnockLimit) {
         List<Player> players = new ArrayList<>(numberOfInstances);
 
-            KnockStrategy defaultKnockStrategy = new DefaultKnockStrategy();
+        KnockStrategy defaultKnockStrategy = new DefaultKnockStrategy();
         Determiner defaultDeterminer = new Determiner();
         PickUpStrategy defaultPickupStrategy = new DefaultPickUpStrategy(defaultDeterminer);
         DiscardStrategy defaultDiscardStrategy = new DefaultDiscardStrategy();
 
         players.add(new StalemateBreakingPlayer(randomName(), startKnockLimit, defaultKnockStrategy,
-                new LeaveSmallCardsOnDiscardPileStategy(defaultPickupStrategy), defaultDiscardStrategy));
+                new LeaveSmallCardsOnDiscardPileStrategy(defaultPickupStrategy), defaultDiscardStrategy));
 
         for (int i = 1; i < numberOfInstances; i++) {
             players.add(new EasyPlayer(randomName(), startKnockLimit + i, defaultKnockStrategy,
@@ -241,11 +241,13 @@ public class PlayerFactory {
             final int cardRank = card.getRank().getNumericRank(false);
             if (cardRank == 7) {
                 after = true;
-            } else {
+            }
+            else {
                 final int cardFromHandRank = cardFromHand.getRank().getNumericRank(false);
                 if (cardRank > 7 && cardFromHandRank - cardRank > 0) {
                     after = true;
-                } else if (cardRank < 7 && cardRank - cardFromHandRank > 0) {
+                }
+                else if (cardRank < 7 && cardRank - cardFromHandRank > 0) {
                     after = true;
                 }
             }

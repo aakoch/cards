@@ -25,14 +25,13 @@ public class DrawPile {
     public DrawPile(List<Card> remainingCards, GameContext gameContext) {
         cards = new ArrayList<>(remainingCards);
         this.gameContext = gameContext;
-        LOGGER.debug("remainingCards.size() = " + remainingCards.size());
     }
 
     public Card draw() {
         if (cards.isEmpty()) {
             List<Card> cards = discardPile.getCards();
             Collections.shuffle(cards);
-            LOGGER.debug("Shuffling discard pile back into draw pile: " + cards);
+            LOGGER.debug("Shuffling discard pile back into draw pile: " + cards + "=" + cards.size());
             gameContext.incrementDiscardPileShuffled();
             this.cards = new ArrayList<>(cards);
         }

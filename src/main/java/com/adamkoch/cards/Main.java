@@ -1,6 +1,8 @@
 package com.adamkoch.cards;
 
 import com.adamkoch.cards.utils.CharacterConverter;
+import com.google.common.base.Joiner;
+import jdk.nashorn.internal.ir.JoinPredecessorExpression;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,7 +38,7 @@ public class Main {
             resetPlayers(players);
         }
 
-        LOGGER.info("gameResults = " + gameResults);
+        LOGGER.info("gameResults = " + Joiner.on("\n").join(gameResults));
         SortedMap<String, Map<String, AtomicInteger>> roundsWinMap = getStringMapSortedMap(gameResults, players);
 
         players.sort(Comparator.comparing(Player::getName));
@@ -46,7 +48,7 @@ public class Main {
         LOGGER.info(players);
 
         String s = new GameResultsParser(gameResults, players, roundsWinMap).getCsv();
-        LOGGER.info(s);
+        LOGGER.info("\n" + s);
     }
 
     public static SortedMap<String, Map<String, AtomicInteger>> getStringMapSortedMap(List<GameResult> gameResults, List<Player> players) {

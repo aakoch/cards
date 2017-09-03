@@ -6,17 +6,17 @@ package com.adamkoch.cards;
  * @author aakoch
  * @since 1.0.0
  */
-public class LeaveSmallCardsOnDiscardPileStategy implements PickUpStrategy {
+public class LeaveSmallCardsOnDiscardPileStrategy implements PickUpStrategy {
 
     private Rank rankToLeaveOnDiscardPile;
 
     private PickUpStrategy defaultPickupStrategy;
 
-    public LeaveSmallCardsOnDiscardPileStategy(PickUpStrategy defaultPickupStrategy) {
+    public LeaveSmallCardsOnDiscardPileStrategy(PickUpStrategy defaultPickupStrategy) {
         this(defaultPickupStrategy, Rank.FOUR);
     }
 
-    public LeaveSmallCardsOnDiscardPileStategy(PickUpStrategy defaultPickupStrategy, Rank rankToLeaveOnDiscardPile) {
+    public LeaveSmallCardsOnDiscardPileStrategy(PickUpStrategy defaultPickupStrategy, Rank rankToLeaveOnDiscardPile) {
         this.defaultPickupStrategy = defaultPickupStrategy;
         this.rankToLeaveOnDiscardPile = rankToLeaveOnDiscardPile;
     }

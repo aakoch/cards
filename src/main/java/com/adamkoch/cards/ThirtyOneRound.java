@@ -114,7 +114,15 @@ public class ThirtyOneRound {
             ChoiceFormat wasFormat = new ChoiceFormat("1#was|were");
             ChoiceFormat hasFormat = new ChoiceFormat("1#has|have");
 
-            LOGGER.info(lowestPlayers + " " + wasFormat.format(lowestPlayers.size()) + " lowest and " + hasFormat
+            LOGGER.info(lowestPlayers.stream().map(Player::getName).reduce((previousName, name) -> previousName +
+                    ", " + name).get() +
+                    " " +
+                    wasFormat
+                    .format(lowestPlayers
+                    .size())
+                    + " " +
+                    "lowest and " +
+                    hasFormat
                     .format(lowestPlayers.size()) + " to pay");
 
             if (lowestPlayers.contains(playerWhoKnocked)) {
@@ -156,7 +164,8 @@ public class ThirtyOneRound {
 
     private Outcome playTurn(Player player, DrawPile drawPile, DiscardPile discardPile, GameContext gameContext) {
         LOGGER.debug(
-                "Start of " + player.getName() + "'s turn: " + player.getHand() + "=" + Calculator.totalCards(player
+                player.getName() + " starts turn: " + player.getHand() + "=" + Calculator.totalCards
+                        (player
                         .getHand()));
 
 //        if (player.getHand().get(0).equals(player.getHand().get(1)) ||
@@ -195,7 +204,7 @@ public class ThirtyOneRound {
             outcome.setPlayerKnocks();
             this.gameContext.setSomeoneElseKnocked();
         }
-        LOGGER.debug("End  of " + player.getName() + "'s turn: " + player.getHand() + "=" + Calculator.totalCards(player
+        LOGGER.debug(player.getName() + " ends turn: " + player.getHand() + "=" + Calculator.totalCards(player
                 .getHand()));
 
         return outcome;

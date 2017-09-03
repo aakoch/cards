@@ -37,9 +37,9 @@ public class ThirtyOneGame implements Game {
         deck.shuffle();
 
         Dealer dealer = determineDealer(deck);
+        LOGGER.debug("dealer = " + dealer.asPlayer().getName());
 
-
-        while(players.size() >= 2) {
+        while (players.size() >= 2) {
 
             try {
                 ThirtyOneRound round = new ThirtyOneRound(dealer, players, gameContext);
@@ -51,10 +51,12 @@ public class ThirtyOneGame implements Game {
                     LOGGER.error("payers in null. result=" + result);
                 }
                 payers.forEach(p -> {
-                    if (p != null)
+                    if (p != null) {
                         p.pay();
+                    }
                 });
-                LOGGER.debug("payers = " + payers.stream().map(player -> player.getName() + " with " + player.coinsLeft() + " coins left").collect(Collectors.joining(". ")) +
+                LOGGER.debug("payers = " + payers.stream().map(player -> player.getName() + " with " + player
+                        .coinsLeft() + " coin/s left").collect(Collectors.joining(". ")) +
                         "\n\n");
 
             }
@@ -84,7 +86,8 @@ public class ThirtyOneGame implements Game {
         gameResult.setWinner(winner);
 
         LOGGER.info("**************** winner = " + winner.getName() + " ************************");
-        gameContext.getPlayers().stream().forEach(player -> LOGGER.debug("player = " + player));
+        gameContext.getPlayers().stream().forEach(player -> LOGGER.debug("player = " + player.getName() + " has " +
+                player.coinsLeft() + " coins left"));
 
         return gameResult;
     }
@@ -118,7 +121,8 @@ public class ThirtyOneGame implements Game {
         Dealer dealer = new Dealer(randomPlayer, deck);
         return dealer;
     }
-//
+
+    //
 //    private void listHands() {
 //        for (Player player : players) {
 //            LOGGER.debug(player);

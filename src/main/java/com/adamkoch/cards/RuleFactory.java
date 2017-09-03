@@ -84,7 +84,11 @@ public class RuleFactory {
     }
 
     public static Rule createRandomRule() {
-        return cards -> Collections.singletonList(RandomUtils.removeRandom(cards));
+        return cards -> {
+            final List<Card> randomCards = Collections.singletonList(RandomUtils.removeRandom(cards));
+            LOGGER.debug("randomCards = " + randomCards);
+            return randomCards;
+        };
     }
 
     public static Rule createOddSuitRule() {
