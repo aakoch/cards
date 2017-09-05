@@ -16,7 +16,7 @@ public class Main {
 
         final int numberOfPlayers = 4;
         final int startKnockLimit = 25;
-        final int totalNumberOfGames = 1000;
+        final int totalNumberOfGames = 10;
 
         LOGGER.info(
                 "Starting " + totalNumberOfGames + " games with " + numberOfPlayers + " players and starting knock limit of " +
@@ -26,14 +26,14 @@ public class Main {
 
         List<GameResult> gameResults = new ArrayList<>();
         for (int gameCounter = 0; gameCounter < totalNumberOfGames; gameCounter++) {
-            ThirtyOneGame game = new ThirtyOneGame(new ArrayList<>(players));
+            EuchreGame game = new EuchreGame(new ArrayList<>(players));
 
             final GameResult result = game.play();
             gameResults.add(result);
 
             final Player winner = result.getWinner();
 
-            LOGGER.info(winner.getName() + " won");
+            LOGGER.info(winner.getName() + " won\n");
 
             resetPlayers(players);
         }

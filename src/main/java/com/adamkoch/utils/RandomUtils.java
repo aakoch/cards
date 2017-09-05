@@ -19,4 +19,8 @@ public class RandomUtils {
     public static <T> T getRandom(List<T> list) {
         return list.get(RANDOM.nextInt(list.size()));
     }
+
+    public static boolean nextBoolean() {
+        return RANDOM.nextBoolean();
+    }
 }

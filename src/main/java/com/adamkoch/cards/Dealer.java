@@ -35,10 +35,12 @@ public class Dealer {
      * Deal each player a number of cards
      * @param players The players  to deal to
      * @param numberOfCardsToEachPlayer The number of cards to deal to each player
+     * @return The remaining cards
      */
     public List<Card> dealTo(List<? extends Player> players, int numberOfCardsToEachPlayer) {
-        List<Card> pile = new ArrayList<>(cards);
         Objects.requireNonNull(players, "List of players cannot be null");
+
+        List<Card> pile = new ArrayList<>(cards);
         if (players.size() * numberOfCardsToEachPlayer > cards.size()) {
             throw new IllegalArgumentException("Not enough cards to deal " + numberOfCardsToEachPlayer + " cards to each of the "
                     + players.size() + " players");

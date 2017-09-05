@@ -32,4 +32,9 @@ public class Deck {
     public Card next() {
         return cards.remove(0);
     }
+
+    @Override
+    public String toString() {
+        return cards.toString();
+    }
 }

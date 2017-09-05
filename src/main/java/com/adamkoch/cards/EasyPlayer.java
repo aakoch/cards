@@ -32,6 +32,11 @@ public class EasyPlayer extends Player {
         return chain;
     }
 
+    @Override
+    public Bet determineTrump(Card topCard) {
+        return null;
+    }
+
     private boolean nextPlayerWillWinWithCard(Card card, GameContext gameContext) {
         boolean win = false;
         final Player nextPlayer = getNextPlayer(gameContext);

@@ -197,6 +197,8 @@ public abstract class Player {
         return discardStrategy;
     }
 
+    public abstract Bet determineTrump(Card topCard);
+
 //    public boolean shouldTakeCardFromDiscardPile(DrawPile drawPile, DiscardPile discardPile) {
 //
 //        Card topDiscardedCard = discardPile.topCard();
