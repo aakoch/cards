@@ -1,15 +1,14 @@
 package com.adamkoch.cards;
 
 import com.adamkoch.cards.utils.CardUtil;
-import javafx.geometry.InsetsBuilder;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.adamkoch.cards.Bet.PASS;
 import static com.adamkoch.cards.Bet.PICK_UP_ALONE;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 /**
@@ -52,6 +51,18 @@ public class EuchreDeterminerTest {
     }
 
     @Test
+    public void testScoreCompare() {
+        assertThat(hand("J♥︎").trump(Suit.HEARTS).score(),
+                greaterThan(hand("J♦").trump(Suit.HEARTS).score()));
+        assertThat(hand("J♥︎").trump(Suit.HEARTS).score(),
+                greaterThan(hand("A♥").trump(Suit.HEARTS).score()));
+        assertThat(hand("A♦").trump(Suit.HEARTS).score(),
+                greaterThan(hand("K♦").trump(Suit.HEARTS).score()));
+        assertThat(hand("9♥︎").trump(Suit.HEARTS).score(),
+                greaterThan(hand("A♦").trump(Suit.HEARTS).score()));
+    }
+
+    @Test
     public void testScoreNot100() {
         hand("J♥︎", "J♦", "Q♥︎", "K♥︎︎", "T♥︎︎").top("A♦").scoreNot(100);
     }
@@ -79,6 +90,7 @@ public class EuchreDeterminerTest {
     private class Builder {
         private List<Card> cards;
         private Card topCard;
+        private Suit trump;
 
         public Builder top(String str) {
             topCard = new Card(Rank.valueOf(str.charAt(0)), Suit.valueOf(str.charAt(1)));
@@ -106,6 +118,17 @@ public class EuchreDeterminerTest {
             EuchreDeterminer euchreDeterminer = new EuchreDeterminer();
             int actualScore = euchreDeterminer.score(cards, topCard, true);
             assertNotEquals(expectedScore, actualScore);
+        }
+
+        public Builder trump(Suit suit) {
+            this.trump = suit;
+            return this;
+        }
+
+        public int score() {
+            EuchreDeterminer euchreDeterminer = new EuchreDeterminer();
+            int actualScore = euchreDeterminer.score(cards, trump);
+            return actualScore;
         }
     }
 }

@@ -1,7 +1,9 @@
 package com.adamkoch.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * <p>Created by aakoch on 2017-07-31.</p>
@@ -22,5 +24,13 @@ public class RandomUtils {
 
     public static boolean nextBoolean() {
         return RANDOM.nextBoolean();
+    }
+
+    public static int nextInt(int inclusive, int exclusive) {
+        return RANDOM.nextInt(exclusive - inclusive) + inclusive;
+    }
+
+    public static <T> T getRandom(Set<T> set) {
+        return getRandom(new ArrayList<T>(set));
     }
 }

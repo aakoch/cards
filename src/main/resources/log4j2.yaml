@@ -11,7 +11,7 @@ Configuration:
     Console:
       name: STDOUT
       PatternLayout:
-        Pattern: "%-25C{1}%m%n"
+        Pattern: "%-15C{1}%m%n"
 #        Pattern: "%d %p [%t] %C{1.} %m%n"
     File:
       name: File
@@ -29,7 +29,7 @@ Configuration:
     logger:
       -
         name: com.adamkoch.cards
-        level: debug
+        level: trace
         additivity: false
 #        ThreadContextMapFilter:
 #          KeyValuePair:

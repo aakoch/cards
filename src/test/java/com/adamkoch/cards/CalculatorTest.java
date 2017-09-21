@@ -14,6 +14,28 @@ import static org.junit.Assert.*;
  * @since 1.0.0
  */
 public class CalculatorTest {
+
+
+    @Test
+    public void testObj() {
+        final Object obj = null;
+        System.out.println("String.valueOf(obj) = " + String.valueOf(obj));
+    }
+
+    @Test
+    public void testString() {
+        final String str = null;
+        System.out.println("String.valueOf(str) = " + String.valueOf(str));
+    }
+
+    @Test
+    public void testNull() {
+        System.out.println("String.valueOf(null) = " + String.valueOf((String) null));
+    }
+
+
+
+
     @Test
     public void testTotalCards_empty() throws Exception {
         List<Card> cards = new ArrayList<>();

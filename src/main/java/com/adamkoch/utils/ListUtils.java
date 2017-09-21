@@ -3,6 +3,7 @@ package com.adamkoch.utils;
 import com.adamkoch.cards.Card;
 import com.adamkoch.cards.Player;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Iterators;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -16,8 +17,7 @@ import java.util.stream.Collectors;
 public class ListUtils {
     public static <T> Iterator<T> constructRotator(List<T> players, int startIndex) {
         Collections.rotate(players, startIndex);
-        Iterable<T> cycle = Iterables.cycle(players);
-        return cycle.iterator();
+        return Iterators.cycle(players);
     }
 
     /**

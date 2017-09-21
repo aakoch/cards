@@ -2,7 +2,6 @@ package com.adamkoch.cards;
 
 import com.adamkoch.cards.utils.CardUtil;
 import com.adamkoch.utils.SuitUtils;
-import org.junit.Test;
 
 import java.util.List;
 import java.util.Map;
@@ -57,5 +56,36 @@ public class EuchreDeterminer {
 
     public static boolean hasRightBower(Suit suit, List<Card> cards) {
         return cards.stream().anyMatch(card -> card.getSuit() == suit && card.getRank() == Rank.JACK);
+    }
+
+    public int score(List<Card> cards, Suit trump) {
+        return cards.stream().mapToInt(card -> {
+            return scoreSingleCard(card, trump);
+        }).sum();
+    }
+
+    private int scoreSingleCard(Card card, Suit trump) {
+        int score = 0;
+        if (isRightBower(card, trump)) {
+            score = 20;
+        }
+        else if (isLeftBower(card, trump)) {
+            score = 15;
+        }
+        else if (card.getSuit() == trump) {
+            score = 10;
+        }
+
+        score += card.getRank().getNumericRank(true);
+
+        return score;
+    }
+
+    private boolean isLeftBower(Card card, Suit trump) {
+        return card.getSuit() == SuitUtils.getComplement(trump) && card.getRank() == Rank.JACK;
+    }
+
+    private boolean isRightBower(Card card, Suit trump) {
+        return card.getSuit() == trump && card.getRank() == Rank.JACK;
     }
 }

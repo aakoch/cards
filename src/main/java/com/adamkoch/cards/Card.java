@@ -8,7 +8,7 @@ import java.util.Objects;
  * @author aakoch
  * @since 1.0.0
  */
-public class Card {
+public class Card implements ICard {
     private final Suit suit;
     private final Rank rank;
 
