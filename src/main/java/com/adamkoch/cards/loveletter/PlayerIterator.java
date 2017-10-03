@@ -1,12 +1,14 @@
 package com.adamkoch.cards.loveletter;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List; /**
  * <p>Created by aakoch on 2017-09-20.</p>
  *
  * @author aakoch
  * @since 1.0.0
  */
-public class PlayerIterator {
+public class PlayerIterator implements Iterator<Player> {
     private final List<Player> players;
     private int index;
 
@@ -17,6 +19,11 @@ public class PlayerIterator {
 
     public int size() {
         return players.size();
+    }
+
+    @Override
+    public boolean hasNext() {
+        return true;
     }
 
     public Player next() {
@@ -33,5 +40,9 @@ public class PlayerIterator {
 
     public void remove(Player player) {
         players.remove(player);
+    }
+
+    public List<Player> getPlayerList() {
+        return players;
     }
 }

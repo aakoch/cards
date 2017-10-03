@@ -1,10 +1,12 @@
 package com.adamkoch.cards.loveletter;
 
+import com.adamkoch.utils.ListUtils;
 import com.adamkoch.utils.RandomUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import static com.adamkoch.cards.loveletter.Card.HANDMAID;
 import static com.adamkoch.cards.loveletter.Card.PRINCESS;
 
 /**
@@ -17,10 +19,12 @@ public class Player {
     private final String name;
 
     private Card hand;
-    private Card lastPlayed;
+    private Card lastPlayedCard;
+    private List<KnownHand> knownHands;
 
     public Player(String name) {
         this.name = name;
+        knownHands = new ArrayList<>();
     }
 
     public static Card determineCardToPlay(Card card1, Card card2) {
@@ -64,16 +68,15 @@ public class Player {
         hand = card;
     }
 
-    public Card determineCardToPlay(Card card2) {
+    public Card determineCardToPlay(Card cardDrawn, GameContext context) {
         final Card card1 = hand;
 
-        Card card = determineCardToPlay(card1, card2);
+        Card card = determineCardToPlay(card1, cardDrawn);
 
-
-        lastPlayed = card;
+        lastPlayedCard = card;
 
         if (card == card1) {
-            hand = card2;
+            hand = cardDrawn;
         }
         else {
             hand = card1;
@@ -95,23 +98,29 @@ public class Player {
     }
 
     public Player chooseOpponent(List<Player> players) {
-        List<Player> remainingPlayers = new ArrayList<>(players);
-        remainingPlayers.remove(this);
-        remainingPlayers.removeIf(player -> player.lastPlayed() == Card.HANDMAID);
+        if (knownHands.isEmpty()) {
+            List<Player> remainingPlayers = new ArrayList<>(players);
+            remainingPlayers.remove(this);
+            remainingPlayers.removeIf(Player::isImmune);
 
-        if (remainingPlayers.isEmpty()) {
-            throw new NoOpponentException();
+            if (remainingPlayers.isEmpty()) {
+                throw new NoOpponentException();
+            }
+
+            return RandomUtils.getRandom(remainingPlayers);
         }
-        return RandomUtils.getRandom(remainingPlayers);
+        else {
+            return ListUtils.last(knownHands).getPlayer();
+        }
     }
 
-    private Card lastPlayed() {
-        return lastPlayed;
+    public boolean isImmune() {
+        return lastPlayedCard == HANDMAID;
     }
 
     public Player choosePlayerToDiscardTheirCard(List<Player> players) {
         List<Player> remainingPlayers = new ArrayList<>(players);
-        remainingPlayers.removeIf(player -> player.lastPlayed() == Card.HANDMAID);
+        remainingPlayers.removeIf(Player::isImmune);
 
         if (remainingPlayers.isEmpty()) {
             throw new NoOpponentException();
@@ -119,22 +128,72 @@ public class Player {
         return RandomUtils.getRandom(remainingPlayers);
     }
 
-    public Player chooseOpponentToGuess(List<Player> players) {
-        return chooseOpponent(players);
+    public Player chooseOpponentToGuess(List<Player> players, GameContext gameContext) {
+        players.removeIf(Player::isImmune);
+
+        if (knownHands.isEmpty()) {
+            return chooseOpponent(players);
+        }
+        else if (gameContext.wasAGuardPlayedSincePlayersLastTerm(this)) {
+            Map<Player, List<Card>> otherGuesses = gameContext.getPlayersAndGuessSinceLastTurn(this);
+            final Optional<Map.Entry<Player, List<Card>>> entryOptional = otherGuesses.entrySet()
+                                                                              .stream()
+                                                                              .sorted(Comparator.comparingInt(o -> o.getValue().size()))
+                                                                              .findFirst();
+            return entryOptional.get().getKey();
+        }
+        else {
+            players.remove(this);
+
+            if (players.isEmpty()) {
+                throw new NoOpponentException();
+            }
+            final List<Player> intersect = ListUtils.intersect(players, knownHands.stream().map(KnownHand::getPlayer)
+                                                                                  .collect(Collectors.toList()));
+
+            if (intersect.isEmpty()) {
+                return RandomUtils.getRandom(players);
+            }
+            else {
+                assert intersect.size() == 1;
+                return intersect.get(0);
+            }
+        }
     }
 
     public Player chooseOpponentToReveal(List<Player> players) {
-
         return chooseOpponent(players);
     }
 
     public Player chooseOpponentToCompare(List<Player> players) {
-
         return chooseOpponent(players);
     }
 
     public Player chooseOpponentToTrade(List<Player> players) {
-
         return chooseOpponent(players);
+    }
+
+    public void shownCard(Player player, Card card) {
+        addKnownOpponentAndHand(player, card);
+    }
+
+    public Player getLastOpponentToShowACard() {
+        return Optional.ofNullable(ListUtils.last(knownHands)).map(KnownHand::getPlayer).orElse(null);
+    }
+
+    public Card getLastCardShown() {
+        return ListUtils.last(knownHands).getCard();
+    }
+
+    public void addKnownOpponentAndHand(Player player, Card card) {
+        knownHands.add(new KnownHand(player, card));
+    }
+
+    public Card chooseCardToGuess() {
+        return knownHands.get(0).getCard();
+    }
+
+    public boolean knowsOpponentsHand() {
+        return !knownHands.isEmpty();
     }
 }

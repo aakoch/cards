@@ -178,8 +178,8 @@ public class PlayerFactory {
 //                        int card2Count = map.get(card2);
 //                        final int count = card2Count - card1Count;
 //                        if (count == 0) {
-//                            int numberOfCardsAfter1 = Math.abs(7 - card1.getRank().getNumericRank(false));
-//                            int numberOfCardsAfter2 = Math.abs(7 - card2.getRank().getNumericRank(false));
+//                            int numberOfCardsAfter1 = Math.abs(7 - card1.getCard().getNumericRank(false));
+//                            int numberOfCardsAfter2 = Math.abs(7 - card2.getCard().getNumericRank(false));
 //                            return numberOfCardsAfter2 - numberOfCardsAfter1;
 //                        }
 //                        return count;
@@ -211,8 +211,8 @@ public class PlayerFactory {
 //                Collections.sort(cardsThatCanPlay, new Comparator<Card>() {
 //                    @Override
 //                    public int compare(Card card1, Card card2) {
-//                        int numberOfCardsAfter1 = Math.abs(7 - card1.getRank().getNumericRank(false));
-//                        int numberOfCardsAfter2 = Math.abs(7 - card2.getRank().getNumericRank(false));
+//                        int numberOfCardsAfter1 = Math.abs(7 - card1.getCard().getNumericRank(false));
+//                        int numberOfCardsAfter2 = Math.abs(7 - card2.getCard().getNumericRank(false));
 //                        final int numberOfCards = numberOfCardsAfter2 - numberOfCardsAfter1;
 //                        if (numberOfCards == 0) {
 //

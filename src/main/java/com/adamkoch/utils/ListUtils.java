@@ -2,6 +2,7 @@ package com.adamkoch.utils;
 
 import com.adamkoch.cards.Card;
 import com.adamkoch.cards.Player;
+import com.adamkoch.cards.loveletter.KnownHand;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 
@@ -45,5 +46,11 @@ public class ListUtils {
             index = -1;
         }
         return list.get(index + 1);
+    }
+
+    public static <T> T last(List<T> list) {
+        if (list == null || list.isEmpty())
+        return null;
+        return list.get(list.size() - 1);
     }
 }
