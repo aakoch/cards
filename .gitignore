@@ -26,3 +26,8 @@ hs_err_pid*
 /audit.log
 *.iml
 /.idea/
+/build/
+/gradle/
+/out/
+/target/
+/.gradle/
