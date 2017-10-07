@@ -1,85 +1,112 @@
-Spock Framework Example Project
-===============================
+# Cucumber-Java Skeleton
 
-The purpose of this project is to help you get started with Spock. The project includes several example specifications and build scripts for Ant, Gradle, and Maven. It also makes it easy to create an Eclipse or IDEA project, allowing you to run the example specs from within your IDE.
+![](https://travis-ci.org/cucumber/cucumber-java-skeleton.svg)
 
-All three builds (Ant, Gradle, Maven) will automatically download all required dependencies, compile the project, and finally run the example specs. The Gradle build goes one step further by bootstrapping itself, alleviating the need to have a build tool preinstalled.
+This is the simplest possible build script setup for Cucumber using Java.
+There is nothing fancy like a webapp or browser testing. All this does is to show you how
+to install and run Cucumber!
 
-Prerequisites
--------------
-- JDK 5 or higher
-- Ant 1.7 or higher (for Ant build)
-- Maven 2.x (for Maven build)
+There is a single feature file with one scenario. The scenario has three steps, two of them pending. See if you can make them all pass!
 
-Building with Ant
------------------
-Type:
+## Get the code
 
-    ant clean test
+Git:
 
-Downloaded files will be stored in the local Maven repository (typically *user_home*`/.m2/repository`).
+    git clone https://github.com/cucumber/cucumber-java-skeleton.git
+    cd cucumber-java-skeleton
 
-Building with Gradle
---------------------
-Type:
+Subversion:
 
-    ./gradlew clean test
+    svn checkout https://github.com/cucumber/cucumber-java-skeleton/trunk cucumber-java-skeleton
+    cd cucumber-java-skeleton
 
-Downloaded files (including the Gradle distribution itself) will be stored in the Gradle user home directory (typically *user_home*`/.gradle`).
+Or simply [download a zip](https://github.com/cucumber/cucumber-java-skeleton/archive/master.zip) file.
 
-Building with Maven
--------------------
-Type:
+## Use Maven
 
-    mvn clean test
+Open a command window and run:
 
-Downloaded files will be stored in the local Maven repository (typically *user_home*`/.m2/repository`).
+    mvn test
 
-Creating an Eclipse project
----------------------------
-Type:
+This runs Cucumber features using Cucumber's JUnit runner. The `@RunWith(Cucumber.class)` annotation on the `RunCukesTest`
+class tells JUnit to kick off Cucumber.
 
-    ./gradlew cleanEclipse eclipse
+## Use Ant
 
-Make sure you have a recent version of the Groovy Eclipse plugin installed. After importing the generated project into a workspace, go to Preferences->Java->Build Path->Classpath Variables and add a variable named `GRADLE_CACHE` with value *user_home*`/.gradle/cache`. (If you have an environment variable `GRADLE_USER_HOME` set, the correct value is *GRADLE_USER_HOME*`/cache`.) You should now be able to build the project, and to run the specs like you would run a JUnit test. See http://wiki.spockframework.org/GettingStarted#Eclipse for more information on how to get started with Spock and Eclipse.
+Open a command window and run:
 
-Creating an IDEA project
----------------------------
-Type:
+    ant download
+    ant runcukes
 
-    ./gradlew cleanIdea idea
+This runs Cucumber features using Cucumber's Command Line Interface (CLI) runner. Note that the `RunCukesTest` junit class is not used at all.
+If you remove it (and the `cucumber-junit` jar dependency), it will run just the same.
 
-Open the generated project in IDEA. You should now be able to build the project, and to run the specs like you would run a JUnit test.
+## Use Gradle
 
-Getting hold of the Jars used in this project
----------------------------------------------
-Type:
+Open a command window and run:
 
-    ./gradlew collectJars
+    gradlew test
 
-The Jars will be copied to `build/output/lib`. The comments in `build.gradle` explain what they are needed for.
+This runs Cucumber features using Cucumber's JUnit runner. The `@RunWith(Cucumber.class)` annotation on the `RunCukesTest`
+class tells JUnit to kick off Cucumber.
 
-Further Resources
------------------
+## Overriding options
 
-* [Spock homepage](http://spockframework.org)
-* [Spock web console](https://meetspock.appspot.com)
-* [Main documentation](http://wiki.spockframework.org/SpockBasics)
-* [User discussion group](http://forum.spockframework.org)
-* [Dev discussion group](http://dev.forum.spockframework.org)
-* [Issue tracker](http://issues.spockframework.org)
-* [Build server](http://builds.spockframework.org)
-* [Maven repository](http://m2repo.spockframework.org) - releases are also available from Maven Central
-* [Spock blog](http://blog.spockframework.org)
-* [Spock on Twitter](http://twitter.com/pniederw)
-* [Ant homepage](http://ant.apache.org)
-* [Gradle homepage](http://www.gradle.org)
-* [Groovy homepage](http://groovy.codehaus.org)
-* [Maven homepage](http://maven.apache.org)
+The Cucumber runtime parses command line options to know what features to run, where the glue code lives, what plugins to use etc.
+When you use the JUnit runner, these options are generated from the `@CucumberOptions` annotation on your test.
 
-If you have any comments or questions, please direct them to the Spock discussion group. All feedback is appreciated!
+Sometimes it can be useful to override these options without changing or recompiling the JUnit class. This can be done with the
+`cucumber.options` system property. The general form is:
 
-Happy spec'ing!
-Peter Niederwieser
-Creator, Spock Framework
+Using Maven:
 
+    mvn -Dcucumber.options="..." test
+
+Using Ant:
+
+    JAVA_OPTIONS='-Dcucumber.options="..."' ant runcukes
+
+Using Gradle:
+
+    gradlew -Dcucumber.options="..." test
+
+Let's look at some things you can do with `cucumber.options`. Try this:
+
+    -Dcucumber.options="--help"
+
+That should list all the available options.
+
+*IMPORTANT*
+
+When you override options with `-Dcucumber.options`, you will completely override whatever options are hard-coded in
+your `@CucumberOptions` or in the script calling `cucumber.api.cli.Main`. There is one exception to this rule, and that
+is the `--plugin` option. This will not _override_, but _add_ a plugin. The reason for this is to make it easier
+for 3rd party tools (such as [Cucumber Pro](https://cucumber.pro/)) to automatically configure additional plugins by appending arguments to a `cucumber.properties`
+file.
+
+### Run a subset of Features or Scenarios
+
+Specify a particular scenario by *line* (and use the pretty plugin, which prints the scenario back)
+
+    -Dcucumber.options="classpath:skeleton/belly.feature:4 --plugin pretty"
+
+This works because Maven puts `./src/test/resources` on your `classpath`.
+You can also specify files to run by filesystem path:
+
+    -Dcucumber.options="src/test/resources/skeleton/belly.feature:4 --plugin pretty"
+
+You can also specify what to run by *tag*:
+
+    -Dcucumber.options="--tags @bar --plugin pretty"
+
+### Running only the scenarios that failed in the previous run
+
+    -Dcucumber.options="@target/rerun.txt"
+
+This works as long as you have the `rerun` formatter enabled.
+
+### Specify a different formatter:
+
+For example a JUnit formatter:
+
+    -Dcucumber.options="--plugin junit:target/cucumber-junit-report.xml"
