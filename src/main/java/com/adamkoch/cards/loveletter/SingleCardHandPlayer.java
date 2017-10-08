@@ -1,5 +1,9 @@
 package com.adamkoch.cards.loveletter;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * <p>Created by aakoch on 2017-10-06.</p>
  *
@@ -8,10 +12,19 @@ package com.adamkoch.cards.loveletter;
  */
 public class SingleCardHandPlayer implements Player {
 
+    private final int playerCount;
     private Card hand;
     private Card drawnCard;
     private Card playedCard;
-    private Player chosenOpponent;
+    private Optional<Object> chosenOpponent;
+    private Game game;
+    private boolean lastCardPlayedHandmaid;
+
+    private static AtomicInteger count = new AtomicInteger(1);
+
+    public SingleCardHandPlayer() {
+        this.playerCount = count.getAndIncrement();
+    }
 
     @Override
     public void setHand(Card... cards) {
@@ -19,6 +32,14 @@ public class SingleCardHandPlayer implements Player {
             throw new IllegalArgumentException("Can only accept one card, not " + cards.length);
         }
         hand = cards[0];
+    }
+
+    @Override
+    public void startTurn() {
+        drawnCard = null;
+        playedCard = null;
+        chosenOpponent = null;
+        lastCardPlayedHandmaid = false;
     }
 
     @Override
@@ -44,20 +65,38 @@ public class SingleCardHandPlayer implements Player {
             playedCard = this.hand;
             hand = drawnCard;
         }
-        drawnCard = null;
+
+        lastCardPlayedHandmaid = playedCard == Card.HANDMAID;
 
         return playedCard;
     }
 
     @Override
-    public void chooseOpponent() {
+    public Optional<Object> chooseOpponent() {
         assertCardWasDetermined();
-        chosenOpponent = new SingleCardHandPlayer();
+
+        List<Player> players = game.getPlayersThatCanBeAttacked(this);
+
+        if (players.size() == 0) {
+            return chosenOpponent = Optional.empty();
+        }
+        chosenOpponent = Optional.of(players.get(0));
+        return chosenOpponent;
     }
 
     @Override
-    public void performsAction() {
+    public Action performsAction() {
         assertOpponentWasChosen();
+        if (!chosenOpponent.isPresent()) {
+            return new EmptyAction();
+        }
+        if (playedCard == Card.GUARD) {
+            return new GuessAction();
+        }
+        if (playedCard == Card.PRIEST) {
+            return new ShowAction();
+        }
+        throw new RuntimeException("Can't perform some action");
     }
 
     private void assertOpponentWasChosen() {
@@ -76,5 +115,34 @@ public class SingleCardHandPlayer implements Player {
         if (drawnCard == null) {
             throw new IllegalStateException("Player has not drawn a card yet");
         }
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
+    @Override
+    public boolean isSafe() {
+        return lastCardPlayedHandmaid;
+    }
+
+    @Override
+    public void plays(Card card) {
+        playedCard = card;
+
+        lastCardPlayedHandmaid = playedCard == Card.HANDMAID;
+    }
+
+    @Override
+    public void setSafe() {
+        lastCardPlayedHandmaid = true;
+    }
+
+    @Override
+    public String toString() {
+        return "SingleCardHandPlayer{" +
+                "playerCount=" + playerCount +
+                ", lastCardPlayedHandmaid=" + lastCardPlayedHandmaid +
+                '}';
     }
 }

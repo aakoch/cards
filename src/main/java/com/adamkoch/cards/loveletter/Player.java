@@ -1,5 +1,7 @@
 package com.adamkoch.cards.loveletter;
 
+import java.util.Optional;
+
 /**
  * <p>Created by aakoch on 2017-10-06.</p>
  *
@@ -9,11 +11,21 @@ package com.adamkoch.cards.loveletter;
 public interface Player {
     void setHand(Card... cards);
 
+    void startTurn();
+
     void addToHand(Card card);
 
     Card determineCardToPlay();
 
-    void chooseOpponent();
+    Optional<Object> chooseOpponent();
 
-    void performsAction();
+    Action performsAction();
+
+    void setGame(Game game);
+
+    boolean isSafe();
+
+    void plays(Card card);
+
+    void setSafe();
 }
