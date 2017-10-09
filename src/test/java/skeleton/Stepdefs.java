@@ -169,6 +169,20 @@ public class Stepdefs {
         assertThat(game.getPlayer(playerNumber - 1).chooseOpponent().get(), is(equalTo(game.getPlayer(0))));
     }
 
+    @When("^Player (\\d+) is removed$")
+    public void player_is_removed(int playerNumber) throws Exception {
+        game.removePlayer(playerNumber - 1);
+    }
+
+    @Then("^the game ends$")
+    public void the_game_ends() throws Exception {
+        assertThat(game.shouldContinue(), is(false));
+    }
+
+    @Then("^Player (\\d+) is declared the winner$")
+    public void player_is_declared_the_winner(int playerNumber) throws Exception {
+        assertThat(game.getWinner(), is(equalTo(game.getPlayer(playerNumber - 1))));
+    }
 
     private Class getClassWithActionName(String actionName) {
         return GuessAction.class;
