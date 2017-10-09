@@ -45,15 +45,19 @@ public class Game {
     }
 
     public void removePlayer(int index) {
-        playersStillInGame.remove(index);
+        playersStillInGame.remove(getPlayer(index));
     }
 
     public boolean shouldContinue() {
-        return false;
+        return playersStillInGame.size() > 1;
     }
 
     public Player getWinner() {
         return playersStillInGame.get(0);
+    }
+
+    public void removePlayer(Player player) {
+        playersStillInGame.remove(player);
     }
 
     private class Play {

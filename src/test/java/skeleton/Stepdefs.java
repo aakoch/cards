@@ -13,7 +13,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertTrue;
 
-public class Stepdefs {
+public class Stepdefs extends AbstractStepDefinitions {
 
     private Exception thrownException;
     Game game;
@@ -182,6 +182,20 @@ public class Stepdefs {
     @Then("^Player (\\d+) is declared the winner$")
     public void player_is_declared_the_winner(int playerNumber) throws Exception {
         assertThat(game.getWinner(), is(equalTo(game.getPlayer(playerNumber - 1))));
+    }
+
+    @Then("^the game continues$")
+    public void the_game_continues() throws Exception {
+        assertThat(game.shouldContinue(), is(true));
+    }
+
+    @Given("^Player (\\d+) action is \"([^\"]*)\"$")
+    public void player_action_is(int playerNumber, String actionClassName) throws Exception {
+        Player player = game.getPlayer(playerNumber);
+        final Class<? extends Action> actionClass = super.getActionClass(actionClassName);
+        if (actionClass.isInstance(LoseAction.class)) {
+            game.removePlayer(player);
+        }
     }
 
     private Class getClassWithActionName(String actionName) {
