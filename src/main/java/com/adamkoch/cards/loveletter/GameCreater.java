@@ -27,7 +27,7 @@ public class GameCreater {
         return list;
     }
 
-    private static Player createPlayer() {
+    public static Player createPlayer() {
         return new SingleCardHandPlayer();
     }
 

@@ -17,3 +17,13 @@ Feature: Game Rules
     When Player 2 is removed
     Then the game ends
     And Player 3 is declared the winner
+
+  Scenario: Game continues until cards run out
+    Given A game with 3 players
+    When a card is drawn 15 times
+    Then the game continues
+
+  Scenario: Game continues until cards run out
+    Given A game with 3 players
+    When a card is drawn 16 times
+    Then the game ends

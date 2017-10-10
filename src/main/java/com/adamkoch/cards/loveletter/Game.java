@@ -1,7 +1,10 @@
 package com.adamkoch.cards.loveletter;
 
+import javafx.scene.control.TextField;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>Created by aakoch on 2017-10-07.</p>
@@ -10,13 +13,17 @@ import java.util.List;
  * @since 1.0.0
  */
 public class Game {
+    private final List<Card> deck;
     private List<Player> players;
     private List<Play> history;
     private Player winner;
     private List<Player> playersStillInGame;
+    private Dealer dealer;
+    private PlayerIterator playerIterator;
 
     public Game() {
         history = new ArrayList<>();
+        deck = Card.deck();
     }
 
     public void setPlayers(List<Player> players) {
@@ -49,7 +56,7 @@ public class Game {
     }
 
     public boolean shouldContinue() {
-        return playersStillInGame.size() > 1;
+        return playersStillInGame.size() > 1 && !deck.isEmpty();
     }
 
     public Player getWinner() {
@@ -58,6 +65,41 @@ public class Game {
 
     public void removePlayer(Player player) {
         playersStillInGame.remove(player);
+    }
+
+    public List<Card> getDeck() {
+        return deck;
+    }
+
+    public Player nextPlayer() {
+        if (playerIterator == null) {
+            final Player lastWinner = winner != null ? winner : dealer.asPlayer();
+
+            playerIterator = new PlayerIterator(players, players.indexOf(lastWinner));
+        }
+        return playerIterator.next();
+    }
+
+    public static <T> T firstNonNull(T... objects) {
+        for (T o : objects) {
+            if (o != null) {
+                return o;
+            }
+        }
+
+        return null;
+    }
+
+    public void setDealer(Dealer dealer) {
+        this.dealer = dealer;
+    }
+
+    public void setWinner(Player winner) {
+        this.winner = winner;
+    }
+
+    public Card drawCard() {
+        return deck.remove(0);
     }
 
     private class Play {

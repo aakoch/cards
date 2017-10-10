@@ -17,7 +17,7 @@ public interface Player {
 
     Card determineCardToPlay();
 
-    Optional<Object> chooseOpponent();
+    Optional<Player> chooseOpponent();
 
     Action performsAction();
 
@@ -28,4 +28,6 @@ public interface Player {
     void plays(Card card);
 
     void setSafe();
+
+    Card getHand();
 }

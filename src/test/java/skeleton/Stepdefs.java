@@ -6,12 +6,15 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class Stepdefs extends AbstractStepDefinitions {
 
@@ -197,6 +200,62 @@ public class Stepdefs extends AbstractStepDefinitions {
             game.removePlayer(player);
         }
     }
+
+    @When("^(\\d+) cards are played$")
+    public void cards_are_played(int numberOfTurns) throws Exception {
+        for (int i = 0; i < numberOfTurns; i++) {
+            game.getDeck().remove(0);
+        }
+    }
+
+    @Then("^next card throws an exception$")
+    public void next_card_throws_an_exception() throws Exception {
+        try {
+            game.getDeck().remove(0);
+            fail("Expected an exception to be thrown");
+        }
+        catch (RuntimeException e) {
+        }
+    }
+
+    @Given("^A game$")
+    public void a_game() throws Exception {
+        game = new Game();
+    }
+
+    @When("^Player (\\d+) is set as the dealer$")
+    public void player_is_set_as_the_dealer(int playerNumber) throws Exception {
+        Dealer dealer = new Dealer(game.getPlayer(playerNumber - 1));
+        game.setDealer(dealer);
+    }
+
+    @Then("^Player (\\d+) is the first to play$")
+    public void player_is_the_first_to_play(int playerNumber) throws Exception {
+        assertThat(game.nextPlayer(), is(equalTo(game.getPlayer(playerNumber - 1))));
+    }
+
+    @When("^the last game's winner is Player (\\d+)$")
+    public void the_last_game_s_winner_is_Player(int playerNumber) throws Exception {
+        game.setWinner(game.getPlayer(playerNumber - 1));
+    }
+
+    @Given("^next player$")
+    public void next_player() throws Exception {
+        game.nextPlayer();
+    }
+
+    @Then("^the next player is Player (\\d+)$")
+    public void the_next_player_is_Player(int playerNumber) throws Exception {
+        assertThat(game.nextPlayer(), is(equalTo(game.getPlayer(playerNumber - 1))));
+    }
+
+    @When("^a card is drawn (\\d+) times$")
+    public void a_card_is_drawn_times(int times) throws Exception {
+        for (int i = 0; i < times; i++) {
+            game.drawCard();
+        }
+    }
+
 
     private Class getClassWithActionName(String actionName) {
         return GuessAction.class;

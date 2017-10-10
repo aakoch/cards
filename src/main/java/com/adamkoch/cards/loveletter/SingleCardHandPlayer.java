@@ -16,7 +16,7 @@ public class SingleCardHandPlayer implements Player {
     private Card hand;
     private Card drawnCard;
     private Card playedCard;
-    private Optional<Object> chosenOpponent;
+    private Optional<Player> chosenOpponent;
     private Game game;
     private boolean lastCardPlayedHandmaid;
 
@@ -72,13 +72,13 @@ public class SingleCardHandPlayer implements Player {
     }
 
     @Override
-    public Optional<Object> chooseOpponent() {
+    public Optional<Player> chooseOpponent() {
         assertCardWasDetermined();
 
         List<Player> players = game.getPlayersThatCanBeAttacked(this);
 
         if (players.size() == 0) {
-            return chosenOpponent = Optional.empty();
+            return chosenOpponent = Optional.<Player>empty();
         }
         chosenOpponent = Optional.of(players.get(0));
         return chosenOpponent;
@@ -136,6 +136,11 @@ public class SingleCardHandPlayer implements Player {
     @Override
     public void setSafe() {
         lastCardPlayedHandmaid = true;
+    }
+
+    @Override
+    public Card getHand() {
+        return hand;
     }
 
     @Override
