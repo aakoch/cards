@@ -7,4 +7,9 @@ package com.adamkoch.cards.loveletter;
  * @since 1.0.0
  */
 public class LoseAction implements Action {
+
+    @Override
+    public Outcome resolve(Player player, Player opponent, Game game) {
+        return null;
+    }
 }

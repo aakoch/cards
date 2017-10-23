@@ -33,7 +33,11 @@ public class GameCreater {
 
     public static Game withNPlayers(int numberOfPlayers) {
         final Game game = new Game();
-        game.setPlayers(createPlayers(numberOfPlayers));
+        final List<Player> players = createPlayers(numberOfPlayers);
+        game.setPlayers(players);
+        Dealer dealer = new Dealer(players.get(0));
+        game.setDealer(dealer);
+        game.dealCards();
         return game;
     }
 

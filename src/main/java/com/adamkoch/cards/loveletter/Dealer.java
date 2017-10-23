@@ -1,7 +1,12 @@
 package com.adamkoch.cards.loveletter;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.security.SecureRandom;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 /**
  * <p>Created by aakoch on 2017-10-09.</p>
@@ -10,6 +15,8 @@ import java.util.List;
  * @since 1.0.0
  */
 public class Dealer {
+    private static final Logger LOGGER = LogManager.getLogger(Dealer.class);
+
     private final Player player;
     private List<Card> deck;
 
@@ -26,7 +33,11 @@ public class Dealer {
     }
 
     public void shuffle() {
-        Collections.shuffle(deck);
+        int random = new Random().nextInt(100);
+        for (int i = 0; i < random; i++) {
+            Collections.shuffle(deck);
+        }
+        LOGGER.debug(deck.toString());
     }
 
     public void deal(List<Player> players) {

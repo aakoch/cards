@@ -19,7 +19,7 @@ public interface Player {
 
     Optional<Player> chooseOpponent();
 
-    Action performsAction();
+    Outcome performsAction(Game game);
 
     void setGame(Game game);
 
@@ -30,4 +30,8 @@ public interface Player {
     void setSafe();
 
     Card getHand();
+
+    Card determineCardToGuess();
+
+    void isShownHand(Player opponent);
 }

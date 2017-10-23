@@ -5,6 +5,7 @@ import cucumber.api.PendingException;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import org.hamcrest.CoreMatchers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,7 +95,7 @@ public class Stepdefs extends AbstractStepDefinitions {
     @When("^the player performs action$")
     public void the_player_performs_action() throws Exception {
         try {
-            game.getPlayer(0).performsAction();
+            game.getPlayer(0).performsAction(game);
         }
         catch (RuntimeException e) {
             if (thrownException != null) {
@@ -118,13 +119,14 @@ public class Stepdefs extends AbstractStepDefinitions {
     @Then("^the card has no effect$")
     public void the_card_has_no_effect() throws Exception {
         final Player player2 = game.getPlayer(1);
-        Action lastAction = player2.performsAction();
-        assertTrue("Last action should have been empty but was " + lastAction, lastAction instanceof EmptyAction);
+        Outcome outcome = player2.performsAction(game);
+        assertThat(outcome, is(Outcome.NO_EFFECT));
     }
 
     @Then("^the action taken is \"([^\"]*)\"$")
     public void the_action_taken_is(String actionName) throws Exception {
-        assertThat(game.getPlayer(1).performsAction(), is(instanceOf(getClassWithActionName(actionName))));
+        assertThat(game.getPlayer(1).performsAction(game).getAction(), is(instanceOf(getClassWithActionName(actionName)
+        )));
     }
 
     @Then("^no opponent was chosen$")
@@ -177,6 +179,11 @@ public class Stepdefs extends AbstractStepDefinitions {
         game.removePlayer(playerNumber - 1);
     }
 
+    @Then("^Player (\\d+) is removed2$")
+    public void player_is_removed2(int playerNumber) throws Exception {
+        assertThat(game.getPlayersStillInGame(), not(hasItem(game.getPlayer(playerNumber - 1))));
+    }
+
     @Then("^the game ends$")
     public void the_game_ends() throws Exception {
         assertThat(game.shouldContinue(), is(false));
@@ -196,9 +203,8 @@ public class Stepdefs extends AbstractStepDefinitions {
     public void player_action_is(int playerNumber, String actionClassName) throws Exception {
         Player player = game.getPlayer(playerNumber);
         final Class<? extends Action> actionClass = super.getActionClass(actionClassName);
-        if (actionClass.isInstance(LoseAction.class)) {
-            game.removePlayer(player);
-        }
+        final Action action = actionClass.newInstance();
+        action.resolve(player, null, game);
     }
 
     @When("^(\\d+) cards are played$")

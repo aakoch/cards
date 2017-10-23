@@ -7,4 +7,8 @@ package com.adamkoch.cards.loveletter;
  * @since 1.0.0
  */
 public class SwitchHandsAction implements Action {
+    @Override
+    public Outcome resolve(Player player, Player opponent, Game game) {
+        throw new NotYetImplementedException();
+    }
 }

@@ -14,14 +14,17 @@ import java.util.Optional;
 public class Main {
     private static final Logger LOGGER = LogManager.getLogger(Main.class);
     public static void main(String[] args) {
-        Game game = GameCreater.withNPlayers(1);
+        Game game = GameCreater.withNPlayers(2);
 
         while (game.shouldContinue()) {
-            Player player = game.nextPlayer();
-            player.addToHand(game.drawCard());
+            final Player player = game.nextPlayer();
+            final Card drawnCard = game.drawCard();
+            player.addToHand(drawnCard);
             final Card cardPlayed = player.determineCardToPlay();
+            LOGGER.info(player + " draws " + drawnCard + " and plays " + cardPlayed);
             final Optional<Player> opponent = player.chooseOpponent();
-            player.performsAction();
+            final Outcome outcome = player.performsAction(game);
+            LOGGER.info((opponent.isPresent() ? opponent.get() : "No one") + " is attacked and outcome is " + outcome);
         }
 
         LOGGER.info("Winner is " + game.getWinner());

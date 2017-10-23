@@ -85,18 +85,16 @@ public class SingleCardHandPlayer implements Player {
     }
 
     @Override
-    public Action performsAction() {
+    public Outcome performsAction(Game game) {
         assertOpponentWasChosen();
+        final Action action;
         if (!chosenOpponent.isPresent()) {
-            return new EmptyAction();
+            action = new EmptyAction();
         }
-        if (playedCard == Card.GUARD) {
-            return new GuessAction();
+        else {
+            action = playedCard.getAction();
         }
-        if (playedCard == Card.PRIEST) {
-            return new ShowAction();
-        }
-        throw new RuntimeException("Can't perform some action");
+        return action.resolve(this, chosenOpponent.orElse(null), game);
     }
 
     private void assertOpponentWasChosen() {
@@ -144,10 +142,40 @@ public class SingleCardHandPlayer implements Player {
     }
 
     @Override
+    public Card determineCardToGuess() {
+        return Card.GUARD;
+    }
+
+    @Override
+    public void isShownHand(Player opponent) {
+        learn(opponent).has(opponent.getHand());
+    }
+
+    private Study learn(Player opponent) {
+        return new Study(opponent);
+    }
+
+    @Override
     public String toString() {
         return "SingleCardHandPlayer{" +
-                "playerCount=" + playerCount +
+                "index=" + playerCount +
+                ", hand=" + hand +
+                ", drawnCard=" + drawnCard +
+                ", playedCard=" + playedCard +
+                ", chosenOpponent=" + chosenOpponent +
                 ", lastCardPlayedHandmaid=" + lastCardPlayedHandmaid +
                 '}';
+    }
+
+    private class Study {
+        private final Player opponent;
+
+        public Study(Player opponent) {
+            this.opponent = opponent;
+        }
+
+        public void has(Card hand) {
+
+        }
     }
 }
