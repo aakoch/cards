@@ -4,7 +4,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>Created by aakoch on 2017-10-07.</p>
@@ -63,10 +65,19 @@ public class Game {
     }
 
     public boolean shouldContinue() {
+        if (deck.isEmpty()) {
+            LOGGER.info("Deck is empty");
+        }
         return playersStillInGame.size() > 1 && !deck.isEmpty();
     }
 
     public Player getWinner() {
+        if (playersStillInGame.size() > 1) {
+            LOGGER.info("More than one player still in the game...");
+            LOGGER.info(playersStillInGame.stream().map(player -> player.getName() + " [" + player.getHand() + "]")
+                                          .collect(Collectors.joining(", ")));
+            playersStillInGame.sort(Comparator.comparingInt(p -> -p.getHand().ordinal()));
+        }
         return playersStillInGame.get(0);
     }
 

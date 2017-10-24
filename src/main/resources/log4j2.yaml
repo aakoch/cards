@@ -1,7 +1,12 @@
 Configuration:
-   appenders:
+   Appenders:
      Console:
        name: STDOUT
+       PatternLayout:
+         Pattern: "%m%n"
+     File:
+       name: FILE
+       fileName: log.txt
        PatternLayout:
          Pattern: "%m%n"
 

@@ -30,3 +30,4 @@ Feature: Common Sense Rules
       | Princess | Prince    | Prince     |
       | Princess | King      | King       |
       | Princess | Countess  | Countess   |
+      | Guard    | Baron     | Guard      |
