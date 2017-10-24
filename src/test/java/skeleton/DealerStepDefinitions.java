@@ -8,12 +8,11 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 /**
  * <p>Created by aakoch on 2017-10-09.</p>
@@ -54,7 +53,7 @@ public class DealerStepDefinitions extends AbstractStepDefinitions {
     public void the_dealer_deals_to_players(int numberOfPlayers) throws Exception {
         players = new ArrayList<>();
         for (int i = 0; i < numberOfPlayers; i++) {
-            players.add(GameCreater.createPlayer());
+            players.add(GameCreater.createPlayer(i + 1));
         }
         dealer.setDeck(Card.deck());
         dealer.deal(players);

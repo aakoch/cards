@@ -13,6 +13,16 @@ public class GuessAction implements Action {
         Outcome outcome = new Outcome();
         final Card cardToGuess = player.determineCardToGuess();
 
+        String description = player.getName() + " guessed " + opponent.getName() + " has a " + cardToGuess;
+        if (opponent.getHand() == cardToGuess) {
+            description += " and was right";
+            game.removePlayer(opponent);
+        }
+        else {
+            description += " and was wrong";
+        }
+
+        outcome.setDescription(description);
         outcome.setAction(this);
         return outcome;
     }

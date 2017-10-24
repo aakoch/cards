@@ -9,6 +9,8 @@ import java.util.Optional;
  * @since 1.0.0
  */
 public interface Player {
+
+    String getName();
     void setHand(Card... cards);
 
     void startTurn();

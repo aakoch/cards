@@ -14,13 +14,11 @@ public class ShowAction implements Action {
 
     @Override
     public Outcome resolve(Player player, Player opponent, Game game) {
-        final String description = opponent + " shows their hand to " + player;
-        LOGGER.info(description);
         player.isShownHand(opponent);
 
         Outcome outcome = new Outcome();
         outcome.setAction(this);
-        outcome.setDescription(description);
+        outcome.setDescription(opponent.getName() + " shows their hand to " + player.getName());
         return outcome;
     }
 }

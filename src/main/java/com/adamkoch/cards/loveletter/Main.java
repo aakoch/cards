@@ -3,6 +3,7 @@ package com.adamkoch.cards.loveletter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -13,20 +14,43 @@ import java.util.Optional;
  */
 public class Main {
     private static final Logger LOGGER = LogManager.getLogger(Main.class);
+
     public static void main(String[] args) {
+        for (int i = 0; i < 10; i++) {
+            playGame();
+            System.out.println();
+        }
+    }
+
+    private static void playGame() {
         Game game = GameCreater.withNPlayers(2);
+        List<Player> playerList = game.getPlayersStillInGame();
+        int playerCounter = 1;
+        StringBuilder sb = new StringBuilder();
+        for (Player player : playerList) {
+            sb.append("P");
+            sb.append(playerCounter++);
+            sb.append(":");
+            sb.append(player.getHand());
+            sb.append(", ");
+        }
+        LOGGER.info(sb.toString());
+
 
         while (game.shouldContinue()) {
             final Player player = game.nextPlayer();
+            final Card hand = player.getHand();
             final Card drawnCard = game.drawCard();
             player.addToHand(drawnCard);
             final Card cardPlayed = player.determineCardToPlay();
-            LOGGER.info(player + " draws " + drawnCard + " and plays " + cardPlayed);
+            LOGGER.info(player.getName() + " [" + hand + "], draws " + drawnCard + " and plays " + cardPlayed);
             final Optional<Player> opponent = player.chooseOpponent();
             final Outcome outcome = player.performsAction(game);
-            LOGGER.info((opponent.isPresent() ? opponent.get() : "No one") + " is attacked and outcome is " + outcome);
+//            LOGGER.info((opponent.isPresent() ? opponent.get().getName() : "No one") + " is attacked and outcome is " +
+//                    outcome);
+            LOGGER.info(outcome.getDescription());
         }
 
-        LOGGER.info("Winner is " + game.getWinner());
+        LOGGER.info("Winner is " + game.getWinner().getName());
     }
 }

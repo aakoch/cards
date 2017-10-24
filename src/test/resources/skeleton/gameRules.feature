@@ -20,10 +20,10 @@ Feature: Game Rules
 
   Scenario: Game continues until cards run out
     Given A game with 3 players
-    When a card is drawn 12 times
+    When a card is drawn 11 times
     Then the game continues
 
   Scenario: Game continues until cards run out
     Given A game with 3 players
-    When a card is drawn 13 times
+    When a card is drawn 12 times
     Then the game ends

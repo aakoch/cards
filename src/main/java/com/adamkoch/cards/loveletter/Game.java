@@ -23,6 +23,7 @@ public class Game {
     private Dealer dealer;
     private PlayerIterator playerIterator;
     private boolean cardsDealt = false;
+    private Card burntCard;
 
     public Game() {
         history = new ArrayList<>();
@@ -51,7 +52,7 @@ public class Game {
     }
 
     public List<Player> getPlayersThatCanBeAttacked(Player playerGuessing) {
-        final List<Player> players = getPlayersStillInGame();
+        final List<Player> players = new ArrayList<>(getPlayersStillInGame());
         players.removeIf(player -> player.equals(playerGuessing));
         players.removeIf(player -> player.isSafe());
         return players;
@@ -107,7 +108,10 @@ public class Game {
     public Card drawCard() {
         assertCardsWereDealt();
 
-        LOGGER.debug(deck);
+        LOGGER.trace(deck);
+        if (deck.isEmpty()) {
+            return burntCard;
+        }
         return deck.remove(0);
     }
 
@@ -120,8 +124,31 @@ public class Game {
     public void dealCards() {
         dealer.setDeck(deck);
         dealer.shuffle();
+        burntCard = deck.remove(0);
         dealer.deal(players);
         cardsDealt = true;
+    }
+
+    public List<Card> getCardsUnknownToPlayer(SingleCardHandPlayer player) {
+        List<Card> list = new ArrayList<>();
+        list.addAll(deck);
+        if (burntCard != null) {
+            list.add(burntCard);
+        }
+        for (Player playerLeft : playersStillInGame) {
+            if (!player.equals(playerLeft)) {
+                if (player.getHand() != null) {
+                    list.add(player.getHand());
+                }
+            }
+        }
+        return list;
+    }
+
+    private List<Card> join(List<Card> deck, Card burntCard) {
+        List<Card> list = new ArrayList<>(deck);
+        list.add(burntCard);
+        return list;
     }
 
     private class Play {

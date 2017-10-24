@@ -9,6 +9,13 @@ package com.adamkoch.cards.loveletter;
 public class SwitchHandsAction implements Action {
     @Override
     public Outcome resolve(Player player, Player opponent, Game game) {
-        throw new NotYetImplementedException();
+        final Card playerHand = player.getHand();
+        final Card opponentHand = opponent.getHand();
+        player.setHand(opponentHand);
+        opponent.setHand(playerHand);
+        Outcome outcome = Outcome.NO_EFFECT;
+        player.isShownHand(opponent);
+        opponent.isShownHand(player);
+        return outcome;
     }
 }

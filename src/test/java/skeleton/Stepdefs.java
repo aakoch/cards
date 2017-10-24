@@ -1,20 +1,15 @@
 package skeleton;
 
 import com.adamkoch.cards.loveletter.*;
-import cucumber.api.PendingException;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import org.hamcrest.CoreMatchers;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class Stepdefs extends AbstractStepDefinitions {
@@ -25,6 +20,11 @@ public class Stepdefs extends AbstractStepDefinitions {
     @Given("^A player has a ([^\"]*)$")
     public void a_player_has_a(String cardName) throws Exception {
         game = GameCreater.withNPlayers(2, Card.valueOf(cardName.toUpperCase()));
+    }
+
+    @Given("^Player (\\d+) has a ([^\"]*)$")
+    public void player_has_a(int playerNumber, String cardName) throws Exception {
+        game.getPlayer(playerNumber - 1).setHand(Card.valueOf(cardName.toUpperCase()));
     }
 
     @When("^the player draws a ([^\"]*)$")
@@ -201,10 +201,10 @@ public class Stepdefs extends AbstractStepDefinitions {
 
     @Given("^Player (\\d+) action is \"([^\"]*)\"$")
     public void player_action_is(int playerNumber, String actionClassName) throws Exception {
-        Player player = game.getPlayer(playerNumber);
+        Player player = game.getPlayer(playerNumber - 1);
         final Class<? extends Action> actionClass = super.getActionClass(actionClassName);
         final Action action = actionClass.newInstance();
-        action.resolve(player, null, game);
+        action.resolve(player, player.chooseOpponent().get(), game);
     }
 
     @When("^(\\d+) cards are played$")

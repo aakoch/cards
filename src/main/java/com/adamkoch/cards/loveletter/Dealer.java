@@ -3,7 +3,6 @@ package com.adamkoch.cards.loveletter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.security.SecureRandom;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -37,7 +36,7 @@ public class Dealer {
         for (int i = 0; i < random; i++) {
             Collections.shuffle(deck);
         }
-        LOGGER.debug(deck.toString());
+        LOGGER.trace(() -> deck.toString());
     }
 
     public void deal(List<Player> players) {

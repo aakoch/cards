@@ -14,12 +14,13 @@ public class DiscardHandAction implements Action {
     @Override
     public Outcome resolve(Player player, Player opponent, Game game) {
         final Card drawnCard = game.drawCard();
-        LOGGER.info(opponent + " must discard their " + opponent.getHand() + " and draws a " + drawnCard);
+//        LOGGER.info(opponent + " must discard their " + opponent.getHand() + " and draws a " + drawnCard);
 
         opponent.setHand(drawnCard);
         Outcome outcome = new Outcome();
         outcome.setAction(this);
-        outcome.setDescription(opponent + " must discard their " + opponent.getHand() + " and draws a " + drawnCard);
+        outcome.setDescription(
+                opponent.getName() + " must discard their " + opponent.getHand() + " and draws a " + drawnCard);
         return outcome;
     }
 }

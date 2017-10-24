@@ -10,6 +10,10 @@ public class LoseAction implements Action {
 
     @Override
     public Outcome resolve(Player player, Player opponent, Game game) {
-        return null;
+        Outcome outcome = new Outcome();
+        game.removePlayer(player);
+        outcome.setAction(this);
+        outcome.setDescription(player.getName() + " is out of the game");
+        return outcome;
     }
 }

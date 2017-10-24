@@ -1,8 +1,13 @@
 package com.adamkoch.cards.loveletter;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Random;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p>Created by aakoch on 2017-10-06.</p>
@@ -12,7 +17,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class SingleCardHandPlayer implements Player {
 
-    private final int playerCount;
+    private static final Logger LOGGER = LogManager.getLogger(SingleCardHandPlayer.class);
+
     private Card hand;
     private Card drawnCard;
     private Card playedCard;
@@ -20,10 +26,19 @@ public class SingleCardHandPlayer implements Player {
     private Game game;
     private boolean lastCardPlayedHandmaid;
 
-    private static AtomicInteger count = new AtomicInteger(1);
+    private String name;
+    private Optional<ShownHand> shownHand = Optional.empty();
+    private CardDeterminer cardDeterminer;
 
-    public SingleCardHandPlayer() {
-        this.playerCount = count.getAndIncrement();
+    public SingleCardHandPlayer(String name) {
+        this.name = name;
+        chosenOpponent = Optional.empty();
+        cardDeterminer = new CardDeterminer();
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -58,7 +73,7 @@ public class SingleCardHandPlayer implements Player {
     public Card determineCardToPlay() {
         assertCardWasDrawn();
 
-        if (drawnCard.ordinal() < hand.ordinal()) {
+        if (isPlayedCardDrawnCard(hand, drawnCard)) {
             playedCard = drawnCard;
         }
         else {
@@ -71,16 +86,29 @@ public class SingleCardHandPlayer implements Player {
         return playedCard;
     }
 
+    private boolean isPlayedCardDrawnCard(Card hand, Card drawnCard) {
+        return cardDeterminer.with(shownHand.isPresent()).shouldPlayCardOne(hand, drawnCard);
+    }
+
     @Override
     public Optional<Player> chooseOpponent() {
         assertCardWasDetermined();
 
-        List<Player> players = game.getPlayersThatCanBeAttacked(this);
-
-        if (players.size() == 0) {
-            return chosenOpponent = Optional.<Player>empty();
+        if (playedCard == Card.GUARD && shownHand.isPresent() && !shownHand.get().player.isSafe()) {
+            chosenOpponent = Optional.of(shownHand.get().player);
         }
-        chosenOpponent = Optional.of(players.get(0));
+        else {
+            List<Player> players = game.getPlayersThatCanBeAttacked(this);
+
+            if (players.size() == 0) {
+                LOGGER.info("It doesn't seem like there is anyone " + getName() + " can attack");
+                return chosenOpponent = Optional.<Player>empty();
+            }
+            chosenOpponent = Optional.of(players.get(0));
+        }
+
+        shownHand = Optional.empty();
+
         return chosenOpponent;
     }
 
@@ -94,7 +122,9 @@ public class SingleCardHandPlayer implements Player {
         else {
             action = playedCard.getAction();
         }
-        return action.resolve(this, chosenOpponent.orElse(null), game);
+        final Outcome outcome = action.resolve(this, chosenOpponent.orElse(null), game);
+        drawnCard = null;
+        return outcome;
     }
 
     private void assertOpponentWasChosen() {
@@ -143,39 +173,48 @@ public class SingleCardHandPlayer implements Player {
 
     @Override
     public Card determineCardToGuess() {
-        return Card.GUARD;
+        final List<Card> deck = game.getCardsUnknownToPlayer(this);
+        try {
+            LOGGER.debug("Cards to choose from: " + deck.stream()
+                                                        .collect(Collectors.groupingBy(Function.identity(),
+                                                                Collectors.counting())));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        deck.removeIf(card -> card == Card.GUARD);
+        final int index = new Random().nextInt(deck.size());
+        final Card card = deck.get(index);
+        if (card == Card.GUARD) {
+            throw new RuntimeException("Player is trying to guess a Guard");
+        }
+        return card;
     }
 
     @Override
     public void isShownHand(Player opponent) {
-        learn(opponent).has(opponent.getHand());
-    }
-
-    private Study learn(Player opponent) {
-        return new Study(opponent);
+        shownHand = Optional.of(new ShownHand(opponent, opponent.getHand()));
     }
 
     @Override
     public String toString() {
         return "SingleCardHandPlayer{" +
-                "index=" + playerCount +
+                "name=" + name +
                 ", hand=" + hand +
                 ", drawnCard=" + drawnCard +
                 ", playedCard=" + playedCard +
-                ", chosenOpponent=" + chosenOpponent +
+                ", chosenOpponent=" + chosenOpponent.map(Player::getName).orElse("<none>") +
                 ", lastCardPlayedHandmaid=" + lastCardPlayedHandmaid +
                 '}';
     }
 
-    private class Study {
-        private final Player opponent;
+    private class ShownHand {
+        private final Player player;
+        private final Card hand;
 
-        public Study(Player opponent) {
-            this.opponent = opponent;
-        }
-
-        public void has(Card hand) {
-
+        public ShownHand(Player player, Card hand) {
+            this.player = player;
+            this.hand = hand;
         }
     }
 }

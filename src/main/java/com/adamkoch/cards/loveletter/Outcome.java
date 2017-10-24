@@ -12,6 +12,7 @@ public class Outcome {
     static {
         NO_EFFECT = new Outcome();
         NO_EFFECT.setAction(new EmptyAction());
+        NO_EFFECT.setDescription("Nothing happened");
     }
 
     private Action action;
@@ -27,10 +28,8 @@ public class Outcome {
 
     @Override
     public String toString() {
-        return "Outcome{" +
-                "action=" + (action == null ? "null" : action.getClass().getSimpleName()) +
-                ", description=" + description +
-                '}';
+        return (action == null ? "null" : action.getClass().getSimpleName()) +
+                ": " + description;
     }
 
     public void setDescription(String description) {

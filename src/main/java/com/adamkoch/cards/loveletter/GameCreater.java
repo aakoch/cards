@@ -1,7 +1,6 @@
 package com.adamkoch.cards.loveletter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -11,6 +10,7 @@ import java.util.List;
  * @since 1.0.0
  */
 public class GameCreater {
+
     public static Game withNPlayers(int numberOfPlayers, Card card) {
         final Game game = new Game();
         game.setPlayers(createPlayers(numberOfPlayers, card));
@@ -20,15 +20,15 @@ public class GameCreater {
     private static List<Player> createPlayers(int numberOfPlayers, Card card) {
         List<Player> list = new ArrayList<>();
         for (int i = 0; i < numberOfPlayers; i++) {
-            final Player player = createPlayer();
+            final Player player = createPlayer(i + 1);
             player.setHand(card);
             list.add(player);
         }
         return list;
     }
 
-    public static Player createPlayer() {
-        return new SingleCardHandPlayer();
+    public static Player createPlayer(int count) {
+        return new SingleCardHandPlayer("Player " + count);
     }
 
     public static Game withNPlayers(int numberOfPlayers) {
@@ -44,7 +44,7 @@ public class GameCreater {
     private static List<Player> createPlayers(int numberOfPlayers) {
         List<Player> list = new ArrayList<>();
         for (int i = 0; i < numberOfPlayers; i++) {
-            final Player player = createPlayer();
+            final Player player = createPlayer(i + 1);
             list.add(player);
         }
         return list;

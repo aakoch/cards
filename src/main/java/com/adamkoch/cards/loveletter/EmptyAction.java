@@ -14,7 +14,7 @@ public class EmptyAction implements Action {
 
     @Override
     public Outcome resolve(Player player, Player opponent, Game game) {
-        LOGGER.debug("Empty action does nothing");
+//        LOGGER.debug("Empty action does nothing");
         return Outcome.NO_EFFECT;
     }
 }
