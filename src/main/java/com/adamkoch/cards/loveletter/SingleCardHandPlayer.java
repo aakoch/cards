@@ -1,5 +1,6 @@
 package com.adamkoch.cards.loveletter;
 
+import com.adamkoch.utils.RandomUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,12 +19,11 @@ import java.util.stream.Collectors;
 public class SingleCardHandPlayer implements Player {
 
     private static final Logger LOGGER = LogManager.getLogger(SingleCardHandPlayer.class);
-
+    protected Card playedCard;
+    protected Optional<Player> chosenOpponent;
+    protected Game game;
     private Card hand;
-    private Card drawnCard;
-    private Card playedCard;
-    private Optional<Player> chosenOpponent;
-    private Game game;
+    protected Card drawnCard;
     private boolean lastCardPlayedHandmaid;
 
     private String name;
@@ -39,14 +39,6 @@ public class SingleCardHandPlayer implements Player {
     @Override
     public String getName() {
         return name;
-    }
-
-    @Override
-    public void setHand(Card... cards) {
-        if (cards.length != 1) {
-            throw new IllegalArgumentException("Can only accept one card, not " + cards.length);
-        }
-        hand = cards[0];
     }
 
     @Override
@@ -73,21 +65,15 @@ public class SingleCardHandPlayer implements Player {
     public Card determineCardToPlay() {
         assertCardWasDrawn();
 
-        if (isPlayedCardDrawnCard(hand, drawnCard)) {
-            playedCard = drawnCard;
-        }
-        else {
-            playedCard = this.hand;
+        playedCard = cardDeterminer.determineCard(hand, drawnCard, shownHand.isPresent());
+
+        if (playedCard == hand) {
             hand = drawnCard;
         }
 
         lastCardPlayedHandmaid = playedCard == Card.HANDMAID;
 
         return playedCard;
-    }
-
-    private boolean isPlayedCardDrawnCard(Card hand, Card drawnCard) {
-        return cardDeterminer.with(shownHand.isPresent()).shouldPlayCardOne(hand, drawnCard);
     }
 
     @Override
@@ -104,7 +90,7 @@ public class SingleCardHandPlayer implements Player {
                 LOGGER.info("It doesn't seem like there is anyone " + getName() + " can attack");
                 return chosenOpponent = Optional.<Player>empty();
             }
-            chosenOpponent = Optional.of(players.get(0));
+            chosenOpponent = Optional.of(RandomUtils.getRandom(players));
         }
 
         shownHand = Optional.empty();
@@ -169,6 +155,14 @@ public class SingleCardHandPlayer implements Player {
     @Override
     public Card getHand() {
         return hand;
+    }
+
+    @Override
+    public void setHand(Card... cards) {
+        if (cards.length != 1) {
+            throw new IllegalArgumentException("Can only accept one card, not " + cards.length);
+        }
+        hand = cards[0];
     }
 
     @Override

@@ -13,7 +13,10 @@ public class SwitchHandsAction implements Action {
         final Card opponentHand = opponent.getHand();
         player.setHand(opponentHand);
         opponent.setHand(playerHand);
-        Outcome outcome = Outcome.NO_EFFECT;
+        Outcome outcome = new Outcome();
+        outcome.setAction(this);
+        outcome.setDescription(opponent.getName() + " had to give up his " + opponentHand + " for " + player.getName
+                () + "'s " + playerHand);
         player.isShownHand(opponent);
         opponent.isShownHand(player);
         return outcome;

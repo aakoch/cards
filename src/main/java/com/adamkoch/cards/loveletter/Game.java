@@ -61,7 +61,7 @@ public class Game {
     }
 
     public void removePlayer(int index) {
-        playersStillInGame.remove(getPlayer(index));
+        removePlayer(getPlayer(index));
     }
 
     public boolean shouldContinue() {
@@ -83,6 +83,9 @@ public class Game {
 
     public void removePlayer(Player player) {
         playersStillInGame.remove(player);
+        if (playerIterator != null) {
+            playerIterator.remove(player);
+        }
     }
 
     public List<Card> getDeck() {
@@ -93,7 +96,7 @@ public class Game {
         if (playerIterator == null) {
             final Player lastWinner = winner != null ? winner : dealer.asPlayer();
 
-            playerIterator = new PlayerIterator(players, players.indexOf(lastWinner));
+            playerIterator = new PlayerIterator(playersStillInGame, playersStillInGame.indexOf(lastWinner));
         }
         return playerIterator.next();
     }

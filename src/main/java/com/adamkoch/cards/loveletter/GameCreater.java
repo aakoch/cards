@@ -41,6 +41,17 @@ public class GameCreater {
         return game;
     }
 
+    public static Game withNPlayersAndOneRealOne(int numberOfPlayers) {
+        final Game game = new Game();
+        final List<Player> players = createPlayers(numberOfPlayers);
+        players.add(new RealPlayer());
+        game.setPlayers(players);
+        Dealer dealer = new Dealer(players.get(0));
+        game.setDealer(dealer);
+        game.dealCards();
+        return game;
+    }
+
     private static List<Player> createPlayers(int numberOfPlayers) {
         List<Player> list = new ArrayList<>();
         for (int i = 0; i < numberOfPlayers; i++) {

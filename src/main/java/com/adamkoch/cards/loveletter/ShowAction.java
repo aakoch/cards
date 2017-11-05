@@ -18,7 +18,8 @@ public class ShowAction implements Action {
 
         Outcome outcome = new Outcome();
         outcome.setAction(this);
-        outcome.setDescription(opponent.getName() + " shows their hand to " + player.getName());
+        outcome.setDescription(
+                opponent.getName() + " shows their hand [" + opponent.getHand() + "] to " + player.getName());
         return outcome;
     }
 }

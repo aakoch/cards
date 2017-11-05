@@ -16,14 +16,11 @@ public class Main {
     private static final Logger LOGGER = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) {
-        for (int i = 0; i < 100; i++) {
-            playGame();
-            LOGGER.info("");
-        }
+        playGame();
     }
 
-    private static void playGame() {
-        Game game = GameCreater.withNPlayers(2);
+    public static void playGame() {
+        Game game = GameCreater.withNPlayersAndOneRealOne(2);
         List<Player> playerList = game.getPlayersStillInGame();
         int playerCounter = 1;
         StringBuilder sb = new StringBuilder();

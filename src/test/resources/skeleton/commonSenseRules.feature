@@ -10,6 +10,11 @@ Feature: Common Sense Rules
     When the player draws a King
     Then the player plays the Guard
 
+  Scenario: Player has a Guard and draws a Baron, plays the Guard (because Guard is lowest)
+    Given A player has a Guard
+    When the player draws a Baron
+    Then the player plays the Guard
+
   Scenario Outline: Player has a Princess and draws anything, plays anything but Princess
     Given A player has a <hand>
     When the player draws a <drawnCard>
@@ -30,4 +35,3 @@ Feature: Common Sense Rules
       | Princess | Prince    | Prince     |
       | Princess | King      | King       |
       | Princess | Countess  | Countess   |
-      | Guard    | Baron     | Guard      |
